@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineGameStore.MVC.Models
@@ -15,10 +14,6 @@ namespace OnlineGameStore.MVC.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
-
-        public IEnumerable<SelectListItem> Genres { get; set; }
-
-        public IEnumerable<SelectListItem> PlatformTypes { get; set; }
 
         public List<int> SelectedGenres { get; set; }
 

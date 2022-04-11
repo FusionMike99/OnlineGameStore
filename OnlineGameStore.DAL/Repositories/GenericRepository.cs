@@ -9,7 +9,8 @@ using System.Linq.Expressions;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where TEntity : class, IBaseEntity<TKey>
+    public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey>
+        where TEntity : class, IBaseEntity<TKey>
     {
         private readonly DbSet<TEntity> _entities;
 

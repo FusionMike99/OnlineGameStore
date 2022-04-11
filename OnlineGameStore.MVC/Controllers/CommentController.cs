@@ -24,14 +24,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey) || !ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Something went wrong");
             }
 
             var mappedComment = _mapper.Map<Comment>(comment);
 
             mappedComment = _commentService.LeaveCommentToGame(gameKey, mappedComment);
 
-            var commentViewModel = _mapper.Map<GameViewModel>(mappedComment);
+            var commentViewModel = _mapper.Map<CommentViewModel>(mappedComment);
 
             return Json(commentViewModel);
         }
@@ -42,7 +42,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest();
+                return BadRequest("Something wrong");
             }
 
             var comments = _commentService.GetAllCommentsByGameKey(gameKey);

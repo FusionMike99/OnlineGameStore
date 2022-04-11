@@ -4,7 +4,8 @@ using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
+using System.Text.Json;
 
 namespace OnlineGameStore.MVC.Controllers
 {
@@ -60,14 +61,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest();
+                return BadRequest("Something went wrong");
             }
 
             var game = _gameService.GetGameByKey(gameKey);
 
             if (game == null)
             {
-                return NotFound();
+                return NotFound("Game has not been found");
             }
 
             var gameViewModel = _mapper.Map<GameViewModel>(game);
@@ -91,7 +92,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest();
+                return BadRequest("Something went wrong");
             }
 
             _gameService.DeleteGame(id.Value);
@@ -104,12 +105,19 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest();
+                return BadRequest("Something went wrong");
             }
 
-            var filepath = Path.Combine("~/Files", "hello.txt");
+            var game = _gameService.GetGameByKey(gameKey);
 
-            return File(filepath, "text/plain", "hello.txt");
+            if (game == null)
+            {
+                return NotFound("Game has not been found");
+            }
+
+            var serilizedGame = Encoding.Default.GetBytes(JsonSerializer.Serialize(game));
+
+            return File(serilizedGame, "application/txt", $"{game.Name}.txt");
         }
     }
 }

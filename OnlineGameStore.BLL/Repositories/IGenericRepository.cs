@@ -5,7 +5,8 @@ using System.Linq.Expressions;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGenericRepository<TEntity, TKey> where TEntity : IBaseEntity<TKey>
+    public interface IGenericRepository<TEntity, TKey>
+        where TEntity : IBaseEntity<TKey>
     {
         TEntity Create(TEntity entity);
 

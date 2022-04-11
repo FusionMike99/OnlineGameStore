@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.DAL.Configurations;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace OnlineGameStore.DAL.Data
 {
@@ -23,12 +23,7 @@ namespace OnlineGameStore.DAL.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new GameConfiguration());
-            modelBuilder.ApplyConfiguration(new CommentConfiguration());
-            modelBuilder.ApplyConfiguration(new GameGenreConfiguration());
-            modelBuilder.ApplyConfiguration(new GenreConfiguration());
-            modelBuilder.ApplyConfiguration(new PlatformTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new GamePlatformTypeConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             modelBuilder.StoreSeed();
         }

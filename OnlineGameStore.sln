@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineGameStore.DAL", "Onli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineGameStore.BLL", "OnlineGameStore.BLL\OnlineGameStore.BLL.csproj", "{84FF1F91-252E-4272-83D5-18AF7D23B93E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineGameStore.Tests", "OnlineGameStore.Tests\OnlineGameStore.Tests.csproj", "{EF4E531A-4831-4C56-9916-3589B956A439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{84FF1F91-252E-4272-83D5-18AF7D23B93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84FF1F91-252E-4272-83D5-18AF7D23B93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84FF1F91-252E-4272-83D5-18AF7D23B93E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF4E531A-4831-4C56-9916-3589B956A439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF4E531A-4831-4C56-9916-3589B956A439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF4E531A-4831-4C56-9916-3589B956A439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF4E531A-4831-4C56-9916-3589B956A439}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
