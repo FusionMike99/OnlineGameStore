@@ -18,11 +18,13 @@ namespace OnlineGameStore.MVC.Controllers
                     "This shouldn't be invoked in non-development environments.");
             }
 
-            var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
+            var context = ControllerContext.HttpContext.Features.Get<IExceptionHandlerFeature>();
 
-            return Problem(
-                detail: context.Error.StackTrace,
-                title: context.Error.Message);
+            var problem = Problem(
+                detail: context.Error.StackTrace ?? "No details",
+                title: context.Error.Message ?? "No message");
+
+            return problem;
         }
 
         [Route("/error")]
