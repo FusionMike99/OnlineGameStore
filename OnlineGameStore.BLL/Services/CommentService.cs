@@ -1,4 +1,5 @@
-﻿using OnlineGameStore.BLL.Entities;
+﻿using Microsoft.Extensions.Logging;
+using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
 using System.Collections.Generic;
@@ -9,11 +10,16 @@ namespace OnlineGameStore.BLL.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGameService _gameService;
+        private readonly ILogger<CommentService> _logger;
 
-        public CommentService(IUnitOfWork unitOfWork, IGameService gameService)
+        public CommentService(
+            IUnitOfWork unitOfWork,
+            IGameService gameService,
+            ILogger<CommentService> logger)
         {
             _unitOfWork = unitOfWork;
             _gameService = gameService;
+            _logger = logger;
         }
 
         public Comment LeaveCommentToGame(string gameKey, Comment comment)
@@ -22,10 +28,13 @@ namespace OnlineGameStore.BLL.Services
 
             comment.GameId = game.Id;
 
-            comment = _unitOfWork.Comments.Create(comment);
+            var leavedComment = _unitOfWork.Comments.Create(comment);
             _unitOfWork.Commit();
 
-            return comment;
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(LeaveCommentToGame)}.
+                    Leaved comment with id {leavedComment.Id} successfully", leavedComment);
+
+            return leavedComment;
         }
 
         public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
@@ -36,6 +45,9 @@ namespace OnlineGameStore.BLL.Services
                     $"{nameof(Comment.Game)}",
                     $"{nameof(Comment.ReplyTo)}",
                     $"{nameof(Comment.Replies)}");
+
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetAllCommentsByGameKey)}.
+                    Received comments with game key {gameKey} successfully", comments);
 
             return comments;
         }
