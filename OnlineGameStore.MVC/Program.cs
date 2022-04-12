@@ -14,6 +14,7 @@ namespace OnlineGameStore.MVC
             try
             {
                 string outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}";
+
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -21,6 +22,7 @@ namespace OnlineGameStore.MVC
                     .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "Logs\\log.txt"),
                     rollingInterval: RollingInterval.Day, outputTemplate:
                     outputTemplate).CreateLogger();
+
                 CreateHostBuilder(args).Build().Run();
             }
             catch

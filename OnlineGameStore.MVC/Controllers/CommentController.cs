@@ -29,9 +29,9 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedComment = _mapper.Map<Comment>(comment);
 
-            mappedComment = _commentService.LeaveCommentToGame(gameKey, mappedComment);
+            var leavedComment = _commentService.LeaveCommentToGame(gameKey, mappedComment);
 
-            var commentViewModel = _mapper.Map<CommentViewModel>(mappedComment);
+            var commentViewModel = _mapper.Map<CommentViewModel>(leavedComment);
 
             return Json(commentViewModel);
         }

@@ -31,9 +31,9 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGame = _mapper.Map<Game>(game);
 
-            mappedGame = _gameService.CreateGame(mappedGame);
+            var createdGame = _gameService.CreateGame(mappedGame);
 
-            var gameViewModel = _mapper.Map<GameViewModel>(mappedGame);
+            var gameViewModel = _mapper.Map<GameViewModel>(createdGame);
 
             return Json(gameViewModel);
         }
@@ -48,9 +48,9 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGame = _mapper.Map<Game>(game);
 
-            mappedGame = _gameService.EditGame(mappedGame);
+            var updatedGame = _gameService.EditGame(mappedGame);
 
-            var gameViewModel = _mapper.Map<GameViewModel>(mappedGame);
+            var gameViewModel = _mapper.Map<GameViewModel>(updatedGame);
 
             return Json(gameViewModel);
         }
