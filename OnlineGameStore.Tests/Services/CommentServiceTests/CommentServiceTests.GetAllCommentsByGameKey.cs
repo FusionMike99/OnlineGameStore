@@ -7,7 +7,6 @@ using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -25,7 +24,8 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Comments.GetMany(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
+                    It.IsAny<Func<Comment, bool>>(),
+                    It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(comments);
 
@@ -36,7 +36,8 @@ namespace OnlineGameStore.Tests.Services
             actualComments.Should().BeEquivalentTo(comments);
 
             mockUnitOfWork.Verify(x => x.Comments.GetMany(
-                It.IsAny<Expression<Func<Comment, bool>>>(),
+                It.IsAny<Func<Comment, bool>>(),
+                It.IsAny<bool>(),
                 It.IsAny<string[]>()),
                 Times.Once);
         }

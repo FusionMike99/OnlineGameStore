@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -8,9 +9,12 @@ using Microsoft.Extensions.Hosting;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.MVC.Services.Contracts;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Mapper;
+using OnlineGameStore.MVC.Utils;
 using Serilog;
 using Serilog.Events;
 
@@ -27,7 +31,7 @@ namespace OnlineGameStore.MVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("LocalDb");
+            var connection = Configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connection));
 
@@ -37,7 +41,28 @@ namespace OnlineGameStore.MVC
 
             services.AddScoped<ICommentService, CommentService>();
 
-            services.AddAutoMapper(typeof(CommentMappingProfile), typeof(GameMappingProfile));
+            services.AddScoped<IGenreService, GenreService>();
+
+            services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+
+            services.AddScoped<IPublisherService, PublisherService>();
+
+            services.AddScoped<ICartService>(CookieCartService.GetCart);
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+            services.AddHttpContextAccessor();
+
+            services.AddAutoMapper(
+                typeof(CommentMappingProfile),
+                typeof(GameMappingProfile),
+                typeof(GenreMappingProfile),
+                typeof(PlatformTypeMappingProfile),
+                typeof(PublisherMappingProfile),
+                typeof(OrderDetailMappingProfile));
 
             services.AddControllersWithViews();
         }
@@ -46,13 +71,20 @@ namespace OnlineGameStore.MVC
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/error");
             }
             else
             {
                 app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
+
+            app.UseRequestLocalization(options =>
+            {
+                options.AddSupportedCultures("en-US", "uk-UA", "ru-RU")
+                    .AddSupportedUICultures("en-US", "uk-UA", "ru-RU")
+                    .SetDefaultCulture("en-US");
+            });
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -72,11 +104,13 @@ namespace OnlineGameStore.MVC
                 };
             });
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
+            app.UseCookiePolicy();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

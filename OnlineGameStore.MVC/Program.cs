@@ -13,7 +13,7 @@ namespace OnlineGameStore.MVC
         {
             try
             {
-                string outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}";
+                var outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}";
 
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()

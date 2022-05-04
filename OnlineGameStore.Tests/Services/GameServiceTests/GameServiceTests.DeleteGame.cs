@@ -6,7 +6,6 @@ using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using System;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -16,24 +15,26 @@ namespace OnlineGameStore.Tests.Services
         [Theory]
         [AutoMoqData]
         public void GameService_DeleteGame_DeletesGame(
-            int gameId,
             Game game,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService sut)
         {
             // Arrange
             mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>()))
+                .Setup(m => m.Games.GetSingle(
+                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<bool>()))
                 .Returns(game);
 
             mockUnitOfWork.Setup(x => x.Games.Delete(It.IsAny<Game>()));
 
             // Act
-            sut.DeleteGame(gameId);
+            sut.DeleteGame(game.Id);
 
             // Assert
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Expression<Func<Game, bool>>>()),
+                It.IsAny<Func<Game, bool>>(),
+                It.IsAny<bool>()),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Games.Delete(
                 It.Is<Game>(g => g.Name == game.Name && g.Id == game.Id)),
@@ -51,10 +52,10 @@ namespace OnlineGameStore.Tests.Services
         {
             // Arrange
             mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>()))
+                .Setup(m => m.Games.GetSingle(
+                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<bool>()))
                 .Returns(game);
-
-            mockUnitOfWork.Setup(x => x.Games.Delete(It.IsAny<Game>()));
 
             // Act
             Action actual = () => sut.DeleteGame(gameId);
@@ -63,7 +64,8 @@ namespace OnlineGameStore.Tests.Services
             actual.Should().Throw<InvalidOperationException>();
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Expression<Func<Game, bool>>>(),
+                It.IsAny<Func<Game, bool>>(),
+                It.IsAny<bool>(),
                 It.IsAny<string[]>()),
                 Times.Once);
         }

@@ -8,8 +8,11 @@ namespace OnlineGameStore.MVC.Models
         public string Name { get; set; }
 
         [Required]
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Message")]
         public string Body { get; set; }
 
+        [UIHint("HiddenInput")]
         public int? ReplyToId { get; set; }
     }
 }

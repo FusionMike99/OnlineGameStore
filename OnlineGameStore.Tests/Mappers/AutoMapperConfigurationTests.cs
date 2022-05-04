@@ -10,6 +10,10 @@ namespace OnlineGameStore.Tests.Mappers
         [Theory]
         [InlineData(typeof(GameMappingProfile))]
         [InlineData(typeof(CommentMappingProfile))]
+        [InlineData(typeof(GenreMappingProfile))]
+        [InlineData(typeof(PlatformTypeMappingProfile))]
+        [InlineData(typeof(PublisherMappingProfile))]
+        [InlineData(typeof(OrderDetailMappingProfile))]
         public void MappingProfile_IsValid(Type type)
         {
             // Arrange

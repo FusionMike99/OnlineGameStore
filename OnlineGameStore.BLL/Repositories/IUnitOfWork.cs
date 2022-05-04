@@ -12,6 +12,8 @@ namespace OnlineGameStore.BLL.Repositories
 
         IGenericRepository<PlatformType, int> PlatformTypes { get; }
 
+        IGenericRepository<Publisher, int> Publishers { get; }
+
         int Commit();
     }
 }

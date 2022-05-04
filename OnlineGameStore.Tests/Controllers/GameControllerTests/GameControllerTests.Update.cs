@@ -16,7 +16,65 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Update_ReturnsJsonResult_WhenGameIsValid(
+        public void Update_Get_ReturnsViewResult(
+            Game game,
+            [Frozen] Mock<IGameService> mockGameService,
+            GameController sut)
+        {
+            // Arrange
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>()))
+                .Returns(game);
+
+            // Act
+            var result = sut.Update(game.Key);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
+                    .Which.Id.Should().Be(game.Id);
+        }
+
+        [Theory]
+        [InlineAutoMoqData("")]
+        [InlineAutoMoqData(" ")]
+        [InlineAutoMoqData(null)]
+        public void Update_Get_ReturnsBadRequestObjectResult_WhenGameKeyHasNotValue(
+            string gameKey,
+            GameController sut)
+        {
+            // Act
+            var result = sut.Update(gameKey);
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>()
+                .Which.Value.Should().BeOfType<string>();
+        }
+
+        [Theory]
+        [InlineAutoMoqData(null)]
+        public void Update_Get_ReturnsNotFoundObjectResult_WhenGameIsNotFound(
+            Game game,
+            string gameKey,
+            [Frozen] Mock<IGameService> mockGameService,
+            GameController sut)
+        {
+            // Arrange
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>()))
+                .Returns(game);
+
+            // Act
+            var result = sut.Update(gameKey);
+
+            // Assert
+            result.Should().BeOfType<NotFoundObjectResult>()
+                .Which.Value.Should().BeOfType<string>();
+
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void Update_Post_ReturnsRedirectToActionResult_WhenGameIsValid(
             Game game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -39,16 +97,15 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(editGameViewModel);
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<GameViewModel>()
-                .Which.Name.Should().Be(editGameViewModel.Name);
+            result.Should().BeOfType<RedirectToActionResult>()
+                .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
             mockGameService.Verify(x => x.EditGame(It.IsAny<Game>()), Times.Once);
         }
 
         [Theory]
-        [InlineAutoMoqData(null)]
-        public void Update_ReturnsBadRequestObjectResult_WhenGameIsInvalid(
+        [AutoMoqData]
+        public void Update_Post_ReturnsViewResult_WhenGameIsInvalid(
             EditGameViewModel editGameViewModel,
             GameController sut)
         {
@@ -59,8 +116,9 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(editGameViewModel);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<SerializableError>();
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
+                    .Which.Id.Should().Be(editGameViewModel.Id);
         }
     }
 }

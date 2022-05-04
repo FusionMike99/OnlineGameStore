@@ -1,10 +1,8 @@
-﻿using AutoFixture.Xunit2;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Moq;
 using OnlineGameStore.MVC.Controllers;
+using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -14,39 +12,19 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Error_ReturnsObjectResult(
-            ProblemDetails problemDetails,
-            [Frozen] Mock<ProblemDetailsFactory> mockProblemDetailsFactory,
+        public void Error_ReturnsViewResult(
+            HttpContext httpContext,
             ErrorController sut)
         {
             // Arrange
-            mockProblemDetailsFactory
-                .Setup(x => x.CreateProblemDetails(
-                    It.IsAny<HttpContext>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-                .Returns(problemDetails);
-
-            sut.ProblemDetailsFactory = mockProblemDetailsFactory.Object;
+            sut.ControllerContext.HttpContext = httpContext;
 
             // Act
             var result = sut.Error();
 
             // Assert
-            result.Should().BeOfType<ObjectResult>()
-                .Which.Value.Should().BeAssignableTo<ProblemDetails>()
-                .Which.Should().BeEquivalentTo(problemDetails);
-
-            mockProblemDetailsFactory.Verify(x => x.CreateProblemDetails(
-                It.IsAny<HttpContext>(),
-                It.IsAny<int?>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()), Times.Once);
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<ErrorViewModel>();
         }
     }
 }

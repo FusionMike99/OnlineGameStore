@@ -16,7 +16,22 @@ namespace OnlineGameStore.DAL.Configurations
             builder.Property(g => g.Name)
                 .IsRequired();
 
+            builder.Property(g => g.Price)
+                .HasColumnType("money")
+                .IsRequired();
+
+            builder.Property(g => g.UnitsInStock)
+                .IsRequired();
+
+            builder.Property(g => g.Discontinued)
+                .IsRequired();
+
+            builder.Property(g => g.IsDeleted)
+                .HasDefaultValue(false);
+
             builder.HasIndex(g => g.Key).IsUnique();
+
+            builder.HasIndex(g => g.Name).IsUnique();
         }
     }
 }

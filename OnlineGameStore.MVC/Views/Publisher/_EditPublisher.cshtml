@@ -1,0 +1,33 @@
+﻿@model EditPublisherViewModel
+
+<div class="container">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input asp-for="Id" />
+
+    <div class="row my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="CompanyName" class="input-group-text" ></label>
+                <input asp-for="CompanyName" class="form-control" />
+            </div>
+            <span asp-validation-for="CompanyName" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="HomePage" class="form-control" />
+                <label asp-for="HomePage" class="input-group-text" ></label>
+            </div>
+            <span asp-validation-for="HomePage" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="my-3">
+        <div class="input-group">
+            <label asp-for="Description" class="input-group-text" ></label>
+            <textarea asp-for="Description" class="form-control" style="height: 30vh" ></textarea>
+        </div>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+</div>
+

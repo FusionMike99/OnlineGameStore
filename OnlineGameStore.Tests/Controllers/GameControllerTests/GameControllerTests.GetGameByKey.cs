@@ -15,7 +15,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGameByKey_ReturnsJsonResult_WhenGameKeyHasValue(
+        public void GetGameByKey_ReturnsViewResult_WhenGameKeyHasValue(
             Game game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -28,9 +28,9 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetGameByKey(game.Key);
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<GameViewModel>()
-                .Which.Key.Should().Be(game.Key);
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<GameViewModel>()
+                    .Which.Id.Should().Be(game.Id);
 
             mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
         }
@@ -69,6 +69,8 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundObjectResult>()
                 .Which.Value.Should().BeOfType<string>();
+
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
         }
     }
 }

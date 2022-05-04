@@ -1,0 +1,40 @@
+﻿@model IEnumerable<PublisherViewModel>
+
+@{
+    ViewData["Title"] = "Publishers";
+}
+
+<h1>Publishers</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Add New Publisher</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HomePage)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="GetPublisherByCompanyName" asp-route-companyName="@item.CompanyName" class="text-decoration-none">
+                    @item.CompanyName
+                </a>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a asp-action="Update" asp-route-companyName="@item.CompanyName" class="btn btn-warning">Update</a>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

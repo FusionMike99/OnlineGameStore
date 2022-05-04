@@ -207,18 +207,17 @@ namespace OnlineGameStore.DAL.Migrations
                         new
                         {
                             Id = 14,
-                            Name = "Misc.",
-                            ParentId = 11
-                        },
-                        new
-                        {
-                            Id = 15,
                             Name = "Adventure"
                         },
                         new
                         {
-                            Id = 16,
+                            Id = 15,
                             Name = "Puzzle & Skill"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Misc."
                         });
                 });
 

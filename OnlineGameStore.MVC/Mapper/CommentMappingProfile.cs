@@ -12,6 +12,7 @@ namespace OnlineGameStore.MVC.Mapper
                 .ReverseMap();
 
             CreateMap<Comment, CommentViewModel>()
+                .ForMember(dest => dest.ReplyToAuthor, source => source.MapFrom(comment => comment.ReplyTo.Name))
                 .ReverseMap();
         }
     }

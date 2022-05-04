@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    class GenreConfiguration : IEntityTypeConfiguration<Genre>
+    internal class GenreConfiguration : IEntityTypeConfiguration<Genre>
     {
         public void Configure(EntityTypeBuilder<Genre> builder)
         {
@@ -16,6 +16,9 @@ namespace OnlineGameStore.DAL.Configurations
             builder.HasOne(g => g.Parent)
                 .WithMany(g => g.SubGenres)
                 .HasForeignKey(g => g.ParentId);
+
+            builder.Property(g => g.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.HasIndex(g => g.Name).IsUnique();
         }

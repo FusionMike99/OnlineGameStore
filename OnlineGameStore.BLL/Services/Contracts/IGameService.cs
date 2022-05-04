@@ -18,5 +18,7 @@ namespace OnlineGameStore.BLL.Services.Contracts
         IEnumerable<Game> GetGamesByGenre(int genreId);
 
         IEnumerable<Game> GetGamesByPlatformType(int typeId);
+
+        bool CheckKeyForUniqueness(int gameId, string gameKey);
     }
 }

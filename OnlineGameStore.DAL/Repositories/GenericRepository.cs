@@ -5,17 +5,18 @@ using OnlineGameStore.DAL.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey>
         where TEntity : class, IBaseEntity<TKey>
     {
+        private readonly StoreDbContext _context;
         private readonly DbSet<TEntity> _entities;
 
         public GenericRepository(StoreDbContext context)
         {
+            _context = context;
             _entities = context.Set<TEntity>();
         }
 
@@ -28,45 +29,84 @@ namespace OnlineGameStore.DAL.Repositories
 
         public void Delete(TEntity entity)
         {
-            _entities.Remove(entity);
+            entity.IsDeleted = true;
+            entity.DeletedAt = DateTime.UtcNow;
+
+            Update(entity);
         }
 
         public TEntity Update(TEntity entity)
         {
-            _entities.Update(entity);
+            var exist = _entities.Find(entity.Id);
+
+            foreach (var navEntity in _context.Entry(entity).Navigations)
+            {
+                if (navEntity.CurrentValue == null)
+                {
+                    continue;
+                }
+                
+                var navEntityName = navEntity.Metadata.Name;
+
+                var navExist = _context.Entry(exist).Navigation(navEntityName);
+
+                navExist.Load();
+
+                navExist.CurrentValue = navEntity.CurrentValue;
+            }
+
+            _context.Entry(exist).CurrentValues.SetValues(entity);
 
             return entity;
         }
 
-        public TEntity GetSingle(Expression<Func<TEntity, bool>> predicate = null,
+        public TEntity GetSingle(Func<TEntity, bool> predicate = null,
+            bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
             var query = Include(includeProperties);
 
-            if (predicate != null)
+            if (includeDeleteEntities)
             {
-                query = query.Where(predicate);
+                query = query.IgnoreQueryFilters();
             }
 
-            return query.SingleOrDefault();
+            var localQuery = query.AsEnumerable();
+
+            if (predicate != null)
+            {
+                localQuery = localQuery.Where(predicate);
+            }
+
+            return localQuery.SingleOrDefault();
         }
 
-        public IEnumerable<TEntity> GetMany(Expression<Func<TEntity, bool>> predicate = null,
+        public IEnumerable<TEntity> GetMany(Func<TEntity, bool> predicate = null,
+            bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
             var query = Include(includeProperties);
 
-            if (predicate != null)
+            if (includeDeleteEntities)
             {
-                query = query.Where(predicate);
+                query = query.IgnoreQueryFilters();
             }
 
-            return query.ToList();
+            var localQuery = query.AsEnumerable();
+
+            if (predicate != null)
+            {
+                localQuery = localQuery.Where(predicate);
+            }
+
+            var localList = localQuery.ToList();
+
+            return localList;
         }
 
         private IQueryable<TEntity> Include(params string[] includeProperties)
         {
-            IQueryable<TEntity> query = _entities.AsNoTracking();
+            var query = _entities.AsNoTrackingWithIdentityResolution();
 
             return includeProperties
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));

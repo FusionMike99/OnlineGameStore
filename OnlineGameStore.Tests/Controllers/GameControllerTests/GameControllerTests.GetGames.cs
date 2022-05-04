@@ -16,7 +16,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGames_ReturnsJsonResult(
+        public void GetGames_ReturnsViewResult(
             IEnumerable<Game> games,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -29,8 +29,8 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetGames();
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<IEnumerable<GameViewModel>>()
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<IEnumerable<GameViewModel>>()
                 .Which.Should().HaveSameCount(games);
 
             mockGameService.Verify(x => x.GetAllGames(), Times.Once);

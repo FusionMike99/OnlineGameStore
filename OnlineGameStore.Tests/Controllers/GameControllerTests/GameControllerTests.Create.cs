@@ -16,7 +16,20 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Create_ReturnsJsonResult_WhenGameIsValid(
+        public void Create_Get_ReturnsViewResult(
+            GameController sut)
+        {
+            // Act
+            var result = sut.Create();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<EditGameViewModel>();
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public void Create_Post_ReturnsRedirectToActionResult_WhenGameIsValid(
             Game game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -39,16 +52,15 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Create(editGameViewModel);
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<GameViewModel>()
-                .Which.Name.Should().Be(editGameViewModel.Name);
+            result.Should().BeOfType<RedirectToActionResult>()
+                .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
             mockGameService.Verify(x => x.CreateGame(It.IsAny<Game>()), Times.Once);
         }
 
         [Theory]
-        [InlineAutoMoqData(null)]
-        public void Create_ReturnsBadRequestObjectResult_WhenGameIsInvalid(
+        [AutoMoqData]
+        public void Create_Post_ReturnsViewResult_WhenGameIsInvalid(
             EditGameViewModel editGameViewModel,
             GameController sut)
         {
@@ -59,8 +71,9 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Create(editGameViewModel);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<SerializableError>();
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
+                    .Which.Id.Should().Be(editGameViewModel.Id);
         }
     }
 }
