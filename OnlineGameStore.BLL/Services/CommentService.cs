@@ -32,7 +32,7 @@ namespace OnlineGameStore.BLL.Services
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(LeaveCommentToGame)}.
-                    Leaved comment with id {leavedComment.Id} successfully", leavedComment);
+                    Leaving comment with id {leavedComment.Id} successfully", leavedComment);
 
             return leavedComment;
         }
@@ -40,14 +40,14 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
         {
             var comments = _unitOfWork.Comments
-                .GetMany(
-                    c => c.ReplyToId == null && c.Game.Key == gameKey,
+                .GetMany(predicate: c => c.Game.Key == gameKey && !c.ReplyToId.HasValue,
+                    includeDeleteEntities: false,
                     $"{nameof(Comment.Game)}",
                     $"{nameof(Comment.ReplyTo)}",
                     $"{nameof(Comment.Replies)}");
 
             _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetAllCommentsByGameKey)}.
-                    Received comments with game key {gameKey} successfully", comments);
+                    Receiving comments with game key {gameKey} successfully", comments);
 
             return comments;
         }

@@ -14,7 +14,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Download_ReturnsVirtualFileResult_WhenGameKeyHasValue(
+        public void Download_ReturnsFileContentResult_WhenGameKeyHasValue(
             Game game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)

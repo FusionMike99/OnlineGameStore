@@ -1,0 +1,27 @@
+﻿@model EditGenreViewModel
+
+@{
+    ViewData["Title"] = "Update genre";
+}
+
+<h1>Update</h1>
+
+<h4>Genre</h4>
+<hr />
+<div class="col-8 mx-auto">
+    <form asp-route="genreupdate" method="post">
+        <partial name="_EditGenre" model="Model" />
+
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Save" class="btn btn-info text-light" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="GetGenres" class = "btn btn-primary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

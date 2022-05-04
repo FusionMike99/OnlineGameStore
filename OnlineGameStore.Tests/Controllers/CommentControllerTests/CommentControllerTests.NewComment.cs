@@ -38,9 +38,8 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<CommentViewModel>()
-                .Which.Name.Should().Be(editCommentViewModel.Name);
+            result.Should().BeOfType<RedirectToActionResult>()
+                .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
             mockCommentService.Verify(x => x.LeaveCommentToGame(
                 It.IsAny<string>(),
@@ -61,13 +60,14 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
+                    .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
         }
 
         [Theory]
-        [InlineAutoMoqData("", null)]
-        public void NewComment_ReturnsBadRequestObjectResult_WhenCommentIsInvalid(
+        [AutoMoqData]
+        public void NewComment_ReturnsViewResult_WhenCommentIsInvalid(
             string gameKey,
             EditCommentViewModel editCommentViewModel,
             CommentController sut)
@@ -79,8 +79,9 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
+                    .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
         }
     }
 }

@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    class CommentConfiguration : IEntityTypeConfiguration<Comment>
+    internal class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
@@ -15,6 +15,9 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(c => c.Body)
                 .IsRequired();
+
+            builder.Property(c => c.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.HasOne(c => c.Game)
                 .WithMany(g => g.Comments)

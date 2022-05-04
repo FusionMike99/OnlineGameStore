@@ -25,7 +25,7 @@ namespace OnlineGameStore.BLL.Services
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(CreateGame)}.
-                    Created game with id {createdGame.Id} successfully", createdGame);
+                    Creating game with id {createdGame.Id} successfully", createdGame);
 
             return createdGame;
         }
@@ -40,7 +40,7 @@ namespace OnlineGameStore.BLL.Services
                 var exception = new InvalidOperationException("Game has not been found");
 
                 _logger.LogError(exception, $@"Class: {nameof(GameService)}; Method: {nameof(DeleteGame)}.
-                    Deleted game with id {gameId} unsuccessfully", gameId);
+                    Deleting game with id {gameId} unsuccessfully", gameId);
 
                 throw exception;
             }
@@ -49,16 +49,17 @@ namespace OnlineGameStore.BLL.Services
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(DeleteGame)}.
-                    Deleted game with id {gameId} successfully", game);
+                    Deleting game with id {gameId} successfully", game);
         }
 
         public Game EditGame(Game game)
         {
             var editedGame = _unitOfWork.Games.Update(game);
+
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(EditGame)}.
-                    Edited game with id {editedGame.Id} successfully", editedGame);
+                    Editing game with id {editedGame.Id} successfully", editedGame);
 
             return editedGame;
         }
@@ -66,13 +67,14 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Game> GetAllGames()
         {
             var games = _unitOfWork.Games
-                .GetMany(
-                    null,
+                .GetMany(predicate: null,
+                    includeDeleteEntities: false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
-                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}");
+                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
+                    $"{nameof(Game.Publisher)}");
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(GetAllGames)}.
-                    Received games successfully", games);
+                    Receiving games successfully", games);
 
             return games;
         }
@@ -80,13 +82,14 @@ namespace OnlineGameStore.BLL.Services
         public Game GetGameByKey(string gameKey)
         {
             var game = _unitOfWork.Games
-                .GetSingle(
-                    g => g.Key == gameKey,
+                .GetSingle(predicate: g => g.Key == gameKey,
+                    includeDeleteEntities: false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
-                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}");
+                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
+                    $"{nameof(Game.Publisher)}");
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(GetGameByKey)}.
-                    Received game with game key {gameKey} successfully", game);
+                    Receiving game with game key {gameKey} successfully", game);
 
             return game;
         }
@@ -94,13 +97,14 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Game> GetGamesByGenre(int genreId)
         {
             var games = _unitOfWork.Games
-                .GetMany(
-                    g => g.GameGenres.Any(genre => genre.GenreId == genreId),
+                .GetMany(predicate: g => g.GameGenres.Any(genre => genre.GenreId == genreId),
+                    includeDeleteEntities: false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
-                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}");
+                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
+                    $"{nameof(Game.Publisher)}");
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(GetGamesByGenre)}.
-                    Received games with genre id {genreId} successfully", games);
+                    Receiving games with genre id {genreId} successfully", games);
 
             return games;
         }
@@ -108,15 +112,23 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Game> GetGamesByPlatformType(int typeId)
         {
             var games = _unitOfWork.Games
-                .GetMany(
-                    g => g.GamePlatformTypes.Any(platformType => platformType.PlatformId == typeId),
+                .GetMany(predicate: g => g.GamePlatformTypes.Any(platformType => platformType.PlatformId == typeId),
+                    includeDeleteEntities: false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
-                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}");
+                    $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
+                    $"{nameof(Game.Publisher)}");
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(GetGamesByPlatformType)}.
-                    Received games with platform type id {typeId} successfully", games);
+                    Receiving games with platform type id {typeId} successfully", games);
 
             return games;
+        }
+
+        public bool CheckKeyForUniqueness(int gameId, string gameKey)
+        {
+            var game = _unitOfWork.Games.GetSingle(g => g.Key == gameKey);
+
+            return game != null && game.Id != gameId;
         }
     }
 }

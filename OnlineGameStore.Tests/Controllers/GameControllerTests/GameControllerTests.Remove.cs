@@ -13,7 +13,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Remove_ReturnsNoContentResult_WhenIdHasValue(
+        public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
             int id,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -25,7 +25,8 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Remove(id);
 
             // Assert
-            result.Should().BeOfType<NoContentResult>();
+            result.Should().BeOfType<RedirectToActionResult>()
+                .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
             mockGameService.Verify(x => x.DeleteGame(It.IsAny<int>()), Times.Once);
         }

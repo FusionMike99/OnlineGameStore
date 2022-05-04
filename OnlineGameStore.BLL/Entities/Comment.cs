@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
@@ -10,6 +11,10 @@ namespace OnlineGameStore.BLL.Entities
 
         public string Body { get; set; }
 
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
+
         public int GameId { get; set; }
 
         public Game Game { get; set; }
@@ -19,6 +24,5 @@ namespace OnlineGameStore.BLL.Entities
         public Comment ReplyTo { get; set; }
 
         public ICollection<Comment> Replies { get; set; }
-
     }
 }

@@ -1,0 +1,15 @@
+﻿@model AggregateCommentViewModel
+
+@{
+    ViewData["Title"] = "Comments";
+}
+
+<h5>Comments</h5>
+
+<comments elements="Model.Comments" reply-click-method="setReplyToId(event)" />
+
+<partial name="_NewComment" model="Model.EditComment" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

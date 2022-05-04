@@ -140,8 +140,9 @@ namespace OnlineGameStore.DAL.Migrations
                     { 5, "Sports", null },
                     { 6, "Races", null },
                     { 11, "Action", null },
-                    { 15, "Adventure", null },
-                    { 16, "Puzzle & Skill", null }
+                    { 14, "Adventure", null },
+                    { 15, "Puzzle & Skill", null },
+                    { 16, "Misc.", null }
                 });
 
             migrationBuilder.InsertData(
@@ -167,8 +168,7 @@ namespace OnlineGameStore.DAL.Migrations
                     { 9, "Formula", 6 },
                     { 10, "Off-road", 6 },
                     { 12, "FPS", 11 },
-                    { 13, "TPS", 11 },
-                    { 14, "Misc.", 11 }
+                    { 13, "TPS", 11 }
                 });
 
             migrationBuilder.CreateIndex(

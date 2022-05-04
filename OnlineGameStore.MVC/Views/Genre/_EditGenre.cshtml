@@ -1,0 +1,25 @@
+﻿@model EditGenreViewModel
+
+<div class="container">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input asp-for="Id" />
+
+    <div class="my-3">
+        <div class="input-group">
+            <label asp-for="Name" class="input-group-text" ></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="my-3">
+        <div class="input-group">
+            <label asp-for="SelectedParentGenre" class="input-group-text"></label>
+            <select asp-for="SelectedParentGenre" asp-items="Model.Genres" class="form-select">
+                <option selected value="">Choose...</option>
+            </select>
+        </div>
+    </div>
+</div>
+

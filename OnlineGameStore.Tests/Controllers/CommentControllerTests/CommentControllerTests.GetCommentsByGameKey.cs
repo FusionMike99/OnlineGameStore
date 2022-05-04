@@ -16,7 +16,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetCommentsByGameKey_ReturnsJsonResult_WhenGameKeyHasValue(
+        public void GetCommentsByGameKey_ReturnsViewResult_WhenGameKeyHasValue(
             IEnumerable<Comment> comments,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
@@ -30,9 +30,9 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetCommentsByGameKey(gameKey);
 
             // Assert
-            result.Should().BeOfType<JsonResult>()
-                .Which.Value.Should().BeAssignableTo<IEnumerable<CommentViewModel>>()
-                .Which.Should().HaveSameCount(comments);
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
+                .Which.Comments.Should().HaveSameCount(comments);
 
             mockCommentService.Verify(x => x.GetAllCommentsByGameKey(It.IsAny<string>()), Times.Once);
         }

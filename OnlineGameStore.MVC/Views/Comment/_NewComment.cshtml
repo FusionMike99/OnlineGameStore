@@ -1,0 +1,37 @@
+﻿@model EditCommentViewModel
+
+<hr />
+
+<h5>Add comment</h5>
+
+<div class="col-8 mx-auto">
+    <form asp-action="NewComment"
+        asp-route-gameKey="@ViewContext.RouteData.Values["gameKey"]"
+        id="addCommentForm" name="addCommentForm">
+        <div class="container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="Name" class="input-group-text" ></label>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="Body" class="input-group-text" ></label>
+                    <textarea asp-for="Body" class="form-control" style="height: 20vh" ></textarea>
+                </div>
+                <span asp-validation-for="Body" class="d-block text-danger"></span>
+            </div>
+
+            <input asp-for="ReplyToId" />
+        </div>
+
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Add" class="btn btn-info text-light" />
+        </div>
+    </form>
+</div>

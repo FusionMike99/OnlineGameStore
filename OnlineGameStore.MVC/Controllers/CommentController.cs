@@ -7,49 +7,70 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.Controllers
 {
-    [Route("game")]
+    [Route("games")]
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
         private readonly IMapper _mapper;
 
-        public CommentController(ICommentService commentService, IMapper mapper)
+        public CommentController(ICommentService commentService,
+            IMapper mapper)
         {
             _commentService = commentService;
             _mapper = mapper;
         }
 
         [HttpPost("{gameKey}/[action]")]
-        public IActionResult NewComment([FromRoute] string gameKey, [FromBody] EditCommentViewModel comment)
+        public IActionResult NewComment([FromRoute] string gameKey, [FromForm] EditCommentViewModel comment)
         {
-            if (string.IsNullOrWhiteSpace(gameKey) || !ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Something went wrong");
+                ModelState.AddModelError("", "Need to pass game key");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var aggregateCommentViewModel = CreateAggregateCommentViewModel(gameKey);
+
+                aggregateCommentViewModel.EditComment = comment;
+
+                return View("Index", aggregateCommentViewModel);
             }
 
             var mappedComment = _mapper.Map<Comment>(comment);
 
-            var leavedComment = _commentService.LeaveCommentToGame(gameKey, mappedComment);
+            _commentService.LeaveCommentToGame(gameKey, mappedComment);
 
-            var commentViewModel = _mapper.Map<CommentViewModel>(leavedComment);
-
-            return Json(commentViewModel);
+            return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
-        [HttpPost("{gameKey}/comments")]
-        [ResponseCache(Duration = 60)]
+        [HttpGet("{gameKey}/comments")]
         public IActionResult GetCommentsByGameKey([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Something wrong");
+                return BadRequest("Need to pass game key");
             }
 
+            var aggregateCommentViewModel = CreateAggregateCommentViewModel(gameKey);
+
+            aggregateCommentViewModel.EditComment = new EditCommentViewModel();
+
+            return View("Index", aggregateCommentViewModel);
+        }
+
+        private AggregateCommentViewModel CreateAggregateCommentViewModel(string gameKey)
+        {
             var comments = _commentService.GetAllCommentsByGameKey(gameKey);
 
             var commentsViewModel = _mapper.Map<IEnumerable<CommentViewModel>>(comments);
 
-            return Json(commentsViewModel);
+            var aggregateCommentViewModel = new AggregateCommentViewModel
+            {
+                Comments = commentsViewModel
+            };
+
+            return aggregateCommentViewModel;
         }
     }
 }

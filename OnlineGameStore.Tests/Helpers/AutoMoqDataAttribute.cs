@@ -22,6 +22,10 @@ namespace OnlineGameStore.Tests.Helpers
                 {
                     cfg.AddProfile(typeof(CommentMappingProfile));
                     cfg.AddProfile(typeof(GameMappingProfile));
+                    cfg.AddProfile(typeof(GenreMappingProfile));
+                    cfg.AddProfile(typeof(PlatformTypeMappingProfile));
+                    cfg.AddProfile(typeof(PublisherMappingProfile));
+                    cfg.AddProfile(typeof(OrderDetailMappingProfile));
                 })));
 
             fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b => fixture.Behaviors.Remove(b));

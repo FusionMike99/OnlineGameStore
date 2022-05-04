@@ -12,6 +12,7 @@ namespace OnlineGameStore.DAL.Repositories
         private GenericRepository<Comment, int> _commentRepository;
         private GenericRepository<Genre, int> _genreRepository;
         private GenericRepository<PlatformType, int> _typeRepository;
+        private GenericRepository<Publisher, int> _publisherRepository;
 
         public UnitOfWork(StoreDbContext context)
         {
@@ -29,6 +30,9 @@ namespace OnlineGameStore.DAL.Repositories
 
         public IGenericRepository<PlatformType, int> PlatformTypes =>
             _typeRepository ??= new GenericRepository<PlatformType, int>(_context);
+
+        public IGenericRepository<Publisher, int> Publishers =>
+            _publisherRepository ??= new GenericRepository<Publisher, int>(_context);
 
         public int Commit()
         {

@@ -10,10 +10,13 @@ namespace OnlineGameStore.DAL.Configurations
         {
             builder.HasKey(m => m.Id);
 
-            builder.Property(c => c.Type)
+            builder.Property(pt => pt.Type)
                 .IsRequired();
 
-            builder.HasIndex(g => g.Type).IsUnique();
+            builder.Property(pt => pt.IsDeleted)
+                .HasDefaultValue(false);
+
+            builder.HasIndex(pt => pt.Type).IsUnique();
         }
     }
 }

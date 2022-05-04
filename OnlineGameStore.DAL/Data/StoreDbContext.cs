@@ -13,6 +13,8 @@ namespace OnlineGameStore.DAL.Data
 
         public DbSet<Game> Games { get; set; }
 
+        public DbSet<Publisher> Publishers { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Genre> Genres { get; set; }
@@ -24,6 +26,14 @@ namespace OnlineGameStore.DAL.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
+                {
+                    entityType.AddSoftDeleteQueryFilter();
+                }
+            }
 
             modelBuilder.StoreSeed();
         }

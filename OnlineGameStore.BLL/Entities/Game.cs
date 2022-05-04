@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
@@ -11,6 +12,20 @@ namespace OnlineGameStore.BLL.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public decimal Price { get; set; }
+
+        public short UnitsInStock { get; set; }
+
+        public bool Discontinued { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
+
+        public int PublisherId { get; set; }
+
+        public Publisher Publisher { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
 
