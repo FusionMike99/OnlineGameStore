@@ -1,11 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -23,21 +24,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Func<PlatformType, bool>>(),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUniqueness(id, platformType.Type);
+            var actualResult = sut.CheckTypeForUnique(id, platformType.Type);
 
             // Assert
             actualResult.Should().BeTrue();
 
             mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                It.IsAny<Func<PlatformType, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
 
@@ -53,21 +54,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Func<PlatformType, bool>>(),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUniqueness(id, type);
+            var actualResult = sut.CheckTypeForUnique(id, type);
 
             // Assert
             actualResult.Should().BeFalse();
 
             mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                It.IsAny<Func<PlatformType, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
 
@@ -81,21 +82,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Func<PlatformType, bool>>(),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUniqueness(platformType.Id, platformType.Type);
+            var actualResult = sut.CheckTypeForUnique(platformType.Id, platformType.Type);
 
             // Assert
             actualResult.Should().BeFalse();
 
             mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                It.IsAny<Func<PlatformType, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }

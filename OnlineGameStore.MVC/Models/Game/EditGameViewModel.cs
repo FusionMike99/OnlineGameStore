@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.MVC.Infrastructure;
 
 namespace OnlineGameStore.MVC.Models
@@ -48,7 +48,6 @@ namespace OnlineGameStore.MVC.Models
         public List<int> SelectedPlatformTypes { get; set; }
 
         [Display(Name = "Publisher")]
-        [Required]
         public int? SelectedPublisher { get; set; }
     }
 }

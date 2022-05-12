@@ -1,18 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using System;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class GenreService : IGenreService
     {
+        private readonly ILogger<GenreService> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GameService> _logger;
 
-        public GenreService(IUnitOfWork unitOfWork, ILogger<GameService> logger)
+        public GenreService(IUnitOfWork unitOfWork, ILogger<GenreService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -31,8 +31,7 @@ namespace OnlineGameStore.BLL.Services
 
         public void DeleteGenre(int genreId)
         {
-            var genre = _unitOfWork.Genres
-                .GetSingle(g => g.Id == genreId);
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId);
 
             if (genre == null)
             {
@@ -62,39 +61,50 @@ namespace OnlineGameStore.BLL.Services
             return editedGenre;
         }
 
+        public IEnumerable<Genre> GetAllGenres()
+        {
+            var genres = _unitOfWork.Genres.GetMany(null,
+                    false,
+                    $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
+                    $"{nameof(Genre.Parent)}",
+                    $"{nameof(Genre.SubGenres)}");
+
+            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllGenres)}.
+                    Receiving genres successfully", genres);
+
+            return genres;
+        }
+
         public IEnumerable<Genre> GetAllParentGenres()
         {
-            var genres = _unitOfWork.Genres
-                .GetMany(predicate: g => !g.ParentId.HasValue,
-                    includeDeleteEntities: false,
+            var genres = _unitOfWork.Genres.GetMany(g => !g.ParentId.HasValue,
+                    false,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllParentGenres)}.
-                    Receiving genres successfully", genres);
+                    Receiving parent genres successfully", genres);
 
             return genres;
         }
 
         public IEnumerable<Genre> GetAllWithoutGenre(int genreId)
         {
-            var genres = _unitOfWork.Genres
-                .GetMany(predicate: g => g.Id != genreId && g.ParentId != genreId,
-                    includeDeleteEntities: false,
+            var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreId && g.ParentId != genreId,
+                    false,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllWithoutGenre)}.
-                    Receiving genres successfully", genres);
+                    Receiving genres without genre with id {genreId} successfully", genres);
 
             return genres;
         }
 
         public Genre GetGenreById(int genreId)
         {
-            var genre = _unitOfWork.Genres
-                .GetSingle(predicate: g => g.Id == genreId,
-                    includeDeleteEntities: false,
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId,
+                    false,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
@@ -105,7 +115,7 @@ namespace OnlineGameStore.BLL.Services
             return genre;
         }
 
-        public bool CheckNameForUniqueness(int genreId, string name)
+        public bool CheckNameForUnique(int genreId, string name)
         {
             var genre = _unitOfWork.Genres.GetSingle(g => g.Name == name);
 

@@ -7,21 +7,21 @@
 <h1>Add</h1>
 
 <h4>Publisher</h4>
-<hr />
+<hr/>
 <div class="col-8 mx-auto">
     <form asp-action="Create">
-        <partial name="_EditPublisher" model="Model" />
+        <partial name="_EditPublisher" model="Model"/>
 
         <div class="col-1 mx-auto">
-            <input type="submit" value="Add" class="btn btn-info text-light" />
+            <input type="submit" value="Add" class="btn btn-info text-light"/>
         </div>
     </form>
 </div>
 
 <div>
-    <a asp-action="GetPublishers" class = "btn btn-primary">Back to List</a>
+    <a asp-action="GetPublishers" class="btn btn-primary">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

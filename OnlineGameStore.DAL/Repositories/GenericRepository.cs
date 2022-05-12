@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.DAL.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OnlineGameStore.DAL.Repositories
 {
@@ -17,6 +18,7 @@ namespace OnlineGameStore.DAL.Repositories
         public GenericRepository(StoreDbContext context)
         {
             _context = context;
+            
             _entities = context.Set<TEntity>();
         }
 
@@ -45,7 +47,7 @@ namespace OnlineGameStore.DAL.Repositories
                 {
                     continue;
                 }
-                
+
                 var navEntityName = navEntity.Metadata.Name;
 
                 var navExist = _context.Entry(exist).Navigation(navEntityName);
@@ -60,7 +62,7 @@ namespace OnlineGameStore.DAL.Repositories
             return entity;
         }
 
-        public TEntity GetSingle(Func<TEntity, bool> predicate = null,
+        public TEntity GetSingle(Expression<Func<TEntity, bool>> predicate,
             bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
@@ -71,17 +73,12 @@ namespace OnlineGameStore.DAL.Repositories
                 query = query.IgnoreQueryFilters();
             }
 
-            var localQuery = query.AsEnumerable();
-
-            if (predicate != null)
-            {
-                localQuery = localQuery.Where(predicate);
-            }
-
-            return localQuery.SingleOrDefault();
+            var foundEntity = query.SingleOrDefault(predicate);
+            
+            return foundEntity;
         }
 
-        public IEnumerable<TEntity> GetMany(Func<TEntity, bool> predicate = null,
+        public IEnumerable<TEntity> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
@@ -92,21 +89,19 @@ namespace OnlineGameStore.DAL.Repositories
                 query = query.IgnoreQueryFilters();
             }
 
-            var localQuery = query.AsEnumerable();
-
             if (predicate != null)
             {
-                localQuery = localQuery.Where(predicate);
+                query = query.Where(predicate);
             }
 
-            var localList = localQuery.ToList();
-
-            return localList;
+            var foundList = query.ToList();
+            
+            return foundList;
         }
 
         private IQueryable<TEntity> Include(params string[] includeProperties)
         {
-            var query = _entities.AsNoTrackingWithIdentityResolution();
+            var query = _entities.AsQueryable();
 
             return includeProperties
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));

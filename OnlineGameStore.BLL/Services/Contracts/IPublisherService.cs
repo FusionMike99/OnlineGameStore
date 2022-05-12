@@ -1,5 +1,5 @@
-﻿using OnlineGameStore.BLL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
@@ -15,6 +15,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         IEnumerable<Publisher> GetAllPublishers();
 
-        bool CheckCompanyNameForUniqueness(int publisherId, string companyName);
+        bool CheckCompanyNameForUnique(int publisherId, string companyName);
     }
 }

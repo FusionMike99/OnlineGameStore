@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<GameViewModel>()
-                    .Which.Id.Should().Be(game.Id);
+                .Which.Id.Should().Be(game.Id);
 
             mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
         }

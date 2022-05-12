@@ -12,3 +12,10 @@
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
 }
+
+@if (Model.ShowStatusCode)
+{
+    <p>
+        <strong>Status Code:</strong> <code>@Model.StatusCode</code>
+    </p>
+}

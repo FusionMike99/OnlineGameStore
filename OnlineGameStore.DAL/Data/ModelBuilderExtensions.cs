@@ -53,7 +53,7 @@ namespace OnlineGameStore.DAL.Data
                     Description = "Develop Star Wars",
                     HomePage = "https://www.thqnordic.com/"
                 }
-                );
+            );
 
             modelBuilder.Entity<Game>().HasData(
                 new Game
@@ -61,7 +61,8 @@ namespace OnlineGameStore.DAL.Data
                     Id = 1,
                     Name = "The Witcher 3",
                     Key = "the-witcher-3",
-                    Description = "As war rages on throughout the Northern Realms, you take on the greatest contract of your life — tracking down the Child of Prophecy, a living weapon that can alter the shape of the world.",
+                    Description =
+                        "As war rages on throughout the Northern Realms, you take on the greatest contract of your life — tracking down the Child of Prophecy, a living weapon that can alter the shape of the world.",
                     Price = 49.99M,
                     UnitsInStock = 50,
                     Discontinued = false,
@@ -75,6 +76,13 @@ namespace OnlineGameStore.DAL.Data
             modelBuilder.Entity<GamePlatformType>().HasData(
                 new GamePlatformType { GameId = 1, PlatformId = 3 },
                 new GamePlatformType { GameId = 1, PlatformId = 4 });
+
+            modelBuilder.Entity<OrderStatus>().HasData(
+                new OrderStatus { Id = 1, Status = "Open" },
+                new OrderStatus { Id = 2, Status = "In progress" },
+                new OrderStatus { Id = 3, Status = "Cancelled" },
+                new OrderStatus { Id = 4, Status = "Closed" }
+            );
         }
     }
 }

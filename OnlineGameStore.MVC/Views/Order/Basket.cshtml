@@ -1,0 +1,18 @@
+﻿@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Basket";
+}
+
+<h5>Basket</h5>
+
+<partial name="_BasketTable" for="OrderDetails"/>
+
+<div>
+    <a asp-controller="Game" asp-action="GetGames" class="btn btn-primary">Back to Game List</a>
+
+    @if (Model.OrderDetails.Any())
+    {
+        <a asp-controller="Order" asp-action="Make" class="btn btn-success">Make Order</a>
+    }
+</div>

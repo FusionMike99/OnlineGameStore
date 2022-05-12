@@ -14,6 +14,8 @@ namespace OnlineGameStore.BLL.Repositories
 
         IGenericRepository<Publisher, int> Publishers { get; }
 
+        IGenericRepository<Order, int> Orders { get; }
+
         int Commit();
     }
 }

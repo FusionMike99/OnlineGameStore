@@ -1,13 +1,13 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using System;
-using System.IO;
 
 namespace OnlineGameStore.MVC
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -20,14 +20,10 @@ namespace OnlineGameStore.MVC
                     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                     .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "Logs\\log.txt"),
-                    rollingInterval: RollingInterval.Day, outputTemplate:
-                    outputTemplate).CreateLogger();
+                        rollingInterval: RollingInterval.Day, outputTemplate:
+                        outputTemplate).CreateLogger();
 
                 CreateHostBuilder(args).Build().Run();
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -35,12 +31,14 @@ namespace OnlineGameStore.MVC
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+        }
     }
 }

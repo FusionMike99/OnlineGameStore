@@ -1,5 +1,5 @@
-﻿using OnlineGameStore.BLL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
@@ -19,6 +19,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         IEnumerable<Game> GetGamesByPlatformType(int typeId);
 
-        bool CheckKeyForUniqueness(int gameId, string gameKey);
+        bool CheckKeyForUnique(int gameId, string gameKey);
     }
 }

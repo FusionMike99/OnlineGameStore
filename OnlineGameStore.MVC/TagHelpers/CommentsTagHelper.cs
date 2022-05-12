@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.TagHelpers
 {
@@ -52,10 +52,7 @@ namespace OnlineGameStore.MVC.TagHelpers
 
                     listContent += "</div>";
 
-                    if (comment.Replies != null)
-                    {
-                        listContent += BuildListContent(comment.Replies);
-                    }
+                    if (comment.Replies != null) listContent += BuildListContent(comment.Replies);
 
                     listContent += "</div></li></ul>";
                 }

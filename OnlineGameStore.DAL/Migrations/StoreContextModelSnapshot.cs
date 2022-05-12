@@ -91,7 +91,7 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("money");
 
-                    b.Property<int>("PublisherId")
+                    b.Property<int?>("PublisherId")
                         .HasColumnType("int");
 
                     b.Property<short>("UnitsInStock")
@@ -320,6 +320,117 @@ namespace OnlineGameStore.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderStatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("OrderStatusId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderDetail", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Discount")
+                        .HasColumnType("real");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<short>("Quantity")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetail");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.ToTable("OrderStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Status = "Open"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Status = "In progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Status = "Cancelled"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsDeleted = false,
+                            Status = "Closed"
+                        });
+                });
+
             modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformType", b =>
                 {
                     b.Property<int>("Id")
@@ -457,9 +568,7 @@ namespace OnlineGameStore.DAL.Migrations
                 {
                     b.HasOne("OnlineGameStore.BLL.Entities.Publisher", "Publisher")
                         .WithMany("Games")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PublisherId");
 
                     b.Navigation("Publisher");
                 });
@@ -511,6 +620,36 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Order", b =>
+                {
+                    b.HasOne("OnlineGameStore.BLL.Entities.OrderStatus", "OrderStatus")
+                        .WithMany("Orders")
+                        .HasForeignKey("OrderStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderStatus");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderDetail", b =>
+                {
+                    b.HasOne("OnlineGameStore.BLL.Entities.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineGameStore.BLL.Entities.Game", "Product")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("OnlineGameStore.BLL.Entities.Comment", b =>
                 {
                     b.Navigation("Replies");
@@ -523,6 +662,8 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("GameGenres");
 
                     b.Navigation("GamePlatformTypes");
+
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("OnlineGameStore.BLL.Entities.Genre", b =>
@@ -530,6 +671,16 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("GameGenres");
 
                     b.Navigation("SubGenres");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderStatus", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformType", b =>

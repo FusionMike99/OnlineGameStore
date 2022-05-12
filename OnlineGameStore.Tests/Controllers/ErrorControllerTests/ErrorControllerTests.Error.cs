@@ -8,7 +8,7 @@ using Xunit;
 
 namespace OnlineGameStore.Tests.Controllers
 {
-    public partial class ErrorControllerTests
+    public class ErrorControllerTests
     {
         [Theory]
         [AutoMoqData]

@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using OnlineGameStore.BLL.Entities;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Data
 {
@@ -19,8 +19,7 @@ namespace OnlineGameStore.DAL.Data
 
             entityData.SetQueryFilter((LambdaExpression)filter);
 
-            entityData.AddIndex(entityData.
-                 FindProperty(nameof(ISoftDelete.IsDeleted)));
+            entityData.AddIndex(entityData.FindProperty(nameof(ISoftDelete.IsDeleted)));
         }
 
         private static LambdaExpression GetSoftDeleteFilter<TEntity>()

@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class CommentService : ICommentService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IGameService _gameService;
         private readonly ILogger<CommentService> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CommentService(
             IUnitOfWork unitOfWork,
@@ -39,17 +40,17 @@ namespace OnlineGameStore.BLL.Services
 
         public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
         {
-            var comments = _unitOfWork.Comments
-                .GetMany(predicate: c => c.Game.Key == gameKey && !c.ReplyToId.HasValue,
-                    includeDeleteEntities: false,
+            var comments = _unitOfWork.Comments.GetMany(c => c.Game.Key == gameKey,
+                    false,
                     $"{nameof(Comment.Game)}",
-                    $"{nameof(Comment.ReplyTo)}",
                     $"{nameof(Comment.Replies)}");
 
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetAllCommentsByGameKey)}.
-                    Receiving comments with game key {gameKey} successfully", comments);
+            var parentComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 
-            return comments;
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetAllCommentsByGameKey)}.
+                    Receiving comments with game key {gameKey} successfully", parentComments);
+
+            return parentComments;
         }
     }
 }

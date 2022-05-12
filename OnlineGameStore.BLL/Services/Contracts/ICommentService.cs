@@ -1,5 +1,5 @@
-﻿using OnlineGameStore.BLL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {

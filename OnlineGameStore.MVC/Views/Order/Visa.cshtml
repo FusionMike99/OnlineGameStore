@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Make Order";
+
+    var orderId = int.Parse(ViewData["OrderId"].ToString() ?? string.Empty);
+}
+
+<div class="container">
+    <div class="input-group my-3">
+        <label for="HolderName" class="input-group-text">Cart holder's name</label>
+        <input id="HolderName" name="HolderName" class="form-control"/>
+    </div>
+
+    <div class="input-group my-3">
+        <input id="CardNumber" name="CardNumber" type="tel" inputmode="numeric"
+               pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"
+               placeholder="xxxx xxxx xxxx xxxx" class="form-control"/>
+        <label for="CardNumber" class="input-group-text">Card's number</label>
+    </div>
+
+    <div class="row g-3 my-3">
+        <div class="input-group">
+            <label for="ExpiryDate" class="input-group-text">Date of expiry</label>
+            <input id="ExpiryDate" name="ExpiryDate" type="month"
+                   min="@DateTime.UtcNow.ToString("yyyy-MM")" class="form-control"/>
+        </div>
+        <div class="input-group">
+            <input id="CVV" name="CVV" type="password" inputmode="numeric"
+                   pattern="[0-9]{3}" autocomplete="cc-number" maxlength="3"
+                   placeholder="xxx" class="form-control"/>
+            <label for="CVV" class="input-group-text">CVV2/CVC2</label>
+        </div>
+    </div>
+</div>
+
+<partial name="_PaymentForm" model="orderId"/>

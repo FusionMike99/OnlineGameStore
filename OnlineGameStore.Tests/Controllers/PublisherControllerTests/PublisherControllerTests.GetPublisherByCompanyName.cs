@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<PublisherViewModel>()
-                    .Which.CompanyName.Should().Be(publisher.CompanyName);
+                .Which.CompanyName.Should().Be(publisher.CompanyName);
 
             mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
         }

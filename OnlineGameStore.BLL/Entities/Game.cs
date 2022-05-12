@@ -6,7 +6,7 @@ namespace OnlineGameStore.BLL.Entities
     public class Game : IBaseEntity<int>
     {
         public int Id { get; set; }
-
+        
         public string Key { get; set; }
 
         public string Name { get; set; }
@@ -19,11 +19,7 @@ namespace OnlineGameStore.BLL.Entities
 
         public bool Discontinued { get; set; }
 
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
-
-        public int PublisherId { get; set; }
+        public int? PublisherId { get; set; }
 
         public Publisher Publisher { get; set; }
 
@@ -32,5 +28,11 @@ namespace OnlineGameStore.BLL.Entities
         public ICollection<GameGenre> GameGenres { get; set; }
 
         public ICollection<GamePlatformType> GamePlatformTypes { get; set; }
+
+        public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

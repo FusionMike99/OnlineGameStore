@@ -1,0 +1,48 @@
+﻿@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Make Order";
+}
+
+<h5>Make Order</h5>
+
+<partial name="_BasketTable" for="OrderDetails"/>
+
+<hr/>
+
+<h6>Choose payment method</h6>
+
+<table class="table table-striped">
+    <tbody>
+    <tr>
+        <td>
+            <img class="icon" src="/icons/bank.png" alt="Bank"/>
+        </td>
+        <td>Bank</td>
+        <td>Pay for your order using a bank</td>
+        <td>
+            <a asp-action="Pay" asp-route-paymentMethod="Bank" class="btn btn-info">Pay</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img class="icon" src="/icons/payment-terminal.png" alt="Bank"/>
+        </td>
+        <td>IBox terminal</td>
+        <td>Pay for your order using a IBox terminal</td>
+        <td>
+            <a asp-action="Pay" asp-route-paymentMethod="IBoxTerminal" class="btn btn-info">Pay</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img class="icon" src="/icons/visa.png" alt="Visa"/>
+        </td>
+        <td>Visa</td>
+        <td>Pay for your order using a visa debit card</td>
+        <td>
+            <a asp-action="Pay" asp-route-paymentMethod="Visa" class="btn btn-info">Pay</a>
+        </td>
+    </tr>
+    </tbody>
+</table>

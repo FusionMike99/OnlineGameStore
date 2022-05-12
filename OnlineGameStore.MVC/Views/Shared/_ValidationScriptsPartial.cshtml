@@ -1,2 +1,48 @@
-﻿<script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+﻿@using System.Globalization
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<!-- cldr (required for globalize) -->
+<script src="~/lib/cldrjs/dist/cldr.min.js"></script>
+<script src="~/lib/cldrjs/dist/cldr/event.min.js"></script>
+<script src="~/lib/cldrjs/dist/cldr/supplemental.min.js"></script>
+
+<!-- globalize -->
+<script src="~/lib/globalize/globalize.min.js"></script>
+<script src="~/lib/globalize/globalize/number.min.js"></script>
+<script src="~/lib/globalize/globalize/plural.min.js"></script>
+<script src="~/lib/globalize/globalize/currency.min.js"></script>
+<script src="~/lib/globalize/globalize/date.min.js"></script>
+<script src="~/lib/globalize/globalize/message.min.js"></script>
+<script src="~/lib/globalize/globalize/relative-time.min.js"></script>
+<script src="~/lib/globalize/globalize/unit.min.js"></script>
+
+<script src="~/lib/jquery-validation-globalize/jquery.validate.globalize.min.js"></script>
+
+<!-- load cldr data -->
+<script type="text/javascript">
+    let locale = "@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName";
+    $.when(
+        $.getJSON("/cldr-data/cldr-core/supplemental/likelySubtags.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/numberingSystems.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/plurals.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/ordinals.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/currencyData.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/timeData.json"),
+        $.getJSON("/cldr-data/cldr-core/supplemental/weekData.json"),
+        
+        $.getJSON(`/cldr-data/cldr-numbers-modern/main/${locale}/numbers.json`),
+        $.getJSON(`/cldr-data/cldr-numbers-modern/main/${locale}/currencies.json`),
+        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/ca-gregorian.json`),
+        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/timeZoneNames.json`),
+        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/dateFields.json`),
+        $.getJSON(`/cldr-data/cldr-units-modern/main/${locale}/units.json`)
+    ).then(function () {
+        // Normalize $.get results, we only need the JSON, not the request statuses.
+        return [].slice.apply(arguments, [0]).map(function (result) {
+            return result[0];
+        });
+    }).then(Globalize.load).then(function () {
+        Globalize.locale(locale);
+    });
+</script>

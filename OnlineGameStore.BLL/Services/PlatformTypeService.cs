@@ -1,24 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using System;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class PlatformTypeService : IPlatformTypeService
     {
+        private readonly ILogger<PlatformTypeService> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GameService> _logger;
 
-        public PlatformTypeService(IUnitOfWork unitOfWork, ILogger<GameService> logger)
+        public PlatformTypeService(IUnitOfWork unitOfWork, ILogger<PlatformTypeService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public bool CheckTypeForUniqueness(int platformTypeId, string type)
+        public bool CheckTypeForUnique(int platformTypeId, string type)
         {
             var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Type == type);
 
@@ -38,14 +38,14 @@ namespace OnlineGameStore.BLL.Services
 
         public void DeletePlatformType(int platformTypeId)
         {
-            var platformType = _unitOfWork.PlatformTypes
-                .GetSingle(pt => pt.Id == platformTypeId);
+            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeId);
 
             if (platformType == null)
             {
                 var exception = new InvalidOperationException("Platform type has not been found");
 
-                _logger.LogError(exception, $@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
+                _logger.LogError(exception,
+                    $@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
                     Deleting platform type with id {platformTypeId} unsuccessfully", platformTypeId);
 
                 throw exception;
@@ -71,9 +71,8 @@ namespace OnlineGameStore.BLL.Services
 
         public IEnumerable<PlatformType> GetAllPlatformTypes()
         {
-            var platformTypes = _unitOfWork.PlatformTypes
-                .GetMany(predicate: null,
-                    includeDeleteEntities: false,
+            var platformTypes = _unitOfWork.PlatformTypes.GetMany(null,
+                    false,
                     $"{nameof(PlatformType.GamePlatformTypes)}.{nameof(GamePlatformType.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(GetAllPlatformTypes)}.
@@ -84,9 +83,8 @@ namespace OnlineGameStore.BLL.Services
 
         public PlatformType GetPlatformTypeById(int platformTypeId)
         {
-            var platformType = _unitOfWork.PlatformTypes
-                .GetSingle(predicate: pt => pt.Id == platformTypeId,
-                    includeDeleteEntities: false,
+            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeId,
+                    false,
                     $"{nameof(PlatformType.GamePlatformTypes)}.{nameof(GamePlatformType.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(GetPlatformTypeById)}.

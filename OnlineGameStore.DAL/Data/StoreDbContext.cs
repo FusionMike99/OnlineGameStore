@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnlineGameStore.BLL.Entities;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Data
 {
@@ -21,6 +21,10 @@ namespace OnlineGameStore.DAL.Data
 
         public DbSet<PlatformType> PlatformTypes { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -28,12 +32,8 @@ namespace OnlineGameStore.DAL.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
                 if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
-                {
                     entityType.AddSoftDeleteQueryFilter();
-                }
-            }
 
             modelBuilder.StoreSeed();
         }

@@ -1,6 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using OnlineGameStore.MVC.Mapper;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Mappers
@@ -13,14 +13,11 @@ namespace OnlineGameStore.Tests.Mappers
         [InlineData(typeof(GenreMappingProfile))]
         [InlineData(typeof(PlatformTypeMappingProfile))]
         [InlineData(typeof(PublisherMappingProfile))]
-        [InlineData(typeof(OrderDetailMappingProfile))]
+        [InlineData(typeof(OrderMappingProfile))]
         public void MappingProfile_IsValid(Type type)
         {
             // Arrange
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(type);
-            });
+            var mapperConfiguration = new MapperConfiguration(cfg => { cfg.AddProfile(type); });
 
             // Assert
             mapperConfiguration.AssertConfigurationIsValid();

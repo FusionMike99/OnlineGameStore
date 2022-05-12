@@ -15,12 +15,76 @@
       "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
     },
     {
-      "library": "jquery-validate@1.19.3",
-      "destination": "wwwroot/lib/jquery-validate/"
+      "provider": "jsdelivr",
+      "library": "jquery-validation@1.19.3",
+      "destination": "wwwroot/lib/jquery-validation/"
     },
     {
-      "library": "font-awesome@6.1.1",
-      "destination": "wwwroot/lib/font-awesome/"
+      "library": "globalize@1.7.0",
+      "destination": "wwwroot/lib/globalize"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "cldrjs@0.5.5",
+      "destination": "wwwroot/lib/cldrjs"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "cldr-core@41.0.0",
+      "destination": "wwwroot/cldr-data/cldr-core/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "cldr-numbers-modern@41.0.0",
+      "destination": "wwwroot/cldr-data/cldr-numbers-modern/",
+      "files": [
+        "main/en/currencies.json",
+        "main/en/numbers.json",
+        "main/uk/currencies.json",
+        "main/uk/numbers.json",
+        "main/ru-UA/currencies.json",
+        "main/ru-UA/numbers.json",
+        "main/ru/currencies.json",
+        "main/ru/numbers.json"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "cldr-dates-modern@41.0.0",
+      "destination": "wwwroot/cldr-data/cldr-dates-modern/",
+      "files": [
+        "main/en/ca-generic.json",
+        "main/en/ca-gregorian.json",
+        "main/en/dateFields.json",
+        "main/en/timeZoneNames.json",
+        "main/uk/ca-generic.json",
+        "main/uk/ca-gregorian.json",
+        "main/uk/dateFields.json",
+        "main/uk/timeZoneNames.json",
+        "main/ru-UA/ca-generic.json",
+        "main/ru-UA/ca-gregorian.json",
+        "main/ru-UA/dateFields.json",
+        "main/ru-UA/timeZoneNames.json",
+        "main/ru/ca-generic.json",
+        "main/ru/ca-gregorian.json",
+        "main/ru/dateFields.json",
+        "main/ru/timeZoneNames.json"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "cldr-units-modern@41.0.0",
+      "destination": "wwwroot/cldr-data/cldr-units-modern/",
+      "files": [
+        "main/en/measurementSystemNames.json",
+        "main/en/units.json",
+        "main/uk/measurementSystemNames.json",
+        "main/uk/units.json",
+        "main/ru-UA/measurementSystemNames.json",
+        "main/ru-UA/units.json",
+        "main/ru/measurementSystemNames.json",
+        "main/ru/units.json"
+      ]
     }
   ]
 }

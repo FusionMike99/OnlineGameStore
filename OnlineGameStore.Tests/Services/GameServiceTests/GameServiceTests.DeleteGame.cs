@@ -1,11 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -22,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(game);
 
@@ -33,11 +34,11 @@ namespace OnlineGameStore.Tests.Services
 
             // Assert
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>()),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Games.Delete(
-                It.Is<Game>(g => g.Name == game.Name && g.Id == game.Id)),
+                    It.Is<Game>(g => g.Name == game.Name && g.Id == game.Id)),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
@@ -53,7 +54,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(game);
 
@@ -64,9 +65,9 @@ namespace OnlineGameStore.Tests.Services
             actual.Should().Throw<InvalidOperationException>();
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }

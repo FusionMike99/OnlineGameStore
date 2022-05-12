@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<PlatformTypeViewModel>()
-                    .Which.Id.Should().Be(platformType.Id);
+                .Which.Id.Should().Be(platformType.Id);
 
             mockGenreService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
         }

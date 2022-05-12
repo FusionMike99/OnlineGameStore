@@ -7,12 +7,13 @@ namespace OnlineGameStore.DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StoreDbContext _context;
+        private GenericRepository<Comment, int> _commentRepository;
 
         private GenericRepository<Game, int> _gameRepository;
-        private GenericRepository<Comment, int> _commentRepository;
         private GenericRepository<Genre, int> _genreRepository;
-        private GenericRepository<PlatformType, int> _typeRepository;
+        private GenericRepository<Order, int> _orderRepository;
         private GenericRepository<Publisher, int> _publisherRepository;
+        private GenericRepository<PlatformType, int> _typeRepository;
 
         public UnitOfWork(StoreDbContext context)
         {
@@ -33,6 +34,9 @@ namespace OnlineGameStore.DAL.Repositories
 
         public IGenericRepository<Publisher, int> Publishers =>
             _publisherRepository ??= new GenericRepository<Publisher, int>(_context);
+
+        public IGenericRepository<Order, int> Orders =>
+            _orderRepository ??= new GenericRepository<Order, int>(_context);
 
         public int Commit()
         {

@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.Controllers
 {

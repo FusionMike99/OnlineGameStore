@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGenreViewModel>()
-                    .Which.Id.Should().Be(genre.Id);
+                .Which.Id.Should().Be(genre.Id);
         }
 
         [Theory]
@@ -84,7 +84,7 @@ namespace OnlineGameStore.Tests.Controllers
             {
                 Id = genre.Id,
                 Name = genre.Name,
-                SelectedParentGenre = genre.ParentId,
+                SelectedParentGenre = genre.ParentId
             };
 
             // Act
@@ -112,7 +112,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGenreViewModel>()
-                    .Which.Id.Should().Be(editGenreViewModel.Id);
+                .Which.Id.Should().Be(editGenreViewModel.Id);
         }
     }
 }

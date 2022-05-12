@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Collections.Generic;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,7 +8,6 @@ using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
-using System.Collections.Generic;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Controllers
@@ -31,7 +31,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPublisherViewModel>()
-                    .Which.Id.Should().Be(publisher.Id);
+                .Which.Id.Should().Be(publisher.Id);
         }
 
         [Theory]
@@ -120,7 +120,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPublisherViewModel>()
-                    .Which.Id.Should().Be(editPublisherViewModel.Id);
+                .Which.Id.Should().Be(editPublisherViewModel.Id);
         }
     }
 }

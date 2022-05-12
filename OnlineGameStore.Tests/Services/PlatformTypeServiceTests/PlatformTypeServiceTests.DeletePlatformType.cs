@@ -1,11 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -22,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Func<PlatformType, bool>>(),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(platformType);
 
@@ -33,18 +34,18 @@ namespace OnlineGameStore.Tests.Services
 
             // Assert
             mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                It.IsAny<Func<PlatformType, bool>>(),
-                It.IsAny<bool>()),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
+                    It.IsAny<bool>()),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.PlatformTypes.Delete(
-                It.Is<PlatformType>(g => g.Type == platformType.Type && g.Id == platformType.Id)),
+                    It.Is<PlatformType>(g => g.Type == platformType.Type && g.Id == platformType.Id)),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void PlatformTypeService_DeletPlatformType_ThrowsInvalidOperationExceptionWithNullEntity(
+        public void PlatformTypeService_DeletePlatformType_ThrowsInvalidOperationExceptionWithNullEntity(
             PlatformType platformType,
             int platformTypeId,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
@@ -53,7 +54,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Func<PlatformType, bool>>(),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(platformType);
 
@@ -64,9 +65,9 @@ namespace OnlineGameStore.Tests.Services
             actual.Should().Throw<InvalidOperationException>();
 
             mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                It.IsAny<Func<PlatformType, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }
