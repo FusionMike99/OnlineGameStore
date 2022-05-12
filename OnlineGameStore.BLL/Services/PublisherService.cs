@@ -1,24 +1,24 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using System;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class PublisherService : IPublisherService
     {
+        private readonly ILogger<PublisherService> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GameService> _logger;
 
-        public PublisherService(IUnitOfWork unitOfWork, ILogger<GameService> logger)
+        public PublisherService(IUnitOfWork unitOfWork, ILogger<PublisherService> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public bool CheckCompanyNameForUniqueness(int publisherId, string companyName)
+        public bool CheckCompanyNameForUnique(int publisherId, string companyName)
         {
             var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName);
 
@@ -38,8 +38,7 @@ namespace OnlineGameStore.BLL.Services
 
         public void DeletePublisher(int publisherId)
         {
-            var publisher = _unitOfWork.Publishers
-                .GetSingle(p => p.Id == publisherId);
+            var publisher = _unitOfWork.Publishers.GetSingle(p => p.Id == publisherId);
 
             if (publisher == null)
             {
@@ -71,9 +70,8 @@ namespace OnlineGameStore.BLL.Services
 
         public IEnumerable<Publisher> GetAllPublishers()
         {
-            var publishers = _unitOfWork.Publishers
-                .GetMany(predicate: null,
-                    includeDeleteEntities: false,
+            var publishers = _unitOfWork.Publishers.GetMany(null,
+                    false,
                     $"{nameof(Publisher.Games)}");
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetAllPublishers)}.
@@ -84,9 +82,8 @@ namespace OnlineGameStore.BLL.Services
 
         public Publisher GetPublisherByCompanyName(string companyName)
         {
-            var publisher = _unitOfWork.Publishers
-                .GetSingle(predicate: p => p.CompanyName == companyName,
-                    includeDeleteEntities: false,
+            var publisher = _unitOfWork.Publishers.GetSingle(p => p.CompanyName == companyName,
+                    false,
                     $"{nameof(Publisher.Games)}");
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetPublisherByCompanyName)}.

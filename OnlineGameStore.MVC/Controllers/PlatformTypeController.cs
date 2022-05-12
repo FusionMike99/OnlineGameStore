@@ -1,17 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("platform-types")]
     public class PlatformTypeController : Controller
     {
-        private readonly IPlatformTypeService _platformTypeService;
         private readonly IMapper _mapper;
+        private readonly IPlatformTypeService _platformTypeService;
 
         public PlatformTypeController(IPlatformTypeService platformTypeService,
             IMapper mapper)
@@ -46,7 +46,7 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
-        [HttpGet("update/{platformTypeId}")]
+        [HttpGet("update/{platformTypeId:int}")]
         public IActionResult Update([FromRoute] int? platformTypeId)
         {
             if (!platformTypeId.HasValue)
@@ -66,7 +66,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPlatformTypeViewModel);
         }
 
-        [HttpPost, Route("update", Name = "platformtypeupdate")]
+        [HttpPost]
+        [Route("update", Name = "platformTypeUpdate")]
         [ValidateAntiForgeryToken]
         public IActionResult Update([FromForm] EditPlatformTypeViewModel platformType)
         {
@@ -130,7 +131,9 @@ namespace OnlineGameStore.MVC.Controllers
 
         private void VerifyPlatformType(EditPlatformTypeViewModel platformType)
         {
-            if (_platformTypeService.CheckTypeForUniqueness(platformType.Id, platformType.Type))
+            var checkResult = _platformTypeService.CheckTypeForUnique(platformType.Id, platformType.Type);
+
+            if (checkResult)
             {
                 ModelState.AddModelError("Type", "Type with same value exist.");
             }

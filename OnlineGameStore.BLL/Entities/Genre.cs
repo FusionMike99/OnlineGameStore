@@ -6,12 +6,8 @@ namespace OnlineGameStore.BLL.Entities
     public class Genre : IBaseEntity<int>
     {
         public int Id { get; set; }
-
+        
         public string Name { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
 
         public int? ParentId { get; set; }
 
@@ -20,5 +16,9 @@ namespace OnlineGameStore.BLL.Entities
         public ICollection<Genre> SubGenres { get; set; }
 
         public ICollection<GameGenre> GameGenres { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

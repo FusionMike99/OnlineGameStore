@@ -1,49 +1,52 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Globalization
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - Online Game Store</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css"/>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-controller="Game" asp-action="GetGames">Online Game Store</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-link text-dark" asp-controller="Game" asp-action="GetGames">Games</a>
-                        <a class="nav-link text-dark" asp-controller="Genre" asp-action="GetGenres">Genres</a>
-                        <a class="nav-link text-dark" asp-controller="PlatformType" asp-action="GetPlatformTypes">Platform types</a>
-                        <a class="nav-link text-dark" asp-controller="Publisher" asp-action="GetPublishers">Publishers</a>
-                    </div>
-                </div>
-                <span class="col-6 navbar-text text-end">
-                    <vc:cart-summary />
-                </span>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
-            &copy; 2022 - .NET Laboratory
+            <a class="navbar-brand" asp-controller="Game" asp-action="GetGames">Online Game Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link text-dark" asp-controller="Game" asp-action="GetGames">Games</a>
+                    <a class="nav-link text-dark" asp-controller="Genre" asp-action="GetGenres">Genres</a>
+                    <a class="nav-link text-dark" asp-controller="PlatformType" asp-action="GetPlatformTypes">Platform types</a>
+                    <a class="nav-link text-dark" asp-controller="Publisher" asp-action="GetPublishers">Publishers</a>
+                    <a class="nav-link text-dark" asp-controller="Order" asp-action="GetBasket">Basket</a>
+                </div>
+            </div>
+            <span class="col-6 navbar-text text-end">
+                <cache expires-after="@TimeSpan.FromMinutes(1)">
+                    <vc:total-games/>
+                </cache>
+            </span>
         </div>
-    </footer>
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    </nav>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2022 - .NET Laboratory
+    </div>
+</footer>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

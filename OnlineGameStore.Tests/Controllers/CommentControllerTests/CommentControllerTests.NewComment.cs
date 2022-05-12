@@ -16,10 +16,10 @@ namespace OnlineGameStore.Tests.Controllers
         [Theory]
         [AutoMoqData]
         public void NewComment_ReturnsJsonResult_WhenGameKeyHasValueAndCommentIsValid(
-               Comment comment,
-               string gameKey,
-               [Frozen] Mock<ICommentService> mockCommentService,
-               CommentController sut)
+            Comment comment,
+            string gameKey,
+            [Frozen] Mock<ICommentService> mockCommentService,
+            CommentController sut)
         {
             // Arrange
             mockCommentService.Setup(x => x.LeaveCommentToGame(
@@ -42,8 +42,8 @@ namespace OnlineGameStore.Tests.Controllers
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
             mockCommentService.Verify(x => x.LeaveCommentToGame(
-                It.IsAny<string>(),
-                It.IsAny<Comment>()),
+                    It.IsAny<string>(),
+                    It.IsAny<Comment>()),
                 Times.Once);
         }
 
@@ -62,7 +62,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
-                    .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
+                .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
-                    .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
+                .Which.EditComment.Name.Should().BeEquivalentTo(editCommentViewModel.Name);
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.MVC.Services.Contracts;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
 
 namespace OnlineGameStore.MVC.Controllers
 {
@@ -16,23 +15,20 @@ namespace OnlineGameStore.MVC.Controllers
     {
         private readonly IGameService _gameService;
         private readonly IGenreService _genreService;
+        private readonly IMapper _mapper;
         private readonly IPlatformTypeService _platformTypeService;
         private readonly IPublisherService _publisherService;
-        private readonly ICartService _cartService;
-        private readonly IMapper _mapper;
 
         public GameController(IGameService gameService,
             IGenreService genreService,
             IPlatformTypeService platformTypeService,
             IPublisherService publisherService,
-            ICartService cartService,
             IMapper mapper)
         {
             _gameService = gameService;
             _genreService = genreService;
             _platformTypeService = platformTypeService;
             _publisherService = publisherService;
-            _cartService = cartService;
             _mapper = mapper;
         }
 
@@ -88,7 +84,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editGameViewModel);
         }
 
-        [HttpPost, Route("update", Name = "gameupdate")]
+        [HttpPost]
+        [Route("update", Name = "gameUpdate")]
         [ValidateAntiForgeryToken]
         public IActionResult Update([FromForm] EditGameViewModel game)
         {
@@ -135,7 +132,9 @@ namespace OnlineGameStore.MVC.Controllers
 
             var gamesViewModel = _mapper.Map<IEnumerable<GameViewModel>>(games);
 
-            return View("Index", gamesViewModel);
+            var viewResult = View("Index", gamesViewModel);
+
+            return viewResult;
         }
 
         [HttpPost("remove")]
@@ -174,44 +173,31 @@ namespace OnlineGameStore.MVC.Controllers
                 WriteIndented = true
             };
 
-            var serilizedGame = Encoding.Default.GetBytes(JsonSerializer.Serialize(gameViewModel, options));
+            var serializedGame = Encoding.Default.GetBytes(JsonSerializer.Serialize(gameViewModel, options));
 
-            return File(serilizedGame, "application/txt", $"{game.Name}.txt");
-        }
-
-        [HttpGet("{gameKey}/buy")]
-        public IActionResult BuyGame([FromRoute] string gameKey)
-        {
-            var game = _gameService.GetGameByKey(gameKey);
-
-            if (game == null)
-            {
-                return NotFound("Game has not been found");
-            }
-
-            _cartService.AddItem(game, 1);
-
-            return RedirectToAction(nameof(GetGameByKey), new { gameKey });
+            return File(serializedGame, "application/txt", $"{game.Name}.txt");
         }
 
         private void ConfigureEditGameViewModel(EditGameViewModel model)
         {
-            model.Genres = new SelectList(_genreService.GetAllParentGenres(),
-                    nameof(Genre.Id),
-                    nameof(Genre.Name));
+            model.Genres = new SelectList(_genreService.GetAllGenres(),
+                nameof(Genre.Id),
+                nameof(Genre.Name));
 
             model.PlatformTypes = new SelectList(_platformTypeService.GetAllPlatformTypes(),
-                    nameof(PlatformType.Id),
-                    nameof(PlatformType.Type));
+                nameof(PlatformType.Id),
+                nameof(PlatformType.Type));
 
             model.Publishers = new SelectList(_publisherService.GetAllPublishers(),
-                    nameof(Publisher.Id),
-                    nameof(Publisher.CompanyName));
+                nameof(Publisher.Id),
+                nameof(Publisher.CompanyName));
         }
 
         private void VerifyGame(EditGameViewModel game)
         {
-            if (_gameService.CheckKeyForUniqueness(game.Id, game.Key))
+            var checkResult = _gameService.CheckKeyForUnique(game.Id, game.Key);
+
+            if (checkResult)
             {
                 ModelState.AddModelError("Key", "Key with same value exist.");
             }

@@ -1,20 +1,25 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System;
+using System.Globalization;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.MVC.Services.Contracts;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
 using OnlineGameStore.MVC.Infrastructure;
+using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.MVC.Mapper;
-using OnlineGameStore.MVC.Utils;
 using Serilog;
 using Serilog.Events;
 
@@ -47,12 +52,9 @@ namespace OnlineGameStore.MVC
 
             services.AddScoped<IPublisherService, PublisherService>();
 
-            services.AddScoped<ICartService>(CookieCartService.GetCart);
+            services.AddScoped<IOrderService, OrderService>();
 
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
 
             services.AddHttpContextAccessor();
 
@@ -62,12 +64,57 @@ namespace OnlineGameStore.MVC
                 typeof(GenreMappingProfile),
                 typeof(PlatformTypeMappingProfile),
                 typeof(PublisherMappingProfile),
-                typeof(OrderDetailMappingProfile));
+                typeof(OrderMappingProfile));
 
-            services.AddControllersWithViews();
+            services.AddScoped<IPaymentMethodStrategy, BankPaymentMethodStrategy>();
+            services.AddScoped<IPaymentMethodStrategy, TerminalIBoxPaymentMethodStrategy>();
+            services.AddScoped<IPaymentMethodStrategy, VisaPaymentMethodStrategy>();
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"),
+                    new SqlServerStorageOptions
+                    {
+                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                        QueuePollInterval = TimeSpan.Zero,
+                        UseRecommendedIsolationLevel = true,
+                        DisableGlobalLocks = true
+                    }));
+
+            services.AddHangfireServer();
+
+            services.AddLocalization();
+            
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("uk"),
+                    new CultureInfo("ru-UA"),
+                    new CultureInfo("ru")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture(supportedCultures[0]);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+            
+            services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private static void ConfigureCancellingOrderTask(IOrderService orderService)
+        {
+            RecurringJob.AddOrUpdate("cancellingOrders",
+                () => orderService.CancelOrdersWithTimeout(TimeSpan.FromMinutes(3)),
+                Cron.Minutely);
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOrderService orderService)
         {
             if (env.IsDevelopment())
             {
@@ -79,17 +126,12 @@ namespace OnlineGameStore.MVC
                 app.UseHsts();
             }
 
-            app.UseRequestLocalization(options =>
-            {
-                options.AddSupportedCultures("en-US", "uk-UA", "ru-RU")
-                    .AddSupportedUICultures("en-US", "uk-UA", "ru-RU")
-                    .SetDefaultCulture("en-US");
-            });
-
+            app.UseStatusCodePagesWithRedirects("/error/{0}");
+            
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedProto
+                                   ForwardedHeaders.XForwardedProto
             });
 
             app.UseSerilogRequestLogging(options =>
@@ -105,17 +147,19 @@ namespace OnlineGameStore.MVC
             });
 
             app.UseStaticFiles();
-            app.UseSession();
 
             app.UseRouting();
-            app.UseCookiePolicy();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
+            
+            app.UseRequestLocalization(localizationOptions);
+            
+            ConfigureCancellingOrderTask(orderService);
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
     }

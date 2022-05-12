@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.Controllers
 {
@@ -73,7 +73,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editGenreViewModel);
         }
 
-        [HttpPost, Route("update", Name = "genreupdate")]
+        [HttpPost]
+        [Route("update", Name = "genreupdate")]
         [ValidateAntiForgeryToken]
         public IActionResult Update([FromForm] EditGenreViewModel genre)
         {
@@ -140,15 +141,17 @@ namespace OnlineGameStore.MVC.Controllers
         private void ConfigureEditGenreViewModel(EditGenreViewModel model)
         {
             model.Genres = new SelectList(_genreService.GetAllWithoutGenre(model.Id),
-                    nameof(Genre.Id),
-                    nameof(Genre.Name));
+                nameof(Genre.Id),
+                nameof(Genre.Name));
         }
 
         private void VerifyGenre(EditGenreViewModel genre)
         {
-            if (_genreService.CheckNameForUniqueness(genre.Id, genre.Name))
+            var checkResult = _genreService.CheckNameForUnique(genre.Id, genre.Name);
+
+            if (checkResult)
             {
-                ModelState.AddModelError("Name", "Name with same value exist.");
+                ModelState.AddModelError("Name", "Genre with same name exist.");
             }
         }
     }

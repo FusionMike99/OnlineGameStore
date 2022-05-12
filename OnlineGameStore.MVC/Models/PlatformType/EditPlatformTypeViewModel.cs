@@ -7,10 +7,10 @@ namespace OnlineGameStore.MVC.Models
     public class EditPlatformTypeViewModel
     {
         [UIHint("HiddenInput")]
-        [BindProperty(BinderType = typeof(TrimmingModelBinder))]
         public int Id { get; set; }
 
         [Required]
+        [BindProperty(BinderType = typeof(TrimmingModelBinder))]
         public string Type { get; set; }
     }
 }

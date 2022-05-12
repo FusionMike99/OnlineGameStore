@@ -1,12 +1,13 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -23,7 +24,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetMany(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(games);
@@ -35,9 +36,9 @@ namespace OnlineGameStore.Tests.Services
             actualGames.Should().BeEquivalentTo(games);
 
             mockUnitOfWork.Verify(x => x.Games.GetMany(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }

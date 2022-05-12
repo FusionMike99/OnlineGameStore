@@ -1,17 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
-using System.Collections.Generic;
 
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("publishers")]
     public class PublisherController : Controller
     {
-        private readonly IPublisherService _publisherService;
         private readonly IMapper _mapper;
+        private readonly IPublisherService _publisherService;
 
         public PublisherController(IPublisherService publisherService,
             IMapper mapper)
@@ -43,7 +43,8 @@ namespace OnlineGameStore.MVC.Controllers
 
             var createdPublisher = _publisherService.CreatePublisher(mappedPublisher);
 
-            return RedirectToAction(nameof(GetPublisherByCompanyName), new { companyName = createdPublisher.CompanyName });
+            return RedirectToAction(nameof(GetPublisherByCompanyName),
+                new { companyName = createdPublisher.CompanyName });
         }
 
         [HttpGet("update/{companyName}")]
@@ -66,7 +67,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPublisherViewModel);
         }
 
-        [HttpPost, Route("update", Name = "publisherupdate")]
+        [HttpPost]
+        [Route("update", Name = "publisherupdate")]
         [ValidateAntiForgeryToken]
         public IActionResult Update([FromForm] EditPublisherViewModel publisher)
         {
@@ -81,7 +83,8 @@ namespace OnlineGameStore.MVC.Controllers
 
             var editedPublisher = _publisherService.EditPublisher(mappedPublisher);
 
-            return RedirectToAction(nameof(GetPublisherByCompanyName), new { companyName = editedPublisher.CompanyName });
+            return RedirectToAction(nameof(GetPublisherByCompanyName),
+                new { companyName = editedPublisher.CompanyName });
         }
 
         [HttpGet("{companyName}")]
@@ -130,7 +133,9 @@ namespace OnlineGameStore.MVC.Controllers
 
         private void VerifyPublisher(EditPublisherViewModel publisher)
         {
-            if (_publisherService.CheckCompanyNameForUniqueness(publisher.Id, publisher.CompanyName))
+            var checkResult = _publisherService.CheckCompanyNameForUnique(publisher.Id, publisher.CompanyName);
+
+            if (checkResult)
             {
                 ModelState.AddModelError("CompanyName", "Company name with same value exist.");
             }

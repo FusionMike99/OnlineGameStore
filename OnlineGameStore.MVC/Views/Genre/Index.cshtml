@@ -7,19 +7,20 @@
 <h1>Genres</h1>
 
 <p>
-    <a asp-action="Create" class = "btn btn-success">Add New Genre</a>
+    <a asp-action="Create" class="btn btn-success">Add New Genre</a>
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 <a asp-action="GetGenreById" asp-route-genreId="@item.Id" class="text-decoration-none">
@@ -32,6 +33,6 @@
                 </div>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

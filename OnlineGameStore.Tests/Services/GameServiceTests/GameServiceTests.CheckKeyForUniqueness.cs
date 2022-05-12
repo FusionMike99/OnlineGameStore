@@ -1,11 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -23,21 +24,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUniqueness(id, game.Key);
+            var actualResult = sut.CheckKeyForUnique(id, game.Key);
 
             // Assert
             actualResult.Should().BeTrue();
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
 
@@ -53,21 +54,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUniqueness(id, gameKey);
+            var actualResult = sut.CheckKeyForUnique(id, gameKey);
 
             // Assert
             actualResult.Should().BeFalse();
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
 
@@ -81,21 +82,21 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Func<Game, bool>>(),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUniqueness(game.Id, game.Key);
+            var actualResult = sut.CheckKeyForUnique(game.Id, game.Key);
 
             // Assert
             actualResult.Should().BeFalse();
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                It.IsAny<Func<Game, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }

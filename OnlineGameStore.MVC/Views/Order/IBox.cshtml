@@ -1,0 +1,25 @@
+﻿@model OrderViewModel
+
+@{
+    ViewData["Title"] = "IBox terminal";
+}
+
+<h5>IBox terminal</h5>
+
+<hr/>
+<dl class="row">
+    <dt class="col-sm-2">IBox account number</dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.CustomerId)
+    </dd>
+    <dt class="col-sm-2">Invoice Number</dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Id)
+    </dd>
+    <dt class="col-sm-2">Sum</dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.Total)
+    </dd>
+</dl>
+
+<partial name="_PaymentForm" for="Id"/>

@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,7 +8,6 @@ using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
-using System.Linq;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Controllers
@@ -31,7 +31,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
-                    .Which.Id.Should().Be(game.Id);
+                .Which.Id.Should().Be(game.Id);
         }
 
         [Theory]
@@ -118,7 +118,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
-                    .Which.Id.Should().Be(editGameViewModel.Id);
+                .Which.Id.Should().Be(editGameViewModel.Id);
         }
     }
 }

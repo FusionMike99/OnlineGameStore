@@ -1,11 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
-using System;
 using Xunit;
 
 namespace OnlineGameStore.Tests.Services
@@ -22,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Func<Genre, bool>>(),
+                    It.IsAny<Expression<Func<Genre, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(genre);
 
@@ -33,11 +34,11 @@ namespace OnlineGameStore.Tests.Services
 
             // Assert
             mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                It.IsAny<Func<Genre, bool>>(),
-                It.IsAny<bool>()),
+                    It.IsAny<Expression<Func<Genre, bool>>>(),
+                    It.IsAny<bool>()),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Genres.Delete(
-                It.Is<Genre>(g => g.Name == genre.Name && g.Id == genre.Id)),
+                    It.Is<Genre>(g => g.Name == genre.Name && g.Id == genre.Id)),
                 Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
@@ -53,7 +54,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             mockUnitOfWork
                 .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Func<Genre, bool>>(),
+                    It.IsAny<Expression<Func<Genre, bool>>>(),
                     It.IsAny<bool>()))
                 .Returns(genre);
 
@@ -64,9 +65,9 @@ namespace OnlineGameStore.Tests.Services
             actual.Should().Throw<InvalidOperationException>();
 
             mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                It.IsAny<Func<Genre, bool>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+                    It.IsAny<Expression<Func<Genre, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
         }
     }

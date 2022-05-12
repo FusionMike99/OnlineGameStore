@@ -1,45 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-	<PropertyGroup Label="FineCodeCoverage">
-		<Exclude>
-			[*]OnlineGameStore.DAL.Migrations.*
-			[*]OnlineGameStore.DAL.Configurations.*
-			[*]OnlineGameStore.DAL.Data.ModelBuilderExtensions
-			[*]OnlineGameStore.MVC.Program
-			[*]OnlineGameStore.MVC.Startup
-		</Exclude>
-		<ExcludeByFile>
-			**/Views/**
-		</ExcludeByFile>
-	</PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
+        <PackageReference Include="AutoFixture.Community.AutoMapper" Version="1.1.0" />
+        <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
+        <PackageReference Include="FluentAssertions" Version="6.6.0" />
+        <PackageReference Include="HttpContextMoq" Version="1.2.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+        <PackageReference Include="Moq" Version="4.17.2" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="3.1.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
-    <PackageReference Include="AutoFixture.Community.AutoMapper" Version="1.1.0" />
-    <PackageReference Include="AutoFixture.Xunit2" Version="4.17.0" />
-    <PackageReference Include="FluentAssertions" Version="6.6.0" />
-    <PackageReference Include="HttpContextMoq" Version="1.2.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="Moq" Version="4.17.2" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\OnlineGameStore.BLL\OnlineGameStore.BLL.csproj" />
-    <ProjectReference Include="..\OnlineGameStore.MVC\OnlineGameStore.MVC.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\OnlineGameStore.BLL\OnlineGameStore.BLL.csproj" />
+        <ProjectReference Include="..\OnlineGameStore.MVC\OnlineGameStore.MVC.csproj" />
+    </ItemGroup>
 </Project>

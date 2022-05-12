@@ -1,17 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class GameService : IGameService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<GameService> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
         public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger)
         {
@@ -32,8 +32,7 @@ namespace OnlineGameStore.BLL.Services
 
         public void DeleteGame(int gameId)
         {
-            var game = _unitOfWork.Games
-                .GetSingle(g => g.Id == gameId);
+            var game = _unitOfWork.Games.GetSingle(g => g.Id == gameId);
 
             if (game == null)
             {
@@ -66,9 +65,8 @@ namespace OnlineGameStore.BLL.Services
 
         public IEnumerable<Game> GetAllGames()
         {
-            var games = _unitOfWork.Games
-                .GetMany(predicate: null,
-                    includeDeleteEntities: false,
+            var games = _unitOfWork.Games.GetMany(null,
+                    false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
                     $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
                     $"{nameof(Game.Publisher)}");
@@ -81,9 +79,8 @@ namespace OnlineGameStore.BLL.Services
 
         public Game GetGameByKey(string gameKey)
         {
-            var game = _unitOfWork.Games
-                .GetSingle(predicate: g => g.Key == gameKey,
-                    includeDeleteEntities: false,
+            var game = _unitOfWork.Games.GetSingle(g => g.Key == gameKey,
+                    false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
                     $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
                     $"{nameof(Game.Publisher)}");
@@ -97,8 +94,8 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Game> GetGamesByGenre(int genreId)
         {
             var games = _unitOfWork.Games
-                .GetMany(predicate: g => g.GameGenres.Any(genre => genre.GenreId == genreId),
-                    includeDeleteEntities: false,
+                .GetMany(g => g.GameGenres.Any(genre => genre.GenreId == genreId),
+                    false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
                     $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
                     $"{nameof(Game.Publisher)}");
@@ -112,8 +109,8 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Game> GetGamesByPlatformType(int typeId)
         {
             var games = _unitOfWork.Games
-                .GetMany(predicate: g => g.GamePlatformTypes.Any(platformType => platformType.PlatformId == typeId),
-                    includeDeleteEntities: false,
+                .GetMany(g => g.GamePlatformTypes.Any(platformType => platformType.PlatformId == typeId),
+                    false,
                     $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
                     $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}",
                     $"{nameof(Game.Publisher)}");
@@ -124,7 +121,7 @@ namespace OnlineGameStore.BLL.Services
             return games;
         }
 
-        public bool CheckKeyForUniqueness(int gameId, string gameKey)
+        public bool CheckKeyForUnique(int gameId, string gameKey)
         {
             var game = _unitOfWork.Games.GetSingle(g => g.Key == gameKey);
 

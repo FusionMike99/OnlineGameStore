@@ -8,67 +8,67 @@
 
 <div>
     <h4>Game</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Publisher)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             <a asp-controller="Publisher" asp-action="GetPublisherByCompanyName"
-                asp-route-companyName="@Model.Publisher" class="text-decoration-none">
+               asp-route-companyName="@Model.Publisher" class="text-decoration-none">
                 @Model.Publisher
             </a>
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UnitsInStock)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UnitsInStock)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Discontinued)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Discontinued)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Genres)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             <ul class="list-group">
-               @foreach (var genre in Model.Genres)
-               {
-                   <li class="list-group-item">@genre</li>
-               }
+                @foreach (var genre in Model.Genres)
+                {
+                    <li class="list-group-item">@genre</li>
+                }
             </ul>
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PlatformTypes)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             <ul class="list-group">
-               @foreach (var platformType in Model.PlatformTypes)
-               {
-                   <li class="list-group-item">@platformType</li>
-               }
+                @foreach (var platformType in Model.PlatformTypes)
+                {
+                    <li class="list-group-item">@platformType</li>
+                }
             </ul>
         </dd>
     </dl>
@@ -78,7 +78,7 @@
     <div class="btn-group me-2" role="group" aria-label="Operation group">
         <a asp-action="Update" asp-route-gameKey="@Model.Key" class="btn btn-warning">Update</a>
         <form asp-controller="Game" asp-action="Remove" method="post">
-            <input asp-for="Id" />
+            <input asp-for="Id"/>
             <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
         </form>
         <a asp-action="GetGames" class="btn btn-primary">Back to List</a>
@@ -88,7 +88,8 @@
             See comments
         </a>
         <a asp-action="Download" asp-route-gameKey="@Model.Key" target="_blank" class="btn btn-success">Download</a>
-        <a asp-action="BuyGame" asp-route-gameKey="@Model.Key" class="btn btn-warning @(Model.UnitsInStock <=0 ? "disabled" : "")">
+        <a asp-controller="Order" asp-action="BuyProduct" asp-route-gameKey="@Model.Key"
+           class="btn btn-warning @(Model.UnitsInStock <= 0 ? "disabled" : "")">
             Buy
         </a>
     </div>

@@ -8,12 +8,12 @@
 
 <div>
     <h4>Platform type</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Type)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Type)
         </dd>
     </dl>
@@ -23,7 +23,7 @@
     <div class="btn-group me-2" role="group" aria-label="Operation group">
         <a asp-action="Update" asp-route-platformTypeId="@Model.Id" class="btn btn-warning">Update</a>
         <form asp-action="Remove" method="post">
-            <input asp-for="Id" />
+            <input asp-for="Id"/>
             <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
         </form>
         <a asp-action="GetPlatformTypes" class="btn btn-primary">Back to List</a>

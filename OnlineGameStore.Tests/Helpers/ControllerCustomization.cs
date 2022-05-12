@@ -1,11 +1,11 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using AutoFixture.Kernel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace OnlineGameStore.Tests.Helpers
 {
@@ -14,7 +14,9 @@ namespace OnlineGameStore.Tests.Helpers
         public void Customize(IFixture fixture)
         {
             fixture.Customizations.Add(new ControllerBasePropertyOmitter());
-            fixture.Inject(new ViewDataDictionary(fixture.Create<DefaultModelMetadataProvider>(), fixture.Create<ModelStateDictionary>()));
+
+            fixture.Inject(new ViewDataDictionary(fixture.Create<DefaultModelMetadataProvider>(),
+                fixture.Create<ModelStateDictionary>()));
         }
 
         private class ControllerBasePropertyOmitter : Omitter

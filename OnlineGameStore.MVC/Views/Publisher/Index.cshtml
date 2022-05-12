@@ -11,18 +11,19 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CompanyName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HomePage)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HomePage)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 <a asp-action="GetPublisherByCompanyName" asp-route-companyName="@item.CompanyName" class="text-decoration-none">
@@ -35,6 +36,6 @@
                 </div>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

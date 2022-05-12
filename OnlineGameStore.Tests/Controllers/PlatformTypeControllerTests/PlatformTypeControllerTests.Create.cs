@@ -68,7 +68,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPlatformTypeViewModel>()
-                    .Which.Id.Should().Be(editPlatformTypeViewModel.Id);
+                .Which.Id.Should().Be(editPlatformTypeViewModel.Id);
         }
     }
 }

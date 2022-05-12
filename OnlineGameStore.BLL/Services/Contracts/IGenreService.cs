@@ -1,5 +1,5 @@
-﻿using OnlineGameStore.BLL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
@@ -13,10 +13,12 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Genre GetGenreById(int genreId);
 
+        IEnumerable<Genre> GetAllGenres();
+        
         IEnumerable<Genre> GetAllParentGenres();
 
         IEnumerable<Genre> GetAllWithoutGenre(int genreId);
 
-        bool CheckNameForUniqueness(int genreId, string name);
+        bool CheckNameForUnique(int genreId, string name);
     }
 }
