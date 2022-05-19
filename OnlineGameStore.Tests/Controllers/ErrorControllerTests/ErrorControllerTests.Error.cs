@@ -26,5 +26,24 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<ErrorViewModel>();
         }
+        
+        [Theory]
+        [AutoMoqData]
+        public void Error_WithStatusCode_ReturnsViewResult(
+            string statusCode,
+            HttpContext httpContext,
+            ErrorController sut)
+        {
+            // Arrange
+            sut.ControllerContext.HttpContext = httpContext;
+
+            // Act
+            var result = sut.Error(statusCode);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>()
+                .Which.Model.Should().BeAssignableTo<ErrorViewModel>()
+                .Which.StatusCode.Should().BeEquivalentTo(statusCode);
+        }
     }
 }

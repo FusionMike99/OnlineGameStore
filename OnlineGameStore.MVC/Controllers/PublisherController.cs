@@ -67,10 +67,9 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPublisherViewModel);
         }
 
-        [HttpPost]
-        [Route("update", Name = "publisherupdate")]
+        [HttpPost("update/{companyName}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update([FromForm] EditPublisherViewModel publisher)
+        public IActionResult Update(string companyName, [FromForm] EditPublisherViewModel publisher)
         {
             VerifyPublisher(publisher);
 

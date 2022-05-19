@@ -9,7 +9,7 @@
 <h4>Game</h4>
 <hr/>
 <div class="col-8 mx-auto">
-    <form asp-route="gameUpdate" method="post" name="editGameForm">
+    <form asp-action="Update" method="post" name="editGameForm">
         <partial name="_EditGame" model="@Model"/>
 
         <div class="col-1 mx-auto">

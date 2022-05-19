@@ -32,6 +32,8 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
                 .Which.Id.Should().Be(game.Id);
+            
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -94,7 +96,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editGameViewModel);
+            var result = sut.Update(editGameViewModel.Key, editGameViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
@@ -113,7 +115,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Update(editGameViewModel);
+            var result = sut.Update(editGameViewModel.Key, editGameViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

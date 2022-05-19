@@ -10,6 +10,8 @@ namespace OnlineGameStore.BLL.Entities
         public string Name { get; set; }
 
         public string Body { get; set; }
+        
+        public bool IsQuoted { get; set; }
 
         public int GameId { get; set; }
 

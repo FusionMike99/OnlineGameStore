@@ -1,0 +1,28 @@
+﻿@using OnlineGameStore.BLL.Enums
+@model BanViewModel
+
+@{
+    ViewData["Title"] = $"Ban {Model}";
+}
+
+<div class="col-8 mx-auto">
+    <form asp-controller="User" asp-action="Ban" method="post"
+          asp-route-userName="@Model.UserName"
+          asp-route-returnUrl="@Model.ReturnUrl">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+        <div class="col-3 mx-auto">
+            @foreach (var banPeriod in Enum.GetValues(typeof(BanPeriod)))
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="BanPeriod" value="@((int)banPeriod)"/>
+                    <label class="form-check-label" asp-for="BanPeriod">@banPeriod</label>
+                </div>
+            }
+        </div>
+        
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Ban" class="btn btn-success"/>
+        </div>
+    </form>
+</div>

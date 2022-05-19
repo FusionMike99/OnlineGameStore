@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
@@ -38,10 +39,23 @@ namespace OnlineGameStore.BLL.Services
             return leavedComment;
         }
 
+        public Comment GetCommentById(int commentId)
+        {
+            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId,
+                false,
+                $"{nameof(Comment.Game)}",
+                $"{nameof(Comment.Replies)}");
+
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetCommentById)}.
+                    Receiving comment with id {commentId} successfully", comment);
+
+            return comment;
+        }
+
         public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
         {
             var comments = _unitOfWork.Comments.GetMany(c => c.Game.Key == gameKey,
-                    false,
+                    true,
                     $"{nameof(Comment.Game)}",
                     $"{nameof(Comment.Replies)}");
 
@@ -51,6 +65,38 @@ namespace OnlineGameStore.BLL.Services
                     Receiving comments with game key {gameKey} successfully", parentComments);
 
             return parentComments;
+        }
+
+        public Comment EditComment(Comment comment)
+        {
+            var editedComment = _unitOfWork.Comments.Update(comment);
+            _unitOfWork.Commit();
+
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(EditComment)}.
+                    Editing comment with id {editedComment.Id} successfully", editedComment);
+
+            return editedComment;
+        }
+
+        public void DeleteComment(int commentId)
+        {
+            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                var exception = new InvalidOperationException("Genre has not been found");
+
+                _logger.LogError(exception, $@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
+                    Deleting comment with id {commentId} unsuccessfully", commentId);
+
+                throw exception;
+            }
+
+            _unitOfWork.Comments.Delete(comment);
+            _unitOfWork.Commit();
+
+            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
+                    Deleting comment with id {commentId} successfully", comment);
         }
     }
 }

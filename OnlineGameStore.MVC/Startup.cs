@@ -53,6 +53,8 @@ namespace OnlineGameStore.MVC
             services.AddScoped<IPublisherService, PublisherService>();
 
             services.AddScoped<IOrderService, OrderService>();
+            
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
 

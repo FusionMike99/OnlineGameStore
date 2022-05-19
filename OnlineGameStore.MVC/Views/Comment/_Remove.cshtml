@@ -1,0 +1,39 @@
+﻿@model CommentViewModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Delete this comment?</h4>
+    </div>
+
+    <div class="modal-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Body)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Body)
+            </dd>
+        </dl>
+    </div>
+
+    <div class="modal-footer mx-auto">
+        <div class="row gx-2">
+            <div class="col">
+                <form asp-controller="Comment" asp-action="RemoveComment"
+                        asp-route-id="@Model.Id" asp-route-gameKey="@ViewContext.RouteData.Values["gameKey"]">
+                    <input type="submit" value="Yes" class="btn btn-info text-light"/>
+                </form>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>             
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {
@@ -11,11 +12,15 @@ namespace OnlineGameStore.MVC.Models
 
         [Display(Name = "Message")]
         public string Body { get; set; }
+        
+        public bool IsQuoted { get; set; }
 
         public int? ReplyToId { get; set; }
 
-        public string ReplyToAuthor { get; set; }
+        public CommentViewModel ReplyTo { get; set; }
 
         public IEnumerable<CommentViewModel> Replies { get; set; }
+        
+        public bool IsDeleted { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("update/{genreId}")]
+        [HttpGet("update/{genreId:int}")]
         public IActionResult Update([FromRoute] int? genreId)
         {
             if (!genreId.HasValue)
@@ -73,11 +73,15 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editGenreViewModel);
         }
 
-        [HttpPost]
-        [Route("update", Name = "genreupdate")]
+        [HttpPost("update/{genreId:int}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update([FromForm] EditGenreViewModel genre)
+        public IActionResult Update(int genreId, [FromForm] EditGenreViewModel genre)
         {
+            if (genreId != genre.Id)
+            {
+                return NotFound("Genre has not been found");
+            }
+            
             VerifyGenre(genre);
 
             if (!ModelState.IsValid)

@@ -31,6 +31,8 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditGenreViewModel>()
                 .Which.Id.Should().Be(genre.Id);
+            
+            mockGenreService.Verify(x => x.GetGenreById(It.IsAny<int>()), Times.Once);
         }
 
         [Theory]
@@ -88,7 +90,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editGenreViewModel);
+            var result = sut.Update(editGenreViewModel.Id, editGenreViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
@@ -99,6 +101,23 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
+        public void Update_Post_ReturnsNotFoundObjectResult_WhenGenreIsNotFound(
+            EditGenreViewModel editGenreViewModel,
+            GenreController sut)
+        {
+            // Arrange
+            var id = editGenreViewModel.Id - 1;
+
+            // Act
+            var result = sut.Update(id, editGenreViewModel);
+
+            // Assert
+            result.Should().BeOfType<NotFoundObjectResult>()
+                .Which.Value.Should().BeOfType<string>();
+        }
+        
+        [Theory]
+        [AutoMoqData]
         public void Update_Post_ReturnsViewResult_WhenGenreIsInvalid(
             EditGenreViewModel editGenreViewModel,
             GenreController sut)
@@ -107,7 +126,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Update(editGenreViewModel);
+            var result = sut.Update(editGenreViewModel.Id, editGenreViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

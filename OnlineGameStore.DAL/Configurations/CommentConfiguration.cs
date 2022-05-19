@@ -16,6 +16,9 @@ namespace OnlineGameStore.DAL.Configurations
             builder.Property(c => c.Body)
                 .IsRequired();
 
+            builder.Property(c => c.IsQuoted)
+                .HasDefaultValue(false);
+            
             builder.Property(c => c.IsDeleted)
                 .HasDefaultValue(false);
 
