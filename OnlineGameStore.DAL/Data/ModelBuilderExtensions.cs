@@ -81,8 +81,7 @@ namespace OnlineGameStore.DAL.Data
                 new OrderStatus { Id = 1, Status = "Open" },
                 new OrderStatus { Id = 2, Status = "In progress" },
                 new OrderStatus { Id = 3, Status = "Cancelled" },
-                new OrderStatus { Id = 4, Status = "Closed" }
-            );
+                new OrderStatus { Id = 4, Status = "Closed" });
         }
     }
 }

@@ -16,18 +16,26 @@ namespace OnlineGameStore.Tests.Services
         [AutoMoqData]
         public void OrderService_CancelOrderWithTimeout(
             int minutes,
+            Game game,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             OrderService sut)
         {
             // Arrange
             var timeout = TimeSpan.FromMinutes(minutes);
 
-            var orders = GetTestOrders(timeout);
+            var orders = GetTestOrders(game, timeout);
 
             mockUnitOfWork.Setup(x => x.Orders.GetMany(It.IsAny<Expression<Func<Order, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .Returns(orders);
+
+            mockUnitOfWork.Setup(x => x.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()))
+                .Returns(game);
+
+            mockUnitOfWork.Setup(x => x.Games.Update(It.IsAny<Game>()));
 
             // Act
             sut.CancelOrdersWithTimeout(timeout);
@@ -39,6 +47,11 @@ namespace OnlineGameStore.Tests.Services
                 Times.Once);
 
             mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Exactly(2));
+            mockUnitOfWork.Verify(x => x.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>(),
+                It.IsAny<bool>(),
+                It.IsAny<string[]>()),
+                Times.Exactly(2));
+            mockUnitOfWork.Verify(x => x.Games.Update(It.IsAny<Game>()), Times.Exactly(2));
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

@@ -66,11 +66,15 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPlatformTypeViewModel);
         }
 
-        [HttpPost]
-        [Route("update", Name = "platformTypeUpdate")]
+        [HttpPost("update/{platformTypeId:int}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update([FromForm] EditPlatformTypeViewModel platformType)
+        public IActionResult Update(int platformTypeId, [FromForm] EditPlatformTypeViewModel platformType)
         {
+            if (platformTypeId != platformType.Id)
+            {
+                return NotFound("Platform type has not been found");
+            }
+            
             VerifyPlatformType(platformType);
 
             if (!ModelState.IsValid)

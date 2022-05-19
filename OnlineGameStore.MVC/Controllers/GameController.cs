@@ -84,10 +84,9 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editGameViewModel);
         }
 
-        [HttpPost]
-        [Route("update", Name = "gameUpdate")]
+        [HttpPost("update/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update([FromForm] EditGameViewModel game)
+        public IActionResult Update(string gameKey, [FromForm] EditGameViewModel game)
         {
             VerifyGame(game);
 

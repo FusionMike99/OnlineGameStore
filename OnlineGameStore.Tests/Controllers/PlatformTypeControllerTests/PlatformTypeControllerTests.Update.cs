@@ -31,6 +31,8 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPlatformTypeViewModel>()
                 .Which.Id.Should().Be(platformType.Id);
+            
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
         }
 
         [Theory]
@@ -87,7 +89,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editPlatformTypeViewModel);
+            var result = sut.Update(editPlatformTypeViewModel.Id,editPlatformTypeViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
@@ -98,6 +100,23 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
+        public void Update_Post_ReturnsNotFoundObjectResult_WhenPlatformTypeIsNotFound(
+            EditPlatformTypeViewModel editPlatformTypeViewModel,
+            PlatformTypeController sut)
+        {
+            // Arrange
+            var id = editPlatformTypeViewModel.Id - 1;
+
+            // Act
+            var result = sut.Update(id, editPlatformTypeViewModel);
+
+            // Assert
+            result.Should().BeOfType<NotFoundObjectResult>()
+                .Which.Value.Should().BeOfType<string>();
+        }
+        
+        [Theory]
+        [AutoMoqData]
         public void Update_Post_ReturnsViewResult_WhenPlatformTypeIsInvalid(
             EditPlatformTypeViewModel editPlatformTypeViewModel,
             PlatformTypeController sut)
@@ -106,7 +125,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Type", "Required");
 
             // Act
-            var result = sut.Update(editPlatformTypeViewModel);
+            var result = sut.Update(editPlatformTypeViewModel.Id, editPlatformTypeViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

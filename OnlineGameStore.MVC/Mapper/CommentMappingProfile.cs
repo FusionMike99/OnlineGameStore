@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -12,7 +13,7 @@ namespace OnlineGameStore.MVC.Mapper
                 .ReverseMap();
 
             CreateMap<Comment, CommentViewModel>()
-                .ForMember(dest => dest.ReplyToAuthor, source => source.MapFrom(comment => comment.ReplyTo.Name))
+                .ForMember(dest => dest.Body, source => source.MapFrom(comment => comment.IsDeleted ? Constants.DeletedCommentMessage : comment.Body))
                 .ReverseMap();
         }
     }

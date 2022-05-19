@@ -7,7 +7,7 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
 {
-    [Route("games")]
+    [Route("games/{gameKey}")]
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
@@ -20,7 +20,7 @@ namespace OnlineGameStore.MVC.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("{gameKey}/[action]")]
+        [HttpPost("[action]")]
         public IActionResult NewComment([FromRoute] string gameKey, [FromForm] EditCommentViewModel comment)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
@@ -44,7 +44,7 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
-        [HttpGet("{gameKey}/comments")]
+        [HttpGet("comments")]
         public IActionResult GetCommentsByGameKey([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
@@ -57,6 +57,82 @@ namespace OnlineGameStore.MVC.Controllers
             aggregateCommentViewModel.EditComment = new EditCommentViewModel();
 
             return View("Index", aggregateCommentViewModel);
+        }
+        
+        [HttpGet("updateComment/{commentId:int}")]
+        public IActionResult UpdateComment([FromRoute] int? commentId, [FromRoute] string gameKey)
+        {
+            if (!commentId.HasValue)
+            {
+                return BadRequest("Need to pass comment id");
+            }
+
+            var comment = _commentService.GetCommentById(commentId.Value);
+
+            if (comment == null)
+            {
+                return NotFound("Comment has not been found");
+            }
+
+            var editCommentViewModel = _mapper.Map<EditCommentViewModel>(comment);
+
+            return PartialView("_Update", editCommentViewModel);
+        }
+
+        [HttpPost("updateComment/{commentId:int}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateComment(int commentId, EditCommentViewModel comment, string gameKey)
+        {
+            if (commentId != comment.Id)
+            {
+                return NotFound("Comment has not been found");
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return PartialView("_Update", comment);
+            }
+
+            var mappedComment = _mapper.Map<Comment>(comment);
+
+            _commentService.EditComment(mappedComment);
+
+            return Json(new { url = Url.Action(nameof(GetCommentsByGameKey), new { gameKey }) });
+        }
+        
+        [HttpGet("removeComment/{id:int?}")]
+        public IActionResult RemoveComment([FromRoute] int? id, [FromRoute] string gameKey)
+        {
+            if (!id.HasValue)
+            {
+                return BadRequest("Need to pass comment id");
+            }
+
+            var comment = _commentService.GetCommentById(id.Value);
+
+            if (comment == null)
+            {
+                return NotFound("Comment has not been found");
+            }
+
+            var commentViewModel = _mapper.Map<CommentViewModel>(comment);
+
+            return PartialView("_Remove", commentViewModel);
+        }
+        
+        [HttpPost("removeComment/{id:int}")]
+        [ValidateAntiForgeryToken]
+        [ActionName("Remove")]
+        public IActionResult RemoveCommentConfirmed([FromRoute] int? id, [FromRoute] string gameKey)
+        {
+            if (!id.HasValue)
+            {
+                return BadRequest("Need to pass genre id");
+            }
+
+            _commentService.DeleteComment(id.Value);
+
+            return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
         private AggregateCommentViewModel CreateAggregateCommentViewModel(string gameKey)

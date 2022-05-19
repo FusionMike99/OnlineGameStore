@@ -34,7 +34,10 @@ namespace OnlineGameStore.Tests.Services
 
             var arrangedOrderDetail = order.OrderDetails.First();
 
-            var expectedQuantity = (short)(arrangedOrderDetail.Quantity + quantity);
+            var newQuantity = (short)(arrangedOrderDetail.Quantity + quantity);
+                
+            var expectedQuantity = game.UnitsInStock - newQuantity >= 0 
+                ? newQuantity : game.UnitsInStock;
 
             // Act
             sut.AddToOpenOrder(order.CustomerId, game, quantity);

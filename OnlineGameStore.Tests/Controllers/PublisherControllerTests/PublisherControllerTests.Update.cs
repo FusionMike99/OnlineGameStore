@@ -32,6 +32,8 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPublisherViewModel>()
                 .Which.Id.Should().Be(publisher.Id);
+            
+            mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -92,7 +94,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editPublisherViewModel);
+            var result = sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
 
             // Assert
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -115,7 +117,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Update(editPublisherViewModel);
+            var result = sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
