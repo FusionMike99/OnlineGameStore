@@ -37,7 +37,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestObjectResult_WhenGenreIdHasNotValue(
+        public void Update_Get_ReturnsBadRequestResult_WhenGenreIdHasNotValue(
             int? genreId,
             GenreController sut)
         {
@@ -45,13 +45,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(genreId);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundObjectResult_WhenGenreIsNotFound(
+        public void Update_Get_ReturnsNotFoundResult_WhenGenreIsNotFound(
             Genre genre,
             int? genreId,
             [Frozen] Mock<IGenreService> mockGenreService,
@@ -65,8 +64,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(genreId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockGenreService.Verify(x => x.GetGenreById(It.IsAny<int>()), Times.Once);
         }
@@ -101,7 +99,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsNotFoundObjectResult_WhenGenreIsNotFound(
+        public void Update_Post_ReturnsNotFoundResult_WhenGenreIsNotFound(
             EditGenreViewModel editGenreViewModel,
             GenreController sut)
         {
@@ -112,8 +110,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(id, editGenreViewModel);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
         }
         
         [Theory]

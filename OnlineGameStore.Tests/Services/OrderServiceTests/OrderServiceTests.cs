@@ -49,25 +49,25 @@ namespace OnlineGameStore.Tests.Services
                 new Order
                 {
                     Id = 1, CustomerId = 1,
-                    OrderStatusId = 2, OrderDate = DateTime.UtcNow.Subtract(timeoutTime),
+                    OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Subtract(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
                     Id = 2, CustomerId = 1,
-                    OrderStatusId = 2, OrderDate = DateTime.UtcNow,
+                    OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Add(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
                     Id = 3, CustomerId = 1,
-                    OrderStatusId = 2, OrderDate = DateTime.UtcNow.Subtract(timeoutTime),
+                    OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Subtract(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
                     Id = 4, CustomerId = 1,
-                    OrderStatusId = 2, OrderDate = DateTime.UtcNow,
+                    OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Add(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 }
             };

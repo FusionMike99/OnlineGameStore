@@ -38,7 +38,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_Get_ReturnsBadRequestObjectResult_WhenCommentIdHasNotValue(
+        public void Remove_Get_ReturnsBadRequestResult_WhenCommentIdHasNotValue(
             int? commentId,
             string gameKey,
             CommentController sut)
@@ -47,13 +47,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.RemoveComment(commentId, gameKey);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_Get_ReturnsNotFoundObjectResult_WhenCommentIsNotFound(
+        public void Remove_Get_ReturnsNotFoundResult_WhenCommentIsNotFound(
             Comment comment,
             int? commentId,
             string gameKey,
@@ -68,8 +67,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.RemoveComment(commentId, gameKey);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockCommentService.Verify(x => x.GetCommentById(It.IsAny<int>()), Times.Once);
         }
@@ -97,7 +95,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestObjectResult_WhenIdHasNotValue(
+        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
             int? id,
             string gameKey,
             CommentController sut)
@@ -106,8 +104,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.RemoveCommentConfirmed(id, gameKey);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
     }
 }

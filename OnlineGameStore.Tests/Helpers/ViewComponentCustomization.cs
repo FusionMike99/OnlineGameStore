@@ -1,12 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoFixture;
-using AutoFixture.Kernel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+﻿using AutoFixture;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace OnlineGameStore.Tests.Helpers
 {

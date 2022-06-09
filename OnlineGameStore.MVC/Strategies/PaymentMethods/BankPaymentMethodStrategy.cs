@@ -1,25 +1,32 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods
 {
     public class BankPaymentMethodStrategy : IPaymentMethodStrategy
     {
+        private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
         
         public PaymentMethod PaymentMethod => PaymentMethod.Bank;
 
-        public BankPaymentMethodStrategy(IMapper mapper)
+        public BankPaymentMethodStrategy(IOrderService orderService,
+            IMapper mapper)
         {
+            _orderService = orderService;
             _mapper = mapper;
         }
 
-        public IActionResult ProcessPayment(Order order)
+        public IActionResult PaymentProcess(Order order)
         {
+            const int minutes = 3;
+            
             var orderViewModel = _mapper.Map<OrderViewModel>(order);
 
             var options = new JsonSerializerOptions
@@ -33,7 +40,11 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             {
                 FileDownloadName = $"invoice№{order.Id}.txt"
             };
-
+            
+            var cancelledDate = DateTime.UtcNow.Add(TimeSpan.FromMinutes(minutes));
+            
+            _orderService.SetCancelledDate(order.Id, cancelledDate);
+            
             return fileContentResult;
         }
     }

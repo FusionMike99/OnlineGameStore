@@ -6,7 +6,7 @@
 
 <h5>Make Order</h5>
 
-<partial name="_BasketTable" for="OrderDetails"/>
+<partial name="_BasketTable" model="Model"/>
 
 <hr/>
 
@@ -21,7 +21,10 @@
         <td>Bank</td>
         <td>Pay for your order using a bank</td>
         <td>
-            <a asp-action="Pay" asp-route-paymentMethod="Bank" class="btn btn-info">Pay</a>
+            <a asp-action="Pay" asp-route-orderId="@Model.Id"
+               asp-route-paymentMethod="Bank" class="btn btn-info pay-link">
+                Pay
+            </a>
         </td>
     </tr>
     <tr>
@@ -31,7 +34,10 @@
         <td>IBox terminal</td>
         <td>Pay for your order using a IBox terminal</td>
         <td>
-            <a asp-action="Pay" asp-route-paymentMethod="IBoxTerminal" class="btn btn-info">Pay</a>
+            <a asp-action="Pay" asp-route-orderId="@Model.Id"
+               asp-route-paymentMethod="IBoxTerminal" class="btn btn-info pay-link">
+                Pay
+            </a>
         </td>
     </tr>
     <tr>
@@ -41,8 +47,15 @@
         <td>Visa</td>
         <td>Pay for your order using a visa debit card</td>
         <td>
-            <a asp-action="Pay" asp-route-paymentMethod="Visa" class="btn btn-info">Pay</a>
+            <a asp-action="Pay" asp-route-orderId="@Model.Id"
+               asp-route-paymentMethod="Visa" class="btn btn-info pay-link">
+                Pay
+            </a>
         </td>
     </tr>
     </tbody>
 </table>
+
+@section Scripts {
+    <script src="~/js/make-order-extensions.js"></script>
+}

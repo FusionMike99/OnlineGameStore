@@ -8,7 +8,6 @@ namespace OnlineGameStore.DAL.Repositories
     {
         private readonly StoreDbContext _context;
         private GenericRepository<Comment, int> _commentRepository;
-
         private GenericRepository<Game, int> _gameRepository;
         private GenericRepository<Genre, int> _genreRepository;
         private GenericRepository<Order, int> _orderRepository;

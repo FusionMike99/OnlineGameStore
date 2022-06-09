@@ -41,7 +41,7 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void GetCommentsByGameKey_ReturnsBadRequestObjectResult_WhenGameKeyHasNotValue(
+        public void GetCommentsByGameKey_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
             string gameKey,
             CommentController sut)
         {
@@ -49,8 +49,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetCommentsByGameKey(gameKey);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
     }
 }

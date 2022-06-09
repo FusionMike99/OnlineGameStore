@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {

@@ -30,4 +30,61 @@
     <Folder Include="wwwroot\cldr-data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\availableLocales.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\bower.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\cldr-packages.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\defaultContent.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\LICENSE" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\package.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\README.md" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\scriptMetadata.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\aliases.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\calendarData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\calendarPreferenceData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\characterFallbacks.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\codeMappings.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\currencyData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\dayPeriods.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\gender.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\grammaticalFeatures.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\languageData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\languageGroups.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\languageMatching.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\likelySubtags.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\measurementData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\metaZones.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\numberingSystems.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\ordinals.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\parentLocales.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\pluralRanges.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\plurals.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\primaryZones.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\references.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\territoryContainment.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\territoryInfo.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\timeData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\unitPreferenceData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\units.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\unitsMetadata.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\weekData.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-core\supplemental\windowsZones.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\en\currencies.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\en\numbers.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\ru-UA\currencies.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\ru-UA\numbers.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\ru\currencies.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\ru\numbers.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\uk\currencies.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-numbers-modern\main\uk\numbers.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\en\measurementSystemNames.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\en\units.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\ru-UA\measurementSystemNames.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\ru-UA\units.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\ru\measurementSystemNames.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\ru\units.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\uk\measurementSystemNames.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\uk\units.json" />
+  </ItemGroup>
+
 </Project>

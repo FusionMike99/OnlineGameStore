@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
@@ -25,7 +26,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                ModelState.AddModelError("", "Need to pass game key");
+                ModelState.AddModelError("", ErrorMessages.NeedGameKey);
             }
 
             if (!ModelState.IsValid)
@@ -49,7 +50,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Need to pass game key");
+                return BadRequest();
             }
 
             var aggregateCommentViewModel = CreateAggregateCommentViewModel(gameKey);
@@ -64,14 +65,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!commentId.HasValue)
             {
-                return BadRequest("Need to pass comment id");
+                return BadRequest();
             }
 
             var comment = _commentService.GetCommentById(commentId.Value);
 
             if (comment == null)
             {
-                return NotFound("Comment has not been found");
+                return NotFound();
             }
 
             var editCommentViewModel = _mapper.Map<EditCommentViewModel>(comment);
@@ -85,7 +86,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (commentId != comment.Id)
             {
-                return NotFound("Comment has not been found");
+                return NotFound();
             }
             
             if (!ModelState.IsValid)
@@ -105,14 +106,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass comment id");
+                return BadRequest();
             }
 
             var comment = _commentService.GetCommentById(id.Value);
 
             if (comment == null)
             {
-                return NotFound("Comment has not been found");
+                return NotFound();
             }
 
             var commentViewModel = _mapper.Map<CommentViewModel>(comment);
@@ -127,7 +128,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             _commentService.DeleteComment(id.Value);

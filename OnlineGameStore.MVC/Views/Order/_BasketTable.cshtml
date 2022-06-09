@@ -1,24 +1,28 @@
-﻿@model IEnumerable<OrderDetailViewModel>
+﻿@model OrderViewModel
 
 <table class="table table-striped">
     <thead>
     <tr>
         <th scope="col">
-            @Html.DisplayNameFor(model => model.ProductName)
+            @Html.DisplayName(nameof(OrderDetailViewModel.ProductName))
         </th>
         <th scope="col">
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayName(nameof(OrderDetailViewModel.Price))
         </th>
         <th scope="col">
-            @Html.DisplayNameFor(model => model.Quantity)
+            @Html.DisplayName(nameof(OrderDetailViewModel.Quantity))
         </th>
         <th scope="col">
-            @Html.DisplayNameFor(model => model.Discount)
+            @Html.DisplayName(nameof(OrderDetailViewModel.Discount))
         </th>
+        @if (Model.EnableModification)
+        {
+            <th></th>
+        }
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+    @foreach (var item in Model.OrderDetails)
     {
         <tr>
             <td>
@@ -33,6 +37,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Discount)
             </td>
+            @if (Model.EnableModification)
+            {
+                <td>
+                    <form asp-controller="Order" asp-action="RemoveFromBasket"
+                          asp-route-productId="@item.ProductId" method="post">
+                        <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
+                    </form>
+                </td>
+            }
         </tr>
     }
     </tbody>
@@ -42,7 +55,7 @@
             <b>Total:</b>
         </td>
         <td class="text-right">
-            @ViewData["GrandTotal"]
+            @Model.Total.ToString("c");
         </td>
     </tr>
     </tfoot>

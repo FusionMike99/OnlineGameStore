@@ -16,8 +16,8 @@ let transformToKebabCase = function (source, targetName) {
 $(function () {
     $.ajaxSetup({cache: false});
     
-    $(".modal-link").click(function (e) {
-        e.preventDefault();
+    $(".modal-link").click(function (event) {
+        event.preventDefault();
         $.get(this.href, function (data) {
             $('#dialogContent').html(data);
             $('#modalDialog').modal('show');

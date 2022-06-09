@@ -37,7 +37,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestObjectResult_WhenPlatformTypeIdHasNotValue(
+        public void Update_Get_ReturnsBadRequestResult_WhenPlatformTypeIdHasNotValue(
             int? platformTypeId,
             PlatformTypeController sut)
         {
@@ -45,13 +45,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(platformTypeId);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundObjectResult_WhenPlatformTypeIsNotFound(
+        public void Update_Get_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
             PlatformType platformType,
             int? platformTypeId,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
@@ -65,8 +64,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(platformTypeId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
         }
@@ -100,7 +98,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsNotFoundObjectResult_WhenPlatformTypeIsNotFound(
+        public void Update_Post_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
             EditPlatformTypeViewModel editPlatformTypeViewModel,
             PlatformTypeController sut)
         {
@@ -111,8 +109,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(id, editPlatformTypeViewModel);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
         }
         
         [Theory]

@@ -15,7 +15,7 @@ namespace OnlineGameStore.MVC.Infrastructure
 
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            var value = valueProviderResult.FirstValue.Trim();
+            var value = valueProviderResult.FirstValue?.Trim();
 
             bindingContext.Result = ModelBindingResult.Success(value);
 

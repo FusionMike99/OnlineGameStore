@@ -40,7 +40,7 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestObjectResult_WhenPublisherCompanyNameHasNotValue(
+        public void Update_Get_ReturnsBadRequestResult_WhenPublisherCompanyNameHasNotValue(
             string companyName,
             PublisherController sut)
         {
@@ -48,13 +48,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(companyName);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundObjectResult_WhenPublisherIsNotFound(
+        public void Update_Get_ReturnsNotFoundResult_WhenPublisherIsNotFound(
             Publisher publisher,
             string companyName,
             [Frozen] Mock<IPublisherService> mockPublisherService,
@@ -68,8 +67,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Update(companyName);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
         }

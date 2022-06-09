@@ -12,6 +12,8 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     
         <div class="col-3 mx-auto">
+            <h4>@Html.DisplayNameFor(m => m.BanPeriod)</h4>
+            
             @foreach (var banPeriod in Enum.GetValues(typeof(BanPeriod)))
             {
                 <div class="form-check">
@@ -19,6 +21,8 @@
                     <label class="form-check-label" asp-for="BanPeriod">@banPeriod</label>
                 </div>
             }
+            
+            <span asp-validation-for="BanPeriod" class="text-danger"></span>
         </div>
         
         <div class="col-1 mx-auto">

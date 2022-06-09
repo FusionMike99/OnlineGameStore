@@ -18,8 +18,8 @@ using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
 using OnlineGameStore.MVC.Infrastructure;
-using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.MVC.Mapper;
+using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using Serilog;
 using Serilog.Events;
 
@@ -96,8 +96,7 @@ namespace OnlineGameStore.MVC
                 {
                     new CultureInfo("en"),
                     new CultureInfo("uk"),
-                    new CultureInfo("ru-UA"),
-                    new CultureInfo("ru")
+                    new CultureInfo("ru-UA")
                 };
 
                 options.DefaultRequestCulture = new RequestCulture(supportedCultures[0]);
@@ -112,7 +111,7 @@ namespace OnlineGameStore.MVC
         private static void ConfigureCancellingOrderTask(IOrderService orderService)
         {
             RecurringJob.AddOrUpdate("cancellingOrders",
-                () => orderService.CancelOrdersWithTimeout(TimeSpan.FromMinutes(3)),
+                () => orderService.CancelOrdersWithTimeout(),
                 Cron.Minutely);
         }
 
@@ -128,7 +127,7 @@ namespace OnlineGameStore.MVC
                 app.UseHsts();
             }
 
-            app.UseStatusCodePagesWithRedirects("/error/{0}");
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
             
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

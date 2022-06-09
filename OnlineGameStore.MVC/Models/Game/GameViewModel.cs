@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineGameStore.MVC.Models
@@ -21,6 +22,17 @@ namespace OnlineGameStore.MVC.Models
         public short UnitsInStock { get; set; }
 
         public bool Discontinued { get; set; }
+        
+        [Display(Name = "Added at")]
+        [DataType(DataType.Date)]
+        public DateTime? DateAdded { get; set; }
+        
+        [Display(Name = "Published at")]
+        [DataType(DataType.Date)]
+        public DateTime? DatePublished { get; set; }
+        
+        [Display(Name = "Views")]
+        public ulong ViewsNumber { get; set; }
 
         [Display(Name = "Publisher")]
         public string Publisher { get; set; }

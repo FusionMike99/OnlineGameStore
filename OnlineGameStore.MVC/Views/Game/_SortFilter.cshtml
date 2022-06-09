@@ -1,0 +1,117 @@
+﻿@model SortFilterGameViewModel
+
+<div>
+  <div class="offcanvas offcanvas-end" id="sort-filter">
+    <div class="offcanvas-header">
+      <h3 class="offcanvas-title">Sort and Filter Games</h3>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form id="sort-filter-form" asp-controller="Game" asp-action="GetGames" method="get">
+        <div>
+          <h4>Genres</h4>
+          
+          @foreach (var genre in Model.Genres)
+          {
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="SelectedGenres"
+                     checked="@genre.Selected" value="@genre.Value">
+              <label class="form-check-label" asp-for="SelectedGenres">
+                @genre.Text
+              </label>
+            </div>
+          }
+        </div>
+        
+        <div class="mt-2">
+          <h4>Platform Types</h4>
+          
+          @foreach (var platformType in Model.PlatformTypes)
+          {
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="SelectedPlatformTypes"
+                     checked="@platformType.Selected" value="@platformType.Value">
+              <label class="form-check-label" asp-for="SelectedPlatformTypes">
+                @platformType.Text
+              </label>
+            </div>
+          }
+        </div>
+        
+        <div class="mt-2">
+          <h4>Publishers</h4>
+            
+          @foreach (var publisher in Model.Publishers)
+          {
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="SelectedPublishers"
+                     checked="@publisher.Selected" value="@publisher.Value">
+              <label class="form-check-label" asp-for="SelectedPublishers">
+                @publisher.Text
+              </label>
+            </div>
+          }
+        </div>
+        
+        <div class="mt-2">
+          <h4>Sort</h4>
+          <select asp-for="GameSortState" asp-items="Model.SortParameters" class="form-select">
+          </select>
+        </div>
+
+        <div class="row mt-2">
+          <h4>Price range</h4>
+          
+          <div class="col">
+            <div class="input-group">
+              <label asp-for="PriceRange.Min" class="input-group-text"></label>
+              <input class="form-control" asp-for="PriceRange.Min">
+            </div>
+            <span asp-validation-for="PriceRange.Min" class="text-danger"></span>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <label asp-for="PriceRange.Max" class="input-group-text"></label>
+              <input class="form-control" asp-for="PriceRange.Max">
+            </div>
+            <span asp-validation-for="PriceRange.Max" class="text-danger"></span>
+          </div>
+        </div>
+        
+        <div class="mt-2">
+          <h4>Date published</h4>
+          
+          @foreach (var datePublishedParameter in Model.DatePublishedParameters)
+          {
+            <div class="form-check">
+              <input class="form-check-input" type="radio" asp-for="DatePublishedPeriod"
+                     checked="@datePublishedParameter.Selected" value="@datePublishedParameter.Value">
+              <label class="form-check-label" asp-for="DatePublishedPeriod">
+                @datePublishedParameter.Text
+              </label>
+            </div>
+          }
+        </div>
+        
+        <div class="mt-2">
+          <h4>Search</h4>
+          
+          <div class="input-group">
+              <label asp-for="GameName" class="input-group-text"></label>
+              <input asp-for="GameName" class="form-control"/>
+          </div>
+          <span asp-validation-for="GameName" class="text-danger"></span>
+        </div>
+        
+        <div class="mt-2">
+          <input type="submit" value="Filter" class="btn btn-info text-light"/>
+          <input id="reset-filter" type="reset" value="Reset" class="btn btn-warning text-danger"/>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sort-filter">
+    Sort/Filter
+  </button>
+</div>

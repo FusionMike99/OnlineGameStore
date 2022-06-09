@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
@@ -31,7 +32,9 @@ namespace OnlineGameStore.BLL.Services
 
         public void DeleteGenre(int genreId)
         {
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId);
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId,
+                includeDeleteEntities: false,
+                $"{nameof(Genre.SubGenres)}");
 
             if (genre == null)
             {
@@ -44,6 +47,10 @@ namespace OnlineGameStore.BLL.Services
             }
 
             _unitOfWork.Genres.Delete(genre);
+
+            genre.SubGenres.ToList()
+                .ForEach(g => g.ParentId = g.Parent.ParentId);
+            
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(DeleteGenre)}.
@@ -65,6 +72,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var genres = _unitOfWork.Genres.GetMany(null,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
@@ -79,6 +89,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var genres = _unitOfWork.Genres.GetMany(g => !g.ParentId.HasValue,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
@@ -93,6 +106,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreId && g.ParentId != genreId,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllWithoutGenre)}.
@@ -117,7 +133,7 @@ namespace OnlineGameStore.BLL.Services
 
         public bool CheckNameForUnique(int genreId, string name)
         {
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Name == name);
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Name == name, true);
 
             return genre != null && genre.Id != genreId;
         }

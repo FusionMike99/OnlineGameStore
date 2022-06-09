@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using AutoFixture.Xunit2;
 using Moq;
@@ -27,6 +28,9 @@ namespace OnlineGameStore.Tests.Services
 
             mockUnitOfWork.Setup(x => x.Orders.GetMany(It.IsAny<Expression<Func<Order, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Order>,IOrderedQueryable<Order>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()))
                 .Returns(orders);
 
@@ -38,20 +42,26 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork.Setup(x => x.Games.Update(It.IsAny<Game>()));
 
             // Act
-            sut.CancelOrdersWithTimeout(timeout);
+            sut.CancelOrdersWithTimeout();
 
             // Assert
             mockUnitOfWork.Verify(x => x.Orders.GetMany(It.IsAny<Expression<Func<Order, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Order>,IOrderedQueryable<Order>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()),
                 Times.Once);
 
             mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Exactly(2));
+            
             mockUnitOfWork.Verify(x => x.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>(),
                 It.IsAny<bool>(),
                 It.IsAny<string[]>()),
                 Times.Exactly(2));
+            
             mockUnitOfWork.Verify(x => x.Games.Update(It.IsAny<Game>()), Times.Exactly(2));
+            
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

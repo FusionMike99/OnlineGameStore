@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
@@ -21,7 +22,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public ViewResult Create()
+        public IActionResult Create()
         {
             var editPublisherViewModel = new EditPublisherViewModel();
 
@@ -52,14 +53,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(companyName))
             {
-                return BadRequest("Need to pass company name");
+                return BadRequest();
             }
 
             var publisher = _publisherService.GetPublisherByCompanyName(companyName);
 
             if (publisher == null)
             {
-                return NotFound("Publisher has not been found");
+                return NotFound();
             }
 
             var editPublisherViewModel = _mapper.Map<EditPublisherViewModel>(publisher);
@@ -91,14 +92,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(companyName))
             {
-                return BadRequest("Need to pass company name");
+                return BadRequest();
             }
 
             var publisher = _publisherService.GetPublisherByCompanyName(companyName);
 
             if (publisher == null)
             {
-                return NotFound("Publisher has not been found");
+                return NotFound();
             }
 
             var publisherViewModel = _mapper.Map<PublisherViewModel>(publisher);
@@ -122,7 +123,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass publisher id");
+                return BadRequest();
             }
 
             _publisherService.DeletePublisher(id.Value);
@@ -136,7 +137,8 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (checkResult)
             {
-                ModelState.AddModelError("CompanyName", "Company name with same value exist.");
+                ModelState.AddModelError(nameof(PublisherViewModel.CompanyName),
+                    ErrorMessages.CompanyNameExist);
             }
         }
     }

@@ -37,7 +37,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetGenreById_ReturnsBadRequestObjectResult_WhenGenreIdHasNotValue(
+        public void GetGenreById_ReturnsBadRequestResult_WhenGenreIdHasNotValue(
             int? genreId,
             GenreController sut)
         {
@@ -45,13 +45,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetGenreById(genreId);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetGenreById_ReturnsNotFoundObjectResult_WhenGenreIsNotFound(
+        public void GetGenreById_ReturnsNotFoundResult_WhenGenreIsNotFound(
             Genre genre,
             int genreId,
             [Frozen] Mock<IGenreService> mockGenreService,
@@ -65,8 +64,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetGenreById(genreId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockGenreService.Verify(x => x.GetGenreById(It.IsAny<int>()), Times.Once);
         }

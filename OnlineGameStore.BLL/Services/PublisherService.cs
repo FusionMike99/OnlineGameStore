@@ -20,7 +20,7 @@ namespace OnlineGameStore.BLL.Services
 
         public bool CheckCompanyNameForUnique(int publisherId, string companyName)
         {
-            var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName);
+            var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName, true);
 
             return publisher != null && publisher.Id != publisherId;
         }
@@ -72,6 +72,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var publishers = _unitOfWork.Publishers.GetMany(null,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Publisher.Games)}");
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetAllPublishers)}.
