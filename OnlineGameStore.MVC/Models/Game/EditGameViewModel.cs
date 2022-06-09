@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,6 +35,17 @@ namespace OnlineGameStore.MVC.Models
         [Required]
         [Display(Name = "Is game discontinued?")]
         public bool Discontinued { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public DateTime? DateAdded { get; set; }
+
+        [Required]
+        [Display(Name = "Published at")]
+        [DataType(DataType.Date)]
+        public DateTime? DatePublished { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public ulong ViewsNumber { get; set; }
 
         public SelectList Genres { get; set; }
 

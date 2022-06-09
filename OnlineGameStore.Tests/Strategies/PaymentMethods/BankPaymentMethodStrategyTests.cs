@@ -16,7 +16,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
             BankPaymentMethodStrategy sut)
         {
             // Act
-            var result = sut.ProcessPayment(order);
+            var result = sut.PaymentProcess(order);
 
             // Assert
             result.Should().BeOfType<FileContentResult>();

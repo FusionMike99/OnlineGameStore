@@ -7,6 +7,6 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
     {
         PaymentMethod PaymentMethod { get; }
 
-        IActionResult ProcessPayment(Order order);
+        IActionResult PaymentProcess(Order order);
     }
 }

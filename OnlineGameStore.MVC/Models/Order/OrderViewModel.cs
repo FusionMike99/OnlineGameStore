@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace OnlineGameStore.MVC.Models
 {
@@ -14,5 +15,8 @@ namespace OnlineGameStore.MVC.Models
         public decimal Total { get; set; }
 
         public ICollection<OrderDetailViewModel> OrderDetails { get; set; }
+        
+        [JsonIgnore]
+        public bool EnableModification { get; set; }
     }
 }

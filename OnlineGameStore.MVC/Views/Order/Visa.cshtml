@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Make Order";
 
-    var orderId = int.Parse(ViewData["OrderId"].ToString() ?? string.Empty);
+    var orderId = int.Parse(ViewData["OrderId"]?.ToString() ?? string.Empty);
 }
 
 <div class="container">

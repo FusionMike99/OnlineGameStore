@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GameViewModel>
+﻿@model GameListViewModel
 
 @{
     ViewData["Title"] = "Games";
@@ -6,26 +6,45 @@
 
 <h1>Games</h1>
 
-<p>
+@if (!Model.Games.Any())
+{
+    <div class="alert alert-warning alert-dismissible fade show">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>Warning!</strong> Sorry, we couldn't find games matching your search criteria.
+    </div>
+}
+
+<div class="d-flex justify-content-between">
     <a asp-action="Create" class="btn btn-success">Add New Game</a>
-</p>
+    
+    <div class="row">
+        <div class="col">
+            <select id="page-size-selector" form="sort-filter-form" asp-for="PageViewModel.PageSize"
+                    name="PageSize" asp-items="Model.PageViewModel.PageSizeParameters" class="form-select">
+            </select>
+        </div>
+        <div class="col">
+            <partial name="_SortFilter" model="Model.SortFilterGameViewModel"/>
+        </div>
+    </div>
+</div>
 <table class="table">
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayName(nameof(GameViewModel.Name))
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayName(nameof(GameViewModel.Description))
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayName(nameof(GameViewModel.Price))
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Games)
     {
         <tr>
             <td>
@@ -48,3 +67,11 @@
     }
     </tbody>
 </table>
+
+<page-link page-view-model="@Model?.PageViewModel" page-action="GetGames" capacity="13"></page-link>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="~/js/page-link-extensions.js"></script>
+    <script src="~/js/filter-extensions.js"></script>
+}

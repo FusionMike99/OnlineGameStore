@@ -9,6 +9,7 @@ namespace OnlineGameStore.MVC.Models
         public string UserName { get; set; }
         
         [Required]
+        [Display(Name = "Ban period")]
         public BanPeriod? BanPeriod { get; set; }
         
         public string ReturnUrl { get; set; }

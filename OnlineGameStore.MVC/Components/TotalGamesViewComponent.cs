@@ -15,9 +15,7 @@ namespace OnlineGameStore.MVC.Components
 
         public IViewComponentResult Invoke()
         {
-            var games = _gameService.GetAllGames();
-
-            var totalGames = games.Count();
+            var totalGames = _gameService.GetGamesNumber();
 
             return View(totalGames);
         }

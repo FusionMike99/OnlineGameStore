@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
@@ -21,7 +22,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public ViewResult Create()
+        public IActionResult Create()
         {
             var editPlatformTypeViewModel = new EditPlatformTypeViewModel();
 
@@ -51,14 +52,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!platformTypeId.HasValue)
             {
-                return BadRequest("Need to pass platform type id");
+                return BadRequest();
             }
 
             var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
 
             if (platformType == null)
             {
-                return NotFound("Platform type has not been found");
+                return NotFound();
             }
 
             var editPlatformTypeViewModel = _mapper.Map<EditPlatformTypeViewModel>(platformType);
@@ -72,7 +73,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (platformTypeId != platformType.Id)
             {
-                return NotFound("Platform type has not been found");
+                return NotFound();
             }
             
             VerifyPlatformType(platformType);
@@ -94,14 +95,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!platformTypeId.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
 
             if (platformType == null)
             {
-                return NotFound("Platform type has not been found");
+                return NotFound();
             }
 
             var platformTypeViewModel = _mapper.Map<PlatformTypeViewModel>(platformType);
@@ -125,7 +126,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             _platformTypeService.DeletePlatformType(id.Value);
@@ -139,7 +140,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (checkResult)
             {
-                ModelState.AddModelError("Type", "Type with same value exist.");
+                ModelState.AddModelError(nameof(PlatformTypeViewModel.Type), ErrorMessages.PlatformTypeExist);
             }
         }
     }

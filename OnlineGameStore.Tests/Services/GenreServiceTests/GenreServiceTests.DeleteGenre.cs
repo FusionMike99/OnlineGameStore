@@ -24,10 +24,13 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork
                 .Setup(m => m.Genres.GetSingle(
                     It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()))
                 .Returns(genre);
 
             mockUnitOfWork.Setup(x => x.Genres.Delete(It.IsAny<Genre>()));
+
+            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>()));
 
             // Act
             sut.DeleteGenre(genre.Id);
@@ -35,11 +38,17 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             mockUnitOfWork.Verify(x => x.Genres.GetSingle(
                     It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>()),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
                 Times.Once);
+            
             mockUnitOfWork.Verify(x => x.Genres.Delete(
                     It.Is<Genre>(g => g.Name == genre.Name && g.Id == genre.Id)),
                 Times.Once);
+            
+            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>()),
+                Times.Exactly(genre.SubGenres.Count));
+            
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
@@ -55,7 +64,8 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork
                 .Setup(m => m.Genres.GetSingle(
                     It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>()))
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()))
                 .Returns(genre);
 
             // Act

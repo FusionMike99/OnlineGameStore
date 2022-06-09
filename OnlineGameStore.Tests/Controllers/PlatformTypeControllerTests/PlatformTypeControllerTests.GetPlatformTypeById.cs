@@ -37,7 +37,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetPlatformTypeById_ReturnsBadRequestObjectResult_WhenPlatformTypeIdHasNotValue(
+        public void GetPlatformTypeById_ReturnsBadRequestResult_WhenPlatformTypeIdHasNotValue(
             int? platformTypeId,
             PlatformTypeController sut)
         {
@@ -45,13 +45,12 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetPlatformTypeById(platformTypeId);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetPlatformTypeById_ReturnsNotFoundObjectResult_WhenPlatformTypeIsNotFound(
+        public void GetPlatformTypeById_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
             PlatformType platformType,
             int platformTypeId,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
@@ -65,8 +64,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.GetPlatformTypeById(platformTypeId);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
             mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
         }

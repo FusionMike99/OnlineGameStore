@@ -22,7 +22,8 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>()))
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns(game);
 
             mockUnitOfWork.Setup(x => x.Comments.Create(It.IsAny<Comment>()))
@@ -34,8 +35,12 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualComment.Should().BeEquivalentTo(comment);
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+                It.IsAny<bool>()),
+                Times.Once);
+            
             mockUnitOfWork.Verify(x => x.Comments.Create(It.IsAny<Comment>()), Times.Once);
+            
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

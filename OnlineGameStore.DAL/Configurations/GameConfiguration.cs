@@ -28,6 +28,9 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(g => g.IsDeleted)
                 .HasDefaultValue(false);
+            
+            builder.Property(g => g.ViewsNumber)
+                .HasDefaultValue(0);
 
             builder.HasIndex(g => g.Key).IsUnique();
 

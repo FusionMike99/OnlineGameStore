@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
@@ -11,9 +12,11 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         void DeleteGame(int gameId);
 
-        Game GetGameByKey(string gameKey);
+        Game GetGameByKey(string gameKey, bool increaseViews = false);
+        
+        IEnumerable<Game> GetAllGames(SortFilterGameModel sortFilterModel = null, PageModel pageModel = null);
 
-        IEnumerable<Game> GetAllGames();
+        int GetGamesNumber(SortFilterGameModel sortFilterModel = null);
 
         IEnumerable<Game> GetGamesByGenre(int genreId);
 

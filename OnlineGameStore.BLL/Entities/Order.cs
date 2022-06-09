@@ -8,6 +8,8 @@ namespace OnlineGameStore.BLL.Entities
         public int Id { get; set; }
         
         public DateTime OrderDate { get; set; }
+        
+        public DateTime? CancelledDate { get; set; }
 
         public int CustomerId { get; set; }
 

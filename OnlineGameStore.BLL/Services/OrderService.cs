@@ -24,7 +24,8 @@ namespace OnlineGameStore.BLL.Services
         public Order GetOpenOrder(int customerId)
         {
             var order = _unitOfWork.Orders
-                .GetSingle(o => o.CustomerId == customerId && o.OrderStatusId <= (int)OrderState.InProgress,
+                .GetSingle(o => o.CustomerId == customerId 
+                                && o.OrderStatusId <= (int)OrderState.InProgress && o.CancelledDate == null,
                     false,
                     $"{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Product)}");
 
@@ -34,6 +35,7 @@ namespace OnlineGameStore.BLL.Services
                 {
                     CustomerId = customerId,
                     OrderStatusId = (int)OrderState.Open,
+                    OrderDate = DateTime.UtcNow,
                     OrderDetails = new List<OrderDetail>()
                 };
 
@@ -80,6 +82,26 @@ namespace OnlineGameStore.BLL.Services
                     Adding order detail to order successfully", order);
         }
 
+        public void RemoveFromOrder(int customerId, int productId)
+        {
+            var order = GetOpenOrder(customerId);
+
+            var existOrderDetail = order.OrderDetails.SingleOrDefault(od => od.ProductId == productId);
+
+            if (existOrderDetail == null)
+            {
+                return;
+            }
+            
+            order.OrderDetails.Remove(existOrderDetail);
+
+            _unitOfWork.Orders.Update(order);
+            _unitOfWork.Commit();
+            
+            _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(RemoveFromOrder)}.
+                    Removing from order successfully", order);
+        }
+
         public Order ChangeStatusToInProcess(int customerId)
         {
             var order = GetOrderByCustomerId(customerId);
@@ -87,7 +109,8 @@ namespace OnlineGameStore.BLL.Services
             CheckOrderExisting(order);
 
             order.OrderStatusId = (int)OrderState.InProgress;
-            order.OrderDate = DateTime.UtcNow;
+
+            UpdateGamesQuantities(order.OrderDetails, (a, b) => (short)(a - b));
 
             _unitOfWork.Orders.Update(order);
             _unitOfWork.Commit();
@@ -103,8 +126,6 @@ namespace OnlineGameStore.BLL.Services
             var order = GetOrderById(orderId);
 
             CheckOrderExisting(order);
-
-            UpdateGamesQuantities(order.OrderDetails);
             
             order.OrderStatusId = (int)OrderState.Closed;
 
@@ -117,7 +138,7 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
-        private Order GetOrderById(int orderId)
+        public Order GetOrderById(int orderId)
         {
             var order = _unitOfWork.Orders.GetSingle(o => o.Id == orderId,
                     false,
@@ -129,19 +150,18 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
-        public void CancelOrdersWithTimeout(TimeSpan timeout)
+        public void CancelOrdersWithTimeout()
         {
             var orders = GetOrdersWithStatus(OrderState.InProgress);
 
-            var currentDate = DateTime.UtcNow;
-
             foreach (var order in orders)
             {
-                var elapsedTime = currentDate - order.OrderDate;
+                if (order.CancelledDate == null || DateTime.UtcNow >= order.CancelledDate)
+                {
+                    continue;
+                }
 
-                if (elapsedTime <= timeout) continue;
-
-                UpdateGamesQuantities(order.OrderDetails);
+                UpdateGamesQuantities(order.OrderDetails, (a, b) => (short)(a + b));
                 
                 order.OrderStatusId = (int)OrderState.Cancelled;
 
@@ -149,6 +169,24 @@ namespace OnlineGameStore.BLL.Services
             }
             
             _unitOfWork.Commit();
+            
+            _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(CancelOrdersWithTimeout)}.
+                    Cancelling orders successfully", orders);
+        }
+
+        public void SetCancelledDate(int orderId, DateTime cancelledDate)
+        {
+            var order = GetOrderById(orderId);
+            
+            CheckOrderExisting(order);
+            
+            order.CancelledDate = cancelledDate;
+
+            _unitOfWork.Orders.Update(order);
+            _unitOfWork.Commit();
+
+            _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(SetCancelledDate)}.
+                    Setting cancelled date for order with id {order.Id} 'closed' successfully", order);
         }
 
         private Order GetOrderByCustomerId(int customerId, OrderState orderState = OrderState.Open)
@@ -168,6 +206,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var orders = _unitOfWork.Orders.GetMany(o => o.OrderStatusId == (int)orderState,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Order.OrderDetails)}.{nameof(OrderDetail.Product)}");
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(GetOrdersWithStatus)}.
@@ -176,13 +217,14 @@ namespace OnlineGameStore.BLL.Services
             return orders;
         }
 
-        private void UpdateGamesQuantities(IEnumerable<OrderDetail> orderDetails)
+        private void UpdateGamesQuantities(IEnumerable<OrderDetail> orderDetails,
+            Func<short, short, short> operation)
         {
             foreach (var orderDetail in orderDetails)
             {
                 var game = _unitOfWork.Games.GetSingle(g => g.Id == orderDetail.ProductId);
 
-                game.UnitsInStock -= orderDetail.Quantity;
+                game.UnitsInStock = operation(game.UnitsInStock, orderDetail.Quantity);
 
                 _unitOfWork.Games.Update(game);
             }

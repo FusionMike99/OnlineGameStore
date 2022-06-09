@@ -5,7 +5,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.MVC.Infrastructure;
+using OnlineGameStore.MVC.ModelBuilders;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
@@ -33,7 +37,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public ViewResult Create()
+        public IActionResult Create()
         {
             var editGameViewModel = new EditGameViewModel();
 
@@ -67,14 +71,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Need to pass game key");
+                return BadRequest();
             }
 
             var game = _gameService.GetGameByKey(gameKey);
 
             if (game == null)
             {
-                return NotFound("Game has not been found");
+                return NotFound();
             }
 
             var editGameViewModel = _mapper.Map<EditGameViewModel>(game);
@@ -109,14 +113,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Need to pass game key");
+                return BadRequest();
             }
 
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = _gameService.GetGameByKey(gameKey, increaseViews: true);
 
             if (game == null)
             {
-                return NotFound("Game has not been found");
+                return NotFound();
             }
 
             var gameViewModel = _mapper.Map<GameViewModel>(game);
@@ -125,15 +129,32 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGames()
+        public IActionResult GetGames(SortFilterGameViewModel sortFilterGameViewModel,
+            int pageNumber = 1, PageSize pageSize = PageSize.Ten)
         {
-            var games = _gameService.GetAllGames();
+            var sortFilterGameModel = _mapper.Map<SortFilterGameModel>(sortFilterGameViewModel);
+
+            var pageModel = new PageModel(pageNumber, pageSize);
+
+            var gamesNumber = _gameService.GetGamesNumber(sortFilterGameModel);
+
+            var pageViewModel = new PageViewModelBuilder(pageModel, gamesNumber);
+            
+            var games = _gameService.GetAllGames(sortFilterGameModel, pageModel);
 
             var gamesViewModel = _mapper.Map<IEnumerable<GameViewModel>>(games);
 
-            var viewResult = View("Index", gamesViewModel);
+            var gameListViewModel = new GameListViewModel
+            {
+                PageViewModel = pageViewModel,
+                Games = gamesViewModel,
+                SortFilterGameViewModel = new SortFilterGameViewModelBuilder(sortFilterGameModel,
+                    _genreService.GetAllGenres(),
+                    _platformTypeService.GetAllPlatformTypes(),
+                    _publisherService.GetAllPublishers()),
+            };
 
-            return viewResult;
+            return View("Index", gameListViewModel);
         }
 
         [HttpPost("remove")]
@@ -142,7 +163,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass game id");
+                return BadRequest();
             }
 
             _gameService.DeleteGame(id.Value);
@@ -155,14 +176,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
-                return BadRequest("Need to pass game key");
+                return BadRequest();
             }
 
             var game = _gameService.GetGameByKey(gameKey);
 
             if (game == null)
             {
-                return NotFound("Game has not been found");
+                return NotFound();
             }
 
             var gameViewModel = _mapper.Map<GameViewModel>(game);
@@ -198,7 +219,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (checkResult)
             {
-                ModelState.AddModelError("Key", "Key with same value exist.");
+                ModelState.AddModelError(nameof(GameViewModel.Key), ErrorMessages.GameKeyExist);
             }
         }
     }

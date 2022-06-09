@@ -37,6 +37,13 @@ namespace OnlineGameStore.DAL.Repositories
             Update(entity);
         }
 
+        public int CountEntities(Expression<Func<TEntity, bool>> predicate = null)
+        {
+            var entitiesNumber = predicate != null ? _entities.Count(predicate) : _entities.Count();
+            
+            return entitiesNumber;
+        }
+
         public TEntity Update(TEntity entity)
         {
             var exist = _entities.Find(entity.Id);
@@ -66,12 +73,7 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
-            var query = Include(includeProperties);
-
-            if (includeDeleteEntities)
-            {
-                query = query.IgnoreQueryFilters();
-            }
+            var query = IncludeProperties(includeDeleteEntities, includeProperties);
 
             var foundEntity = query.SingleOrDefault(predicate);
             
@@ -80,6 +82,39 @@ namespace OnlineGameStore.DAL.Repositories
 
         public IEnumerable<TEntity> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             bool includeDeleteEntities = false,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            int? skip = null,
+            int? take = null,
+            params string[] includeProperties)
+        {
+            var query = IncludeProperties(includeDeleteEntities, includeProperties);
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            if (skip.HasValue)
+            {
+                query = query.Skip(skip.Value);
+            }
+
+            if (take.HasValue)
+            {
+                query = query.Take(take.Value);
+            }
+
+            var foundList = query.ToList();
+            
+            return foundList;
+        }
+
+        private IQueryable<TEntity> IncludeProperties(bool includeDeleteEntities = false,
             params string[] includeProperties)
         {
             var query = Include(includeProperties);
@@ -89,14 +124,7 @@ namespace OnlineGameStore.DAL.Repositories
                 query = query.IgnoreQueryFilters();
             }
 
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-
-            var foundList = query.ToList();
-            
-            return foundList;
+            return query;
         }
 
         private IQueryable<TEntity> Include(params string[] includeProperties)

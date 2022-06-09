@@ -23,6 +23,11 @@ namespace OnlineGameStore.MVC.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(string statusCode)
         {
+            if (statusCode == "404")
+            {
+                return View("NotFound");
+            }
+            
             var errorViewModel = new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -45,6 +46,17 @@ namespace OnlineGameStore.MVC.Mapper
                 .ForMember(dest => dest.PlatformTypes,
                     source => source.MapFrom(game => game.GamePlatformTypes.Select(g => g.PlatformType.Type)))
                 .ForMember(dest => dest.Publisher, source => source.MapFrom(game => game.Publisher.CompanyName));
+
+            CreateMap<SortFilterGameModel, SortFilterGameViewModel>()
+                .ForMember(dest => dest.Genres, source => source.Ignore())
+                .ForMember(dest => dest.PlatformTypes, source => source.Ignore())
+                .ForMember(dest => dest.Publishers, source => source.Ignore())
+                .ForMember(dest => dest.SortParameters, source => source.Ignore())
+                .ForMember(dest => dest.DatePublishedParameters, source => source.Ignore())
+                .ReverseMap();
+
+            CreateMap<PriceRangeModel, PriceRangeViewModel>()
+                .ReverseMap();
         }
     }
 }

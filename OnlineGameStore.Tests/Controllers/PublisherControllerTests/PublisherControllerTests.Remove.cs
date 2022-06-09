@@ -33,7 +33,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestObjectResult_WhenIdHasNotValue(
+        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
             int? id,
             PublisherController sut)
         {
@@ -41,8 +41,7 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Remove(id);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
     }
 }

@@ -20,7 +20,8 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>()))
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns(game);
 
             // Act
@@ -29,14 +30,16 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<FileContentResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+                It.IsAny<bool>()),
+                Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void Download_ReturnsBadRequestObjectResult_WhenGameKeyHasNotValue(
+        public void Download_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
             string gameKey,
             GameController sut)
         {
@@ -44,30 +47,31 @@ namespace OnlineGameStore.Tests.Controllers
             var result = sut.Download(gameKey);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Download_ReturnsNotFoundObjectResult_WhenGameIsNotFound(
+        public void Download_ReturnsNotFoundResult_WhenGameIsNotFound(
             Game game,
             string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>()))
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+                    It.IsAny<bool>()))
                 .Returns(game);
 
             // Act
             var result = sut.Download(gameKey);
 
             // Assert
-            result.Should().BeOfType<NotFoundObjectResult>()
-                .Which.Value.Should().BeOfType<string>();
+            result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+                It.IsAny<bool>()),
+                Times.Once);
         }
     }
 }

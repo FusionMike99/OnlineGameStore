@@ -38,7 +38,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (string.IsNullOrWhiteSpace(model.ReturnUrl) || !Url.IsLocalUrl(model.ReturnUrl))
             {
-                return RedirectToAction("GetGames", "Game");
+                return RedirectToAction(nameof(GameController.GetGames), "Game");
             }
             
             var afterBanViewModel = new AfterBanViewModel

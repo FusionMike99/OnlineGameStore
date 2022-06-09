@@ -27,15 +27,9 @@
         $.getJSON("/cldr-data/cldr-core/supplemental/numberingSystems.json"),
         $.getJSON("/cldr-data/cldr-core/supplemental/plurals.json"),
         $.getJSON("/cldr-data/cldr-core/supplemental/ordinals.json"),
-        $.getJSON("/cldr-data/cldr-core/supplemental/currencyData.json"),
-        $.getJSON("/cldr-data/cldr-core/supplemental/timeData.json"),
-        $.getJSON("/cldr-data/cldr-core/supplemental/weekData.json"),
         
         $.getJSON(`/cldr-data/cldr-numbers-modern/main/${locale}/numbers.json`),
         $.getJSON(`/cldr-data/cldr-numbers-modern/main/${locale}/currencies.json`),
-        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/ca-gregorian.json`),
-        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/timeZoneNames.json`),
-        $.getJSON(`/cldr-data/cldr-dates-modern/main/${locale}/dateFields.json`),
         $.getJSON(`/cldr-data/cldr-units-modern/main/${locale}/units.json`)
     ).then(function () {
         // Normalize $.get results, we only need the JSON, not the request statuses.

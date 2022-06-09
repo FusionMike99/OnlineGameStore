@@ -16,7 +16,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
             VisaPaymentMethodStrategy sut)
         {
             // Act
-            var result = sut.ProcessPayment(order);
+            var result = sut.PaymentProcess(order);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

@@ -56,6 +56,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var comments = _unitOfWork.Comments.GetMany(c => c.Game.Key == gameKey,
                     true,
+                    null,
+                    null,
+                    null,
                     $"{nameof(Comment.Game)}",
                     $"{nameof(Comment.Replies)}");
 

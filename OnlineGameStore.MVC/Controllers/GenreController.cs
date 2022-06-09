@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
@@ -22,7 +23,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public ViewResult Create()
+        public IActionResult Create()
         {
             var editGenreViewModel = new EditGenreViewModel();
 
@@ -56,14 +57,14 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!genreId.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             var genre = _genreService.GetGenreById(genreId.Value);
 
             if (genre == null)
             {
-                return NotFound("Genre has not been found");
+                return NotFound();
             }
 
             var editGenreViewModel = _mapper.Map<EditGenreViewModel>(genre);
@@ -79,7 +80,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (genreId != genre.Id)
             {
-                return NotFound("Genre has not been found");
+                return NotFound();
             }
             
             VerifyGenre(genre);
@@ -98,19 +99,19 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("{genreId}")]
+        [HttpGet("{genreId:int}")]
         public IActionResult GetGenreById([FromRoute] int? genreId)
         {
             if (!genreId.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             var genre = _genreService.GetGenreById(genreId.Value);
 
             if (genre == null)
             {
-                return NotFound("Genre has not been found");
+                return NotFound();
             }
 
             var genreViewModel = _mapper.Map<GenreViewModel>(genre);
@@ -134,7 +135,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             if (!id.HasValue)
             {
-                return BadRequest("Need to pass genre id");
+                return BadRequest();
             }
 
             _genreService.DeleteGenre(id.Value);
@@ -155,7 +156,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (checkResult)
             {
-                ModelState.AddModelError("Name", "Genre with same name exist.");
+                ModelState.AddModelError(nameof(GenreViewModel.Name), ErrorMessages.GenreNameExist);
             }
         }
     }

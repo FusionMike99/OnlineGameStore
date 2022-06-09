@@ -18,6 +18,12 @@ namespace OnlineGameStore.BLL.Entities
         public short UnitsInStock { get; set; }
 
         public bool Discontinued { get; set; }
+        
+        public DateTime? DateAdded { get; set; }
+
+        public DateTime? DatePublished { get; set; }
+        
+        public ulong ViewsNumber { get; set; }
 
         public int? PublisherId { get; set; }
 

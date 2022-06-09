@@ -20,7 +20,7 @@ namespace OnlineGameStore.BLL.Services
 
         public bool CheckTypeForUnique(int platformTypeId, string type)
         {
-            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Type == type);
+            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Type == type, true);
 
             return platformType != null && platformType.Id != platformTypeId;
         }
@@ -73,6 +73,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var platformTypes = _unitOfWork.PlatformTypes.GetMany(null,
                     false,
+                    null,
+                    null,
+                    null,
                     $"{nameof(PlatformType.GamePlatformTypes)}.{nameof(GamePlatformType.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(GetAllPlatformTypes)}.

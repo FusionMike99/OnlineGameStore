@@ -5,12 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
-using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.MVC.Models;
+using OnlineGameStore.MVC.Strategies.PaymentMethods;
 
 namespace OnlineGameStore.MVC.Controllers
 {
-    [Route("orders")]
     public class OrderController : Controller
     {
         private readonly ICustomerIdAccessor _customerIdAccessor;
@@ -32,19 +31,21 @@ namespace OnlineGameStore.MVC.Controllers
             _customerIdAccessor = customerIdAccessor;
         }
 
-        [HttpGet("{gameKey}/buy")]
+        [HttpGet("games/{gameKey}/buy")]
         public IActionResult BuyProduct([FromRoute] string gameKey)
         {
+            const int quantity = 1;
+            
             var game = _gameService.GetGameByKey(gameKey);
 
             if (game == null)
             {
-                return NotFound("Game has not been found");
+                return NotFound();
             }
 
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            _orderService.AddToOpenOrder(customerId, game, 1);
+            _orderService.AddToOpenOrder(customerId, game, quantity);
 
             return RedirectToAction(nameof(GetBasket));
         }
@@ -56,47 +57,67 @@ namespace OnlineGameStore.MVC.Controllers
 
             var order = _orderService.GetOpenOrder(customerId);
 
-            return View("Basket", PrepareOrderViewModel(order));
+            var orderViewModel = PrepareOrderViewModel(order);
+
+            orderViewModel.EnableModification = true;
+
+            return View("Basket", orderViewModel);
+        }
+        
+        [HttpPost("basket/remove/{productId:int}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveFromBasket(int? productId)
+        {
+            if (!productId.HasValue)
+            {
+                return BadRequest();
+            }
+            
+            var customerId = _customerIdAccessor.GetCustomerId();
+
+            _orderService.RemoveFromOrder(customerId, productId.Value);
+
+            return RedirectToAction(nameof(GetBasket));
         }
 
-        [HttpGet("make")]
+        [HttpGet("orders/make")]
         public IActionResult Make()
         {
             var customerId = _customerIdAccessor.GetCustomerId();
 
             var order = _orderService.ChangeStatusToInProcess(customerId);
 
-            return View(PrepareOrderViewModel(order));
+            var orderViewModel = PrepareOrderViewModel(order);
+
+            orderViewModel.EnableModification = false;
+
+            return View(orderViewModel);
         }
 
-        [HttpGet("pay/{paymentMethod}")]
-        public IActionResult Pay([FromRoute] PaymentMethod paymentMethod)
+        [HttpGet("orders/{orderId:int}/pay")]
+        public IActionResult Pay(int orderId, PaymentMethod paymentMethod)
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
 
-            var customerId = _customerIdAccessor.GetCustomerId();
+            var order = _orderService.GetOrderById(orderId);
 
-            var order = _orderService.GetOpenOrder(customerId);
-
-            var result = paymentMethodStrategy.ProcessPayment(order);
+            var result = paymentMethodStrategy.PaymentProcess(order);
 
             return result;
         }
 
-        [HttpPost]
-        [Route("{orderId:int}/pay", Name = "payOrder")]
+        [HttpPost("orders/{orderId:int}/pay")]
+        [ValidateAntiForgeryToken]
         public IActionResult Pay([FromRoute] int orderId)
         {
             _orderService.ChangeStatusToClosed(orderId);
 
-            return RedirectToAction("GetGames", "Game");
+            return RedirectToAction(nameof(GameController.GetGames), "Game");
         }
 
         private OrderViewModel PrepareOrderViewModel(Order order)
         {
             var orderViewModel = _mapper.Map<OrderViewModel>(order);
-
-            ViewData["GrandTotal"] = orderViewModel.Total.ToString("c");
 
             return orderViewModel;
         }

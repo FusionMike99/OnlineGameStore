@@ -28,6 +28,9 @@ namespace OnlineGameStore.Tests.Services
                 .Setup(m => m.Comments.GetMany(
                     It.IsAny<Expression<Func<Comment, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Comment>,IOrderedQueryable<Comment>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()))
                 .Returns(comments);
 
@@ -42,6 +45,9 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork.Verify(x => x.Comments.GetMany(
                     It.IsAny<Expression<Func<Comment, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Comment>,IOrderedQueryable<Comment>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()),
                 Times.Once);
         }

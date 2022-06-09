@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Bogus;
+using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Data
@@ -82,6 +86,71 @@ namespace OnlineGameStore.DAL.Data
                 new OrderStatus { Id = 2, Status = "In progress" },
                 new OrderStatus { Id = 3, Status = "Cancelled" },
                 new OrderStatus { Id = 4, Status = "Closed" });
+            
+            GenerateFakeData(modelBuilder);
+        }
+
+        private static void GenerateFakeData(ModelBuilder modelBuilder)
+        {
+            var gameId = 2;
+
+            var fakeGame = new Faker<Game>()
+                .RuleFor(g => g.Id, f => gameId++)
+                .RuleFor(g => g.Name, f => f.Commerce.ProductName())
+                .RuleFor(g => g.Key, (f, g) => ToKebabCase(g.Name))
+                .RuleFor(g => g.Description, f => f.Commerce.ProductDescription())
+                .RuleFor(g => g.Price, f => f.Random.Decimal(25M, 250M))
+                .RuleFor(g => g.UnitsInStock, f => f.Random.Short(1, 100))
+                .RuleFor(g => g.Discontinued, f => f.Random.Bool())
+                .RuleFor(g => g.DateAdded, f => f.Date.Recent(5, DateTime.UtcNow))
+                .RuleFor(g => g.DatePublished, f => f.Date.Past(3, DateTime.UtcNow))
+                .RuleFor(g => g.ViewsNumber, f => f.Random.ULong(0, 100000L))
+                .RuleFor(g => g.PublisherId, f => f.Random.Int(1, 3).OrNull(f));
+            
+            var games = fakeGame.Generate(1000)
+                .GroupBy(g => new { g.Key })
+                .Select(c => c.FirstOrDefault())
+                .ToList();
+
+            modelBuilder.Entity<Game>()
+                .HasData(games);
+
+            var fakeGameGenre = new Faker<GameGenre>()
+                .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
+                .RuleFor(gg => gg.GenreId, f => f.Random.Int(1, 16));
+
+            var gameGenres = fakeGameGenre.Generate(5000)
+                .GroupBy(c => new { c.GameId, c.GenreId })
+                .Select(c => c.FirstOrDefault())
+                .ToList();
+            
+            modelBuilder.Entity<GameGenre>()
+                .HasData(gameGenres);
+            
+            var fakeGamePlatformType = new Faker<GamePlatformType>()
+                .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
+                .RuleFor(gg => gg.PlatformId, f => f.Random.Int(1, 4));
+            
+            var gamePlatformTypes = fakeGamePlatformType.Generate(5000)
+                .GroupBy(c => new { c.GameId, c.PlatformId })
+                .Select(c => c.FirstOrDefault())
+                .ToList();
+            
+            modelBuilder.Entity<GamePlatformType>()
+                .HasData(gamePlatformTypes);
+            
+            string ToKebabCase(string value)
+            {
+                value = Regex.Replace(value, @"[^0-9a-zA-Z]", "-");
+
+                value = Regex.Replace(value, @"[-]{2,}", "-");
+
+                value = Regex.Replace(value, @"-+$", string.Empty);
+
+                if (value.StartsWith("-")) value = value[1..];
+
+                return value.ToLower();
+            }
         }
     }
 }

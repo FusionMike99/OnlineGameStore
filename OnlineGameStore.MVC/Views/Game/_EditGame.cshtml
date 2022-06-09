@@ -86,4 +86,17 @@
             <span asp-validation-for="SelectedPlatformTypes" class="text-danger"></span>
         </div>
     </div>
+    
+    <div class="my-3">
+        <div class="input-group">
+            <label asp-for="DatePublished" class="input-group-text"></label>
+            <input asp-for="DatePublished" class="form-control"
+                   max="@DateTime.UtcNow.ToString("yyyy-MM-dd")"/>
+        </div>
+        <span asp-validation-for="DatePublished" class="text-danger"></span>
+    </div>
+    
+    <input asp-for="DateAdded"/>
+    
+    <input asp-for="ViewsNumber"/>
 </div>

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.MVC.Infrastructure
 {
@@ -14,7 +15,7 @@ namespace OnlineGameStore.MVC.Infrastructure
 
         public int GetCustomerId()
         {
-            var isCookieGet = _httpContext.Request.Cookies.TryGetValue("customerId", out var customerId);
+            var isCookieGet = _httpContext.Request.Cookies.TryGetValue(Constants.CustomerIdCookieKey, out var customerId);
             
             if (isCookieGet)
             {
@@ -34,7 +35,9 @@ namespace OnlineGameStore.MVC.Infrastructure
                 Expires = DateTime.UtcNow.AddMonths(1)
             };
 
-            _httpContext.Response.Cookies.Append("customerId", randomCustomerId.ToString(), cookieOptions);
+            _httpContext.Response.Cookies.Append(Constants.CustomerIdCookieKey,
+                randomCustomerId.ToString(),
+                cookieOptions);
 
             return randomCustomerId;
         }

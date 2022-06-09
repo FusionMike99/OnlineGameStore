@@ -28,17 +28,21 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(game);
 
+            var expectedViewsNumber = game.ViewsNumber + 1;
+
             // Act
-            var actualGame = sut.GetGameByKey(game.Key);
+            var actualGame = sut.GetGameByKey(game.Key, increaseViews: true);
 
             // Assert
-            actualGame.Should().BeEquivalentTo(game);
+            actualGame.ViewsNumber.Should().Be(expectedViewsNumber);
 
             mockUnitOfWork.Verify(x => x.Games.GetSingle(
                     It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<string[]>()),
                 Times.Once);
+            
+            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }
 }

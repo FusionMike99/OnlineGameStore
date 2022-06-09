@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -27,6 +28,9 @@ namespace OnlineGameStore.Tests.Services
                 .Setup(m => m.Games.GetMany(
                     It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Game>,IOrderedQueryable<Game>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()))
                 .Returns(games);
 
@@ -39,6 +43,9 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork.Verify(x => x.Games.GetMany(
                     It.IsAny<Expression<Func<Game, bool>>>(),
                     It.IsAny<bool>(),
+                    It.IsAny<Func<IQueryable<Game>,IOrderedQueryable<Game>>>(),
+                    It.IsAny<int?>(),
+                    It.IsAny<int?>(),
                     It.IsAny<string[]>()),
                 Times.Once);
         }
