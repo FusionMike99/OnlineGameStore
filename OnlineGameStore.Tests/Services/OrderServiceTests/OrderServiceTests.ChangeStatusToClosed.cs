@@ -26,10 +26,11 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(order);
 
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>()));
+            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()));
 
             // Act
-            var actualOrder = sut.ChangeStatusToClosed(order.CustomerId);
+            var actualOrder = sut.ChangeStatusToClosed(order.Id);
 
             // Assert
             actualOrder.OrderStatusId.Should().Be(4);
@@ -39,7 +40,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()),
                 Times.Once);
 
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 

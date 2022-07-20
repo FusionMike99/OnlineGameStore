@@ -14,6 +14,8 @@ namespace OnlineGameStore.BLL.Services.Contracts
         PlatformType GetPlatformTypeById(int platformTypeId);
 
         IEnumerable<PlatformType> GetAllPlatformTypes();
+        
+        IEnumerable<int> GetPlatformTypesIdsByNames(IEnumerable<string> types);
 
         bool CheckTypeForUnique(int platformTypeId, string type);
     }

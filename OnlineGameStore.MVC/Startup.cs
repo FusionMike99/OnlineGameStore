@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using Hangfire;
+using Hangfire.Client;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Options;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
 using OnlineGameStore.MVC.Infrastructure;
@@ -36,11 +38,16 @@ namespace OnlineGameStore.MVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connection));
+            var gameStoreConnection = Configuration.GetConnectionString("DockerSqlServerConnection");
+            var northwindConnection = Configuration.GetConnectionString("NorthwindConnection");
+            
+            services.AddDbContext<StoreDbContext>(options =>
+                options.UseSqlServer(gameStoreConnection));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<INorthwindUnitOfWork>(provider =>
+                new NorthwindUnitOfWork(northwindConnection));
 
             services.AddScoped<IGameService, GameService>();
 
@@ -55,6 +62,10 @@ namespace OnlineGameStore.MVC
             services.AddScoped<IOrderService, OrderService>();
             
             services.AddScoped<IUserService, UserService>();
+            
+            services.AddScoped<IShipperService, ShipperService>();
+            
+            services.AddScoped<INorthwindLogService, NorthwindLogService>();
 
             services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
 
@@ -66,7 +77,9 @@ namespace OnlineGameStore.MVC
                 typeof(GenreMappingProfile),
                 typeof(PlatformTypeMappingProfile),
                 typeof(PublisherMappingProfile),
-                typeof(OrderMappingProfile));
+                typeof(OrderMappingProfile),
+                typeof(NorthwindMappingProfile),
+                typeof(ShipperMappingProfile));
 
             services.AddScoped<IPaymentMethodStrategy, BankPaymentMethodStrategy>();
             services.AddScoped<IPaymentMethodStrategy, TerminalIBoxPaymentMethodStrategy>();
@@ -76,7 +89,7 @@ namespace OnlineGameStore.MVC
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"),
+                .UseSqlServerStorage(gameStoreConnection,
                     new SqlServerStorageOptions
                     {
                         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
@@ -113,13 +126,15 @@ namespace OnlineGameStore.MVC
             RecurringJob.AddOrUpdate("cancellingOrders",
                 () => orderService.CancelOrdersWithTimeout(),
                 Cron.Minutely);
+
+            BackgroundJob.Enqueue(() => Console.WriteLine());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOrderService orderService)
         {
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/error");
+                app.UseDeveloperExceptionPage();
             }
             else
             {

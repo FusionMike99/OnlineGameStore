@@ -1,4 +1,6 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
@@ -19,7 +21,8 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.PlatformTypes.Update(It.IsAny<PlatformType>()))
+            mockUnitOfWork.Setup(x => x.PlatformTypes.Update(It.IsAny<PlatformType>(),
+                    It.IsAny<Expression<Func<PlatformType,bool>>>()))
                 .Returns(platformType);
 
             // Act
@@ -28,7 +31,8 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.Update(It.IsAny<PlatformType>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.PlatformTypes.Update(It.IsAny<PlatformType>(),
+                It.IsAny<Expression<Func<PlatformType,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

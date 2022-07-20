@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {
@@ -20,15 +21,20 @@ namespace OnlineGameStore.MVC.Models
 
         [Display(Name = "Units in Stock")]
         public short UnitsInStock { get; set; }
+        
+        [Display(Name = "Quantity per Unit")]
+        public string QuantityPerUnit { get; set; }
 
         public bool Discontinued { get; set; }
         
         [Display(Name = "Added at")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateAdded { get; set; }
         
         [Display(Name = "Published at")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DatePublished { get; set; }
         
         [Display(Name = "Views")]
@@ -41,5 +47,8 @@ namespace OnlineGameStore.MVC.Models
 
         [Display(Name = "Platform types")]
         public IEnumerable<string> PlatformTypes { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public DatabaseEntity DatabaseEntity { get; set; }
     }
 }

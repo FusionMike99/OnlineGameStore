@@ -4,7 +4,7 @@ namespace OnlineGameStore.MVC.Models
 {
     public class OrderDetailViewModel
     {
-        public int ProductId { get; set; }
+        public string GameKey { get; set; }
 
         [Display(Name = "Product")]
         public string ProductName { get; set; }

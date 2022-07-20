@@ -20,11 +20,11 @@ namespace OnlineGameStore.MVC.Models
         
         public SelectList DatePublishedParameters { get; set; }
         
-        public List<int> SelectedGenres { get; set; }
+        public List<string> SelectedGenres { get; set; }
         
-        public List<int> SelectedPlatformTypes { get; set; }
+        public List<string> SelectedPlatformTypes { get; set; }
         
-        public List<int> SelectedPublishers { get; set; }
+        public List<string> SelectedPublishers { get; set; }
         
         public GameSortState GameSortState { get; set; }
         

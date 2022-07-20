@@ -6,6 +6,7 @@ using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -19,6 +20,7 @@ namespace OnlineGameStore.Tests.Services
             int minutes,
             Game game,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IGameService> mockGameService,
             OrderService sut)
         {
             // Arrange
@@ -34,13 +36,6 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(orders);
 
-            mockUnitOfWork.Setup(x => x.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(game);
-
-            mockUnitOfWork.Setup(x => x.Games.Update(It.IsAny<Game>()));
-
             // Act
             sut.CancelOrdersWithTimeout();
 
@@ -53,14 +48,13 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()),
                 Times.Once);
 
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Exactly(2));
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Exactly(2));
             
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(It.IsAny<Expression<Func<Game, bool>>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
+            mockGameService.Verify(x => x.UpdateGameQuantity(It.IsAny<string>(),
+                    It.IsAny<short>(),
+                    It.IsAny<Func<short,short,short>>()),
                 Times.Exactly(2));
-            
-            mockUnitOfWork.Verify(x => x.Games.Update(It.IsAny<Game>()), Times.Exactly(2));
             
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }

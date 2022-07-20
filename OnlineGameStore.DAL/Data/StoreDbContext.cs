@@ -2,13 +2,18 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Repositories;
 
 namespace OnlineGameStore.DAL.Data
 {
     public class StoreDbContext : DbContext
     {
-        public StoreDbContext([NotNull] DbContextOptions options) : base(options)
+        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
+        
+        public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options,
+            INorthwindUnitOfWork northwindUnitOfWork) : base(options)
         {
+            _northwindUnitOfWork = northwindUnitOfWork;
         }
 
         public DbSet<Game> Games { get; set; }
@@ -35,7 +40,7 @@ namespace OnlineGameStore.DAL.Data
                 if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
-            modelBuilder.StoreSeed();
+            modelBuilder.StoreSeed(_northwindUnitOfWork);
         }
     }
 }

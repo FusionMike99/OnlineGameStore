@@ -19,6 +19,9 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(g => g.IsDeleted)
                 .HasDefaultValue(false);
+            
+            builder.Property(g => g.Description)
+                .HasDefaultValue(string.Empty);
 
             builder.HasIndex(g => g.Name).IsUnique();
         }

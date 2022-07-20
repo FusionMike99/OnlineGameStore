@@ -1,4 +1,6 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
@@ -19,7 +21,8 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>()))
+            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>(),
+                    It.IsAny<Expression<Func<Genre,bool>>>()))
                 .Returns(genre);
 
             // Act
@@ -28,7 +31,8 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);
 
-            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>(),
+                It.IsAny<Expression<Func<Genre,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

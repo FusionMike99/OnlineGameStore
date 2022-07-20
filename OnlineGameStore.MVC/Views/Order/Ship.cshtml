@@ -1,0 +1,107 @@
+﻿@model ShipOrderViewModel
+
+@{
+    ViewData["Title"] = "Ship order";
+}
+
+<h1>Ship</h1>
+
+<h4>Order</h4>
+<hr/>
+<div class="col-8 mx-auto">
+    <form asp-action="Ship" method="post" name="editGameForm">
+        <div class="container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+            <input asp-for="CustomerId"/>
+            <input asp-for="OrderDate"/>
+            <input asp-for="CancelledDate"/>
+            <input asp-for="OrderStatusId"/>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipName" class="input-group-text"></label>
+                        <input asp-for="ShipName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipName" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="Freight" class="form-control text-end" readonly="readonly"/>
+                        <label asp-for="Freight" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="Freight" class="text-danger"></span>
+                </div>
+            </div>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipAddress" class="input-group-text"></label>
+                        <input asp-for="ShipAddress" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipAddress" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShipCity" class="form-control text-end"/>
+                        <label asp-for="ShipCity" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShipCity" class="text-danger"></span>
+                </div>
+            </div>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipRegion" class="input-group-text"></label>
+                        <input asp-for="ShipRegion" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipRegion" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShipPostalCode" class="form-control text-end"/>
+                        <label asp-for="ShipPostalCode" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShipPostalCode" class="text-danger"></span>
+                </div>
+            </div>
+        
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="ShipCountry" class="input-group-text"></label>
+                    <input asp-for="ShipCountry" class="form-control" />
+                </div>
+                <span asp-validation-for="ShipCountry" class="text-danger"></span>
+            </div>
+            
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipVia" class="input-group-text"></label>
+                        <select asp-for="ShipVia" asp-items="Model.Shippers" class="form-select text-end">
+                        </select>
+                    </div>
+                    <span asp-validation-for="ShipVia" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShippedDate" class="form-control text-end" readonly="readonly"/>
+                        <label asp-for="ShippedDate" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShippedDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Save" class="btn btn-info text-light"/>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

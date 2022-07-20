@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
@@ -25,7 +26,13 @@ namespace OnlineGameStore.BLL.Entities
         
         public ulong ViewsNumber { get; set; }
 
-        public int? PublisherId { get; set; }
+        public string QuantityPerUnit { get; set; }
+        
+        public int UnitsOnOrder { get; set; }
+        
+        public int ReorderLevel { get; set; }
+        
+        public string PublisherName { get; set; }
 
         public Publisher Publisher { get; set; }
 
@@ -40,5 +47,7 @@ namespace OnlineGameStore.BLL.Entities
         public bool IsDeleted { get; set; }
 
         public DateTime? DeletedAt { get; set; }
+
+        public DatabaseEntity DatabaseEntity { get; set; }
     }
 }

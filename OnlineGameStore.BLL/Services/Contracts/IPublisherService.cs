@@ -7,11 +7,13 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Publisher CreatePublisher(Publisher publisher);
 
-        Publisher EditPublisher(Publisher publisher);
+        Publisher EditPublisher(string companyName, Publisher publisher);
 
         void DeletePublisher(int publisherId);
 
         Publisher GetPublisherByCompanyName(string companyName);
+        
+        IEnumerable<int> GetSuppliersIdsByNames(IEnumerable<string> companiesNames);
 
         IEnumerable<Publisher> GetAllPublishers();
 

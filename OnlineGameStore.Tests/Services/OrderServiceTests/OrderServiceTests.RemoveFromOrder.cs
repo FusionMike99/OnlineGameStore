@@ -31,12 +31,13 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(order);
 
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>()));
+            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()));
 
             var arrangedOrderDetail = order.OrderDetails.First();
 
             // Act
-            sut.RemoveFromOrder(order.CustomerId, arrangedOrderDetail.ProductId);
+            sut.RemoveFromOrder(order.CustomerId, arrangedOrderDetail.GameKey);
 
             // Assert
             order.OrderDetails.Should().HaveCount(expectedCount);
@@ -46,7 +47,8 @@ namespace OnlineGameStore.Tests.Services
                 It.IsAny<string[]>()),
                 Times.Once());
             
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
         
@@ -66,7 +68,7 @@ namespace OnlineGameStore.Tests.Services
                 .Returns(order);
 
             // Act
-            sut.RemoveFromOrder(order.CustomerId, game.Id + 1);
+            sut.RemoveFromOrder(order.CustomerId, game.Key + 1);
 
             // Assert
             
@@ -75,7 +77,8 @@ namespace OnlineGameStore.Tests.Services
                 It.IsAny<string[]>()),
                 Times.Once());
             
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Never);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Never);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Never);
         }
     }

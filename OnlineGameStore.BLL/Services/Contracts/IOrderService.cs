@@ -1,19 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IOrderService
     {
-        Order GetOpenOrder(int customerId);
+        Order GetOpenOrder(string customerId);
 
         Order GetOrderById(int orderId);
 
-        void AddToOpenOrder(int customerId, Game product, short quantity);
+        IEnumerable<Order> GetOrders(FilterOrderModel filterOrderModel = null);
 
-        void RemoveFromOrder(int customerId, int productId);
+        Order EditOrder(Order order);
 
-        Order ChangeStatusToInProcess(int customerId);
+        void AddToOpenOrder(string customerId, Game product, short quantity);
+
+        void RemoveFromOrder(string customerId, string gameKey);
+
+        Order ChangeStatusToInProcess(string customerId);
 
         Order ChangeStatusToClosed(int orderId);
 

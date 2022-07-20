@@ -14,31 +14,31 @@ namespace OnlineGameStore.Tests.Controllers
         [Theory]
         [AutoMoqData]
         public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
-            int id,
+            string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.DeleteGame(It.IsAny<int>()));
+            mockGameService.Setup(x => x.DeleteGame(It.IsAny<string>()));
 
             // Act
-            var result = sut.Remove(id);
+            var result = sut.Remove(gameKey);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
-            mockGameService.Verify(x => x.DeleteGame(It.IsAny<int>()), Times.Once);
+            mockGameService.Verify(x => x.DeleteGame(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
         public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
-            int? id,
+            string gameKey,
             GameController sut)
         {
             // Act
-            var result = sut.Remove(id);
+            var result = sut.Remove(gameKey);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();

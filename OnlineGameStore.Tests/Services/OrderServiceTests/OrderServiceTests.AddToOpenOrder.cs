@@ -30,7 +30,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(order);
 
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>()));
+            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()));
 
             var arrangedOrderDetail = order.OrderDetails.First();
 
@@ -51,7 +52,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()),
                 Times.Once);
 
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
@@ -72,7 +74,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(order);
 
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>()));
+            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()));
 
             // Act
             sut.AddToOpenOrder(order.CustomerId, game2, quantity);
@@ -85,7 +88,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()),
                 Times.Once);
 
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

@@ -3,6 +3,8 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Community.AutoMapper;
 using AutoFixture.Xunit2;
+using MongoDB.Bson;
+using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.MVC.Mapper;
 
 namespace OnlineGameStore.Tests.Helpers
@@ -27,12 +29,16 @@ namespace OnlineGameStore.Tests.Helpers
                     cfg.AddProfile(typeof(PlatformTypeMappingProfile));
                     cfg.AddProfile(typeof(PublisherMappingProfile));
                     cfg.AddProfile(typeof(OrderMappingProfile));
+                    cfg.AddProfile(typeof(NorthwindMappingProfile));
+                    cfg.AddProfile(typeof(ShipperMappingProfile));
                 })));
 
             fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b =>
                 fixture.Behaviors.Remove(b));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            
+            fixture.Register(ObjectId.GenerateNewId);
 
             return fixture;
         }

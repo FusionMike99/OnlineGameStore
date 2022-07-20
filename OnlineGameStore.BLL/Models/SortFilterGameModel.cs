@@ -9,7 +9,11 @@ namespace OnlineGameStore.BLL.Models
         
         public List<int> SelectedPlatformTypes { get; set; }
         
-        public List<int> SelectedPublishers { get; set; }
+        public List<string> SelectedPublishers { get; set; }
+        
+        public List<int> SelectedCategories { get; set; }
+        
+        public List<int> SelectedSuppliers { get; set; }
         
         public GameSortState GameSortState { get; set; }
         

@@ -13,6 +13,8 @@
 
     @if (Model.OrderDetails.Any())
     {
-        <a asp-controller="Order" asp-action="Make" class="btn btn-success">Make Order</a>
+        <a asp-controller="Order" asp-action="Ship" asp-route-orderId="@Model.Id" class="btn btn-success">
+            Make Order
+        </a>
     }
 </div>
