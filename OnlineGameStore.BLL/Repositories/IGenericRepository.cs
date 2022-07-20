@@ -24,7 +24,7 @@ namespace OnlineGameStore.BLL.Repositories
 
         int CountEntities(Expression<Func<TEntity, bool>> predicate = null);
 
-        TEntity Update(TEntity entity);
+        TEntity Update(TEntity entity, Expression<Func<TEntity, bool>> predicate = null);
 
         void Delete(TEntity entity);
     }

@@ -1,6 +1,6 @@
 ﻿$(function () {
-    let initialMin = 0.01;
-    let initialMax = 99999999.99;
+    const initialMin = 0.01;
+    const initialMax = 99999999.99;
     
     $("#PriceRange_Min").change(function (){
         let val = $(this).val();
@@ -29,7 +29,7 @@
     });
 
     jQuery.validator.addMethod("noSpace", function(value, element) {
-        return value.indexOf(" ") < 0;
+        return !(/^\s*$/.test(value) && value.length);
     }, "The field must not contain white spaces.");
 
     $("#GameName").rules( "add", {

@@ -13,15 +13,18 @@ namespace OnlineGameStore.BLL.Services
         private readonly IGameService _gameService;
         private readonly ILogger<CommentService> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindLogService _logService;
 
         public CommentService(
             IUnitOfWork unitOfWork,
             IGameService gameService,
-            ILogger<CommentService> logger)
+            ILogger<CommentService> logger,
+            INorthwindLogService logService)
         {
             _unitOfWork = unitOfWork;
             _gameService = gameService;
             _logger = logger;
+            _logService = logService;
         }
 
         public Comment LeaveCommentToGame(string gameKey, Comment comment)
@@ -35,6 +38,8 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(LeaveCommentToGame)}.
                     Leaving comment with id {leavedComment.Id} successfully", leavedComment);
+            
+            _logService.LogCreating(comment);
 
             return leavedComment;
         }
@@ -72,11 +77,15 @@ namespace OnlineGameStore.BLL.Services
 
         public Comment EditComment(Comment comment)
         {
+            var oldComment = GetCommentById(comment.Id);
+            
             var editedComment = _unitOfWork.Comments.Update(comment);
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(EditComment)}.
                     Editing comment with id {editedComment.Id} successfully", editedComment);
+            
+            _logService.LogUpdating(oldComment, comment);
 
             return editedComment;
         }
@@ -100,6 +109,8 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
                     Deleting comment with id {commentId} successfully", comment);
+            
+            _logService.LogDeleting(comment);
         }
     }
 }

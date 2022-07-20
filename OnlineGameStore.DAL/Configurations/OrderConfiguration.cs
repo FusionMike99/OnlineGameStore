@@ -21,6 +21,27 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(o => o.OrderStatusId)
                 .HasDefaultValue(1);
+            
+            builder.Property(o => o.Freight)
+                .HasDefaultValue(0D);
+            
+            builder.Property(o => o.ShipName)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(o => o.ShipAddress)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(o => o.ShipCity)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(o => o.ShipRegion)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(o => o.ShipPostalCode)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(o => o.ShipCountry)
+                .HasDefaultValue(string.Empty);
 
             builder.HasOne(o => o.OrderStatus)
                 .WithMany(os => os.Orders)

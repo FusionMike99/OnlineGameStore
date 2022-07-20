@@ -1,4 +1,5 @@
-﻿@model GameViewModel
+﻿@using OnlineGameStore.BLL.Enums
+@model GameViewModel
 
 @{
     ViewData["Title"] = $"Game {Model.Name}";
@@ -42,6 +43,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UnitsInStock)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.QuantityPerUnit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.QuantityPerUnit)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Discontinued)
@@ -95,16 +102,19 @@
 <div class="btn-toolbar" role="toolbar" aria-label="Details game toolbar">
     <div class="btn-group me-2" role="group" aria-label="Operation group">
         <a asp-action="Update" asp-route-gameKey="@Model.Key" class="btn btn-warning">Update</a>
-        <form asp-controller="Game" asp-action="Remove" method="post">
-            <input asp-for="Id"/>
+        <form asp-controller="Game" asp-action="Remove" asp-route-gameKey="@Model.Key" method="post">
             <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
         </form>
         <a asp-action="GetGames" class="btn btn-primary">Back to List</a>
     </div>
     <div class="btn-group" role="group" aria-label="Comments group">
-        <a asp-controller="Comment" asp-action="GetCommentsByGameKey" asp-route-gameKey="@Model.Key" class="btn btn-info">
-            See comments
-        </a>
+        @if (Model.DatabaseEntity != DatabaseEntity.Northwind)
+        {
+            <a asp-controller="Comment" asp-action="GetCommentsByGameKey"
+               asp-route-gameKey="@Model.Key" class="btn btn-info">
+                See comments
+            </a>
+        }
         <a asp-action="Download" asp-route-gameKey="@Model.Key" target="_blank" class="btn btn-success">Download</a>
         <a asp-controller="Order" asp-action="BuyProduct" asp-route-gameKey="@Model.Key"
            class="btn btn-warning @(Model.UnitsInStock <= 0 ? "disabled" : "")">

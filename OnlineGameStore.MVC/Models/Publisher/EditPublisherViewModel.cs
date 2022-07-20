@@ -23,5 +23,26 @@ namespace OnlineGameStore.MVC.Models
         [Display(Name = "Home page")]
         [Url]
         public string HomePage { get; set; }
+        
+        [Display(Name = "Contact name")]
+        public string ContactName { get; set; }
+        
+        [Display(Name = "Contact title")]
+        public string ContactTitle { get; set; }
+        
+        public string Address { get; set; }
+        
+        public string City { get; set; }
+        
+        [Display(Name = "Postal code")]
+        public string PostalCode { get; set; }
+        
+        public string Region { get; set; }
+        
+        public string Country { get; set; }
+        
+        public string Phone { get; set; }
+        
+        public string Fax { get; set; }
     }
 }

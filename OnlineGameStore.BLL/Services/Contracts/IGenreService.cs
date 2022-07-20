@@ -18,6 +18,10 @@ namespace OnlineGameStore.BLL.Services.Contracts
         IEnumerable<Genre> GetAllParentGenres();
 
         IEnumerable<Genre> GetAllWithoutGenre(int genreId);
+        
+        IEnumerable<int> GetGenresIdsByNames(params string[] genresNames);
+        
+        IEnumerable<int> GetCategoriesIdsByNames(IEnumerable<string> genresNames);
 
         bool CheckNameForUnique(int genreId, string name);
     }

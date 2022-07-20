@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
@@ -10,12 +11,25 @@ namespace OnlineGameStore.BLL.Services
     public class PlatformTypeService : IPlatformTypeService
     {
         private readonly ILogger<PlatformTypeService> _logger;
+        private readonly INorthwindLogService _logService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PlatformTypeService(IUnitOfWork unitOfWork, ILogger<PlatformTypeService> logger)
+        public PlatformTypeService(IUnitOfWork unitOfWork,
+            INorthwindLogService logService,
+            ILogger<PlatformTypeService> logger)
         {
             _unitOfWork = unitOfWork;
+            _logService = logService;
             _logger = logger;
+        }
+
+        public IEnumerable<int> GetPlatformTypesIdsByNames(IEnumerable<string> types)
+        {
+            var platformTypesIds = _unitOfWork.PlatformTypes
+                .GetMany(s => types.Contains(s.Type))
+                .Select(s => s.Id);
+
+            return platformTypesIds;
         }
 
         public bool CheckTypeForUnique(int platformTypeId, string type)
@@ -32,6 +46,8 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(CreatePlatformType)}.
                     Creating paltform type with id {createdPlatformType.Id} successfully", createdPlatformType);
+            
+            _logService.LogCreating(createdPlatformType);
 
             return createdPlatformType;
         }
@@ -56,15 +72,21 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
                     Deleting platform type with id {platformTypeId} successfully", platformType);
+            
+            _logService.LogDeleting(platformType);
         }
 
         public PlatformType EditPlatformType(PlatformType platformType)
         {
+            var oldPlatformType = GetPlatformTypeById(platformType.Id);
+            
             var editedPlatformType = _unitOfWork.PlatformTypes.Update(platformType);
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(EditPlatformType)}.
                     Editing platform type with id {editedPlatformType.Id} successfully", editedPlatformType);
+            
+            _logService.LogUpdating(oldPlatformType, editedPlatformType);
 
             return editedPlatformType;
         }

@@ -70,7 +70,7 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("update/{companyName}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(string companyName, [FromForm] EditPublisherViewModel publisher)
+        public IActionResult Update([FromRoute]string companyName, [FromForm] EditPublisherViewModel publisher)
         {
             VerifyPublisher(publisher);
 
@@ -81,7 +81,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedPublisher = _mapper.Map<Publisher>(publisher);
 
-            var editedPublisher = _publisherService.EditPublisher(mappedPublisher);
+            var editedPublisher = _publisherService.EditPublisher(companyName, mappedPublisher);
 
             return RedirectToAction(nameof(GetPublisherByCompanyName),
                 new { companyName = editedPublisher.CompanyName });

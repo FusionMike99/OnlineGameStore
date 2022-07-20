@@ -8,15 +8,13 @@ namespace OnlineGameStore.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
-            builder.HasKey(x => new { x.OrderId, x.ProductId });
+            builder.HasKey(x => new { x.OrderId, x.GameKey });
 
             builder.HasOne(od => od.Order)
                 .WithMany(o => o.OrderDetails)
                 .HasForeignKey(od => od.OrderId);
 
-            builder.HasOne(od => od.Product)
-                .WithMany(g => g.OrderDetails)
-                .HasForeignKey(od => od.ProductId);
+            builder.Ignore(od => od.Product);
         }
     }
 }

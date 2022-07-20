@@ -26,7 +26,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()))
                 .Returns(order);
 
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>()));
+            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()));
 
             // Act
             var actualOrder = sut.ChangeStatusToInProcess(order.CustomerId);
@@ -39,7 +40,8 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<string[]>()),
                 Times.Once);
 
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
+                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
@@ -47,7 +49,7 @@ namespace OnlineGameStore.Tests.Services
         [InlineAutoMoqData(null)]
         public void OrderService_ChangeStatusToInProcessing_ThrowsInvalidOperationExceptionWithNullEntity(
             Order order,
-            int customerId,
+            string customerId,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             OrderService sut)
         {

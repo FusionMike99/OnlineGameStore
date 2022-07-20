@@ -12,11 +12,18 @@ namespace OnlineGameStore.BLL.Services
     {
         private readonly ILogger<GenreService> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
+        private readonly INorthwindLogService _logService;
 
-        public GenreService(IUnitOfWork unitOfWork, ILogger<GenreService> logger)
+        public GenreService(ILogger<GenreService> logger,
+            IUnitOfWork unitOfWork,
+            INorthwindUnitOfWork northwindUnitOfWork,
+            INorthwindLogService logService)
         {
-            _unitOfWork = unitOfWork;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            _northwindUnitOfWork = northwindUnitOfWork;
+            _logService = logService;
         }
 
         public Genre CreateGenre(Genre genre)
@@ -26,6 +33,8 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(CreateGenre)}.
                     Creating genre with id {createdGenre.Id} successfully", createdGenre);
+            
+            _logService.LogCreating(createdGenre);
 
             return createdGenre;
         }
@@ -55,15 +64,21 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(DeleteGenre)}.
                     Deleting genre with id {genreId} successfully", genre);
+            
+            _logService.LogDeleting(genre);
         }
 
         public Genre EditGenre(Genre genre)
         {
+            var oldGenre = GetGenreById(genre.Id);
+            
             var editedGenre = _unitOfWork.Genres.Update(genre);
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(EditGenre)}.
                     Editing genre with id {editedGenre.Id} successfully", editedGenre);
+            
+            _logService.LogUpdating(oldGenre, editedGenre);
 
             return editedGenre;
         }
@@ -71,10 +86,7 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Genre> GetAllGenres()
         {
             var genres = _unitOfWork.Genres.GetMany(null,
-                    false,
-                    null,
-                    null,
-                    null,
+                    false, null, null, null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
@@ -88,10 +100,7 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Genre> GetAllParentGenres()
         {
             var genres = _unitOfWork.Genres.GetMany(g => !g.ParentId.HasValue,
-                    false,
-                    null,
-                    null,
-                    null,
+                    false, null, null, null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
                     $"{nameof(Genre.SubGenres)}");
@@ -105,16 +114,31 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Genre> GetAllWithoutGenre(int genreId)
         {
             var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreId && g.ParentId != genreId,
-                    false,
-                    null,
-                    null,
-                    null,
+                    false, null, null, null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllWithoutGenre)}.
                     Receiving genres without genre with id {genreId} successfully", genres);
 
             return genres;
+        }
+
+        public IEnumerable<int> GetGenresIdsByNames(params string[] genresNames)
+        {
+            var genresIds = _unitOfWork.Genres
+                .GetMany(g => genresNames.Contains(g.Name))
+                .Select(g => g.Id);
+
+            return genresIds;
+        }
+
+        public IEnumerable<int> GetCategoriesIdsByNames(IEnumerable<string> genresNames)
+        {
+            var suppliersIds = _northwindUnitOfWork.Categories
+                .GetMany(s => genresNames.Contains(s.Name))
+                .Select(s => s.CategoryId);
+
+            return suppliersIds;
         }
 
         public Genre GetGenreById(int genreId)

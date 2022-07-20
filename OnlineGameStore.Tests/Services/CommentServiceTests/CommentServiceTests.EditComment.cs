@@ -1,4 +1,6 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Linq.Expressions;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
@@ -19,7 +21,8 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Comments.Update(It.IsAny<Comment>()))
+            mockUnitOfWork.Setup(x => x.Comments.Update(It.IsAny<Comment>(),
+                    It.IsAny<Expression<Func<Comment,bool>>>()))
                 .Returns(comment);
 
             // Act
@@ -28,7 +31,8 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualComment.Should().BeEquivalentTo(comment);
 
-            mockUnitOfWork.Verify(x => x.Comments.Update(It.IsAny<Comment>()), Times.Once);
+            mockUnitOfWork.Verify(x => x.Comments.Update(It.IsAny<Comment>(),
+                It.IsAny<Expression<Func<Comment,bool>>>()), Times.Once);
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }

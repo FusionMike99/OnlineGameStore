@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
@@ -14,15 +15,15 @@ namespace OnlineGameStore.MVC.ModelBuilders
         private readonly SortFilterGameViewModel _model;
 
         public SortFilterGameViewModelBuilder(SortFilterGameModel sortFilterGameModel,
-            IEnumerable<Genre> genres,
-            IEnumerable<PlatformType> platformTypes,
-            IEnumerable<Publisher> publishers)
+            IGenreService genreService,
+            IPlatformTypeService platformTypeService,
+            IPublisherService publisherService)
         {
             _model = new SortFilterGameViewModel();
 
-            SetGenres(genres, sortFilterGameModel.SelectedGenres);
-            SetPlatformTypes(platformTypes, sortFilterGameModel.SelectedPlatformTypes);
-            SetPublishers(publishers, sortFilterGameModel.SelectedPublishers);
+            SetGenres(genreService, sortFilterGameModel.SelectedGenres);
+            SetPlatformTypes(platformTypeService, sortFilterGameModel.SelectedPlatformTypes);
+            SetPublishers(publisherService, sortFilterGameModel.SelectedPublishers);
             
             SetSorting(sortFilterGameModel.GameSortState);
             SetDatePublished(sortFilterGameModel.DatePublishedPeriod);
@@ -34,46 +35,70 @@ namespace OnlineGameStore.MVC.ModelBuilders
         public static implicit operator SortFilterGameViewModel(SortFilterGameViewModelBuilder builder) =>
             builder._model;
 
-        private void SetGenres(IEnumerable<Genre> genres, List<int> selectedGenres)
+        private void SetGenres(IGenreService genreService, ICollection<int> selectedGenres)
         {
+            var genres = genreService.GetAllGenres().ToList();
+            
             _model.Genres = new SelectList(genres,
-                nameof(Genre.Id),
+                nameof(Genre.Name),
                 nameof(Genre.Name));
+
+            var selectedGenresNames = new List<string>();
             
             if (selectedGenres?.Any() == true)
             {
-                SetUpSelectList(_model.Genres, selectedGenres);
+                selectedGenresNames = genres
+                    .Where(g => selectedGenres.Contains(g.Id))
+                    .Select(g => g.Name).ToList();
+                
+                SetUpSelectList(_model.Genres, selectedGenresNames);
             }
 
-            _model.SelectedGenres = selectedGenres;
+            _model.SelectedGenres = selectedGenresNames;
         }
         
-        private void SetPlatformTypes(IEnumerable<PlatformType> platformTypes, List<int> selectedPlatformTypes)
+        private void SetPlatformTypes(IPlatformTypeService platformTypeService, ICollection<int> selectedPlatformTypes)
         {
+            var platformTypes = platformTypeService.GetAllPlatformTypes().ToList();
+            
             _model.PlatformTypes = new SelectList(platformTypes,
-                nameof(PlatformType.Id),
+                nameof(PlatformType.Type),
                 nameof(PlatformType.Type));
+            
+            var selectedPlatformTypesNames = new List<string>();
             
             if (selectedPlatformTypes?.Any() == true)
             {
-                SetUpSelectList(_model.PlatformTypes, selectedPlatformTypes);
+                selectedPlatformTypesNames = platformTypes
+                    .Where(pt => selectedPlatformTypes.Contains(pt.Id))
+                    .Select(pt => pt.Type).ToList();
+                
+                SetUpSelectList(_model.PlatformTypes, selectedPlatformTypesNames);
             }
 
-            _model.SelectedPlatformTypes = selectedPlatformTypes;
+            _model.SelectedPlatformTypes = selectedPlatformTypesNames;
         }
         
-        private void SetPublishers(IEnumerable<Publisher> publishers, List<int> selectedPublishers)
+        private void SetPublishers(IPublisherService publisherService, ICollection<string> selectedPublishers)
         {
+            var publishers = publisherService.GetAllPublishers().ToList();
+            
             _model.Publishers = new SelectList(publishers,
-                nameof(Publisher.Id),
+                nameof(Publisher.CompanyName),
                 nameof(Publisher.CompanyName));
+            
+            var selectedPublishersNames = new List<string>();
             
             if (selectedPublishers?.Any() == true)
             {
-                SetUpSelectList(_model.Publishers, selectedPublishers);
+                selectedPublishersNames = publishers
+                    .Where(p => selectedPublishers.Contains(p.CompanyName))
+                    .Select(p => p.CompanyName).ToList();
+                
+                SetUpSelectList(_model.Publishers, selectedPublishersNames);
             }
 
-            _model.SelectedPublishers = selectedPublishers;
+            _model.SelectedPublishers = selectedPublishersNames;
         }
         
         private void SetSorting(GameSortState sortState)
@@ -101,18 +126,11 @@ namespace OnlineGameStore.MVC.ModelBuilders
 
         private void SetName(string name) => _model.GameName = name;
 
-        private static void SetUpSelectList(SelectList items, ICollection<int> selectedItems)
+        private static void SetUpSelectList(SelectList items, ICollection<string> selectedItems)
         {
             foreach (var item in items)
             {
-                var parseResult = int.TryParse(item.Value, out var intValue);
-
-                if (!parseResult)
-                {
-                    continue;
-                }
-                    
-                var isItemContained = selectedItems.Contains(intValue);
+                var isItemContained = selectedItems.Contains(item.Value);
                         
                 if (isItemContained)
                 {

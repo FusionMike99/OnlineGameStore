@@ -4,6 +4,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
@@ -14,13 +15,16 @@ namespace OnlineGameStore.Tests.Services
     public partial class PublisherServiceTests
     {
         [Theory]
-        [AutoMoqData]
+        [InlineAutoMoqData(DatabaseEntity.GameStore)]
         public void PublisherService_DeletePublisher_DeletesPublisher(
+            DatabaseEntity databaseEntity,
             Publisher publisher,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             PublisherService sut)
         {
             // Arrange
+            publisher.DatabaseEntity = databaseEntity;
+            
             mockUnitOfWork
                 .Setup(m => m.Publishers.GetSingle(
                     It.IsAny<Expression<Func<Publisher, bool>>>(),
@@ -60,6 +64,36 @@ namespace OnlineGameStore.Tests.Services
 
             // Act
             Action actual = () => sut.DeletePublisher(publisherId);
+
+            // Assert
+            actual.Should().Throw<InvalidOperationException>();
+
+            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
+                    It.IsAny<Expression<Func<Publisher, bool>>>(),
+                    It.IsAny<bool>(),
+                    It.IsAny<string[]>()),
+                Times.Once);
+        }
+        
+        [Theory]
+        [InlineAutoMoqData(DatabaseEntity.Northwind)]
+        public void PublisherService_DeletePublisher_ThrowsInvalidOperationExceptionWhenNorthwindDatabase(
+            DatabaseEntity databaseEntity,
+            Publisher publisher,
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            PublisherService sut)
+        {
+            // Arrange
+            publisher.DatabaseEntity = databaseEntity;
+            
+            mockUnitOfWork
+                .Setup(m => m.Publishers.GetSingle(
+                    It.IsAny<Expression<Func<Publisher, bool>>>(),
+                    It.IsAny<bool>()))
+                .Returns(publisher);
+
+            // Act
+            Action actual = () => sut.DeletePublisher(publisher.Id);
 
             // Assert
             actual.Should().Throw<InvalidOperationException>();

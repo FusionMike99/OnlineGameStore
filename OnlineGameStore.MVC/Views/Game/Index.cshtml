@@ -28,45 +28,8 @@
         </div>
     </div>
 </div>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayName(nameof(GameViewModel.Name))
-        </th>
-        <th>
-            @Html.DisplayName(nameof(GameViewModel.Description))
-        </th>
-        <th>
-            @Html.DisplayName(nameof(GameViewModel.Price))
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Games)
-    {
-        <tr>
-            <td>
-                <a asp-action="GetGameByKey" asp-route-gameKey="@item.Key" class="text-decoration-none">
-                    @item.Name
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <div class="btn-group">
-                    <a asp-action="Update" asp-route-gameKey="@item.Key" class="btn btn-warning">Update</a>
-                </div>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+
+<partial name="_GamesList" for="Games"/>
 
 <page-link page-view-model="@Model?.PageViewModel" page-action="GetGames" capacity="13"></page-link>
 

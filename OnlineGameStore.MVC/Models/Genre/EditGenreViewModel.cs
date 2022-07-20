@@ -13,6 +13,10 @@ namespace OnlineGameStore.MVC.Models
         [Required]
         [BindProperty(BinderType = typeof(TrimmingModelBinder))]
         public string Name { get; set; }
+        
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
 
         [Display(Name = "Parent genre")]
         public int? SelectedParentGenre { get; set; }

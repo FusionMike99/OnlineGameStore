@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Data
 {
     internal static class ModelBuilderExtensions
     {
-        internal static void StoreSeed(this ModelBuilder modelBuilder)
+        internal static void StoreSeed(this ModelBuilder modelBuilder,
+            INorthwindUnitOfWork northwindUnitOfWork)
         {
             modelBuilder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Strategy" },
@@ -28,6 +31,17 @@ namespace OnlineGameStore.DAL.Data
                 new Genre { Id = 14, Name = "Adventure" },
                 new Genre { Id = 15, Name = "Puzzle & Skill" },
                 new Genre { Id = 16, Name = "Misc." });
+
+            var genreId = 17;
+            var genres = northwindUnitOfWork.Categories.GetMany()
+                .Select(category => new Genre 
+                    { 
+                        Id = genreId++,
+                        Name = category.Name,
+                        Description = category.Description
+                    });
+
+            modelBuilder.Entity<Genre>().HasData(genres);
 
             modelBuilder.Entity<PlatformType>().HasData(
                 new PlatformType { Id = 1, Type = "Mobile" },
@@ -70,7 +84,10 @@ namespace OnlineGameStore.DAL.Data
                     Price = 49.99M,
                     UnitsInStock = 50,
                     Discontinued = false,
-                    PublisherId = 1
+                    QuantityPerUnit = "units",
+                    PublisherName = "CD Projekt RED",
+                    DateAdded = new DateTime(2022, 5, 6),
+                    DatePublished = new DateTime(2015, 5, 18)
                 });
 
             modelBuilder.Entity<GameGenre>().HasData(
@@ -86,7 +103,7 @@ namespace OnlineGameStore.DAL.Data
                 new OrderStatus { Id = 2, Status = "In progress" },
                 new OrderStatus { Id = 3, Status = "Cancelled" },
                 new OrderStatus { Id = 4, Status = "Closed" });
-            
+
             GenerateFakeData(modelBuilder);
         }
 
@@ -94,18 +111,25 @@ namespace OnlineGameStore.DAL.Data
         {
             var gameId = 2;
 
+            var publishers = new string[]
+            {
+                "CD Projekt RED", "Bethesda Softworks", "THQ Nordic"
+            };
+
             var fakeGame = new Faker<Game>()
+                .UseSeed(333)
                 .RuleFor(g => g.Id, f => gameId++)
                 .RuleFor(g => g.Name, f => f.Commerce.ProductName())
-                .RuleFor(g => g.Key, (f, g) => ToKebabCase(g.Name))
+                .RuleFor(g => g.Key, (f, g) => g.Name.ToKebabCase())
                 .RuleFor(g => g.Description, f => f.Commerce.ProductDescription())
                 .RuleFor(g => g.Price, f => f.Random.Decimal(25M, 250M))
                 .RuleFor(g => g.UnitsInStock, f => f.Random.Short(1, 100))
                 .RuleFor(g => g.Discontinued, f => f.Random.Bool())
-                .RuleFor(g => g.DateAdded, f => f.Date.Recent(5, DateTime.UtcNow))
-                .RuleFor(g => g.DatePublished, f => f.Date.Past(3, DateTime.UtcNow))
+                .RuleFor(g => g.DateAdded, f => f.Date.Recent(5, new DateTime(2022, 07, 14)))
+                .RuleFor(g => g.DatePublished, f => f.Date.Past(3, new DateTime(2022, 07, 14)))
                 .RuleFor(g => g.ViewsNumber, f => f.Random.ULong(0, 100000L))
-                .RuleFor(g => g.PublisherId, f => f.Random.Int(1, 3).OrNull(f));
+                .RuleFor(g => g.QuantityPerUnit, f => f.Random.Words())
+                .RuleFor(g => g.PublisherName, f => f.PickRandom(publishers));
             
             var games = fakeGame.Generate(1000)
                 .GroupBy(g => new { g.Key })
@@ -116,6 +140,7 @@ namespace OnlineGameStore.DAL.Data
                 .HasData(games);
 
             var fakeGameGenre = new Faker<GameGenre>()
+                .UseSeed(666)
                 .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
                 .RuleFor(gg => gg.GenreId, f => f.Random.Int(1, 16));
 
@@ -128,6 +153,7 @@ namespace OnlineGameStore.DAL.Data
                 .HasData(gameGenres);
             
             var fakeGamePlatformType = new Faker<GamePlatformType>()
+                .UseSeed(777)
                 .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
                 .RuleFor(gg => gg.PlatformId, f => f.Random.Int(1, 4));
             
@@ -138,19 +164,6 @@ namespace OnlineGameStore.DAL.Data
             
             modelBuilder.Entity<GamePlatformType>()
                 .HasData(gamePlatformTypes);
-            
-            string ToKebabCase(string value)
-            {
-                value = Regex.Replace(value, @"[^0-9a-zA-Z]", "-");
-
-                value = Regex.Replace(value, @"[-]{2,}", "-");
-
-                value = Regex.Replace(value, @"-+$", string.Empty);
-
-                if (value.StartsWith("-")) value = value[1..];
-
-                return value.ToLower();
-            }
         }
     }
 }

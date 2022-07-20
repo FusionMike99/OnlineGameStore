@@ -28,7 +28,6 @@
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
-
     <div class="row g-3 my-3">
         <div class="col">
             <div class="input-group">
@@ -55,18 +54,17 @@
     <div class="row g-3 my-3">
         <div class="col">
             <div class="input-group">
-                <label asp-for="Price" class="input-group-text"></label>
-                <input asp-for="Price" class="form-control"/>
-                <span class="input-group-text">$</span>
+                <label asp-for="UnitsInStock" class="input-group-text"></label>
+                <input asp-for="UnitsInStock" class="form-control text-end" min="0" max="32767"/>
             </div>
-            <span asp-validation-for="Price" class="text-danger"></span>
+            <span asp-validation-for="UnitsInStock" class="text-danger"></span>
         </div>
         <div class="col">
             <div class="input-group">
-                <input asp-for="UnitsInStock" class="form-control text-end" min="0" max="32767"/>
-                <label asp-for="UnitsInStock" class="input-group-text"></label>
+                <input asp-for="QuantityPerUnit" class="form-control text-end"/>
+                <label asp-for="QuantityPerUnit" class="input-group-text"></label>
             </div>
-            <span asp-validation-for="UnitsInStock" class="text-danger"></span>
+            <span asp-validation-for="QuantityPerUnit" class="text-danger"></span>
         </div>
     </div>
 
@@ -87,16 +85,28 @@
         </div>
     </div>
     
-    <div class="my-3">
-        <div class="input-group">
-            <label asp-for="DatePublished" class="input-group-text"></label>
-            <input asp-for="DatePublished" class="form-control"
-                   max="@DateTime.UtcNow.ToString("yyyy-MM-dd")"/>
+    <div class="row g-3 my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="Price" class="input-group-text"></label>
+                <input asp-for="Price" class="form-control"/>
+                <span class="input-group-text">$</span>
+            </div>
+            <span asp-validation-for="Price" class="text-danger"></span>
         </div>
-        <span asp-validation-for="DatePublished" class="text-danger"></span>
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="DatePublished" class="input-group-text"></label>
+                <input asp-for="DatePublished" class="form-control"
+                       max="@DateTime.UtcNow.ToString("yyyy-MM-dd")"/>
+            </div>
+            <span asp-validation-for="DatePublished" class="text-danger"></span>
+        </div>
     </div>
     
     <input asp-for="DateAdded"/>
-    
     <input asp-for="ViewsNumber"/>
+    <input asp-for="ReorderLevel"/>
+    <input asp-for="UnitsOnOrder"/>
+    <input asp-for="DatabaseEntity"/>
 </div>

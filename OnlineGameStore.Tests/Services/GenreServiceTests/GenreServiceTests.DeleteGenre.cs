@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -30,7 +31,8 @@ namespace OnlineGameStore.Tests.Services
 
             mockUnitOfWork.Setup(x => x.Genres.Delete(It.IsAny<Genre>()));
 
-            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>()));
+            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>(),
+                It.IsAny<Expression<Func<Genre,bool>>>()));
 
             // Act
             sut.DeleteGenre(genre.Id);
@@ -46,7 +48,8 @@ namespace OnlineGameStore.Tests.Services
                     It.Is<Genre>(g => g.Name == genre.Name && g.Id == genre.Id)),
                 Times.Once);
             
-            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>()),
+            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>(),
+                    It.IsAny<Expression<Func<Genre,bool>>>()),
                 Times.Exactly(genre.SubGenres.Count));
             
             mockUnitOfWork.Verify(x => x.Commit(), Times.Once);

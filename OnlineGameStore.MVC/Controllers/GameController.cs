@@ -103,7 +103,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGame = _mapper.Map<Game>(game);
 
-            _gameService.EditGame(mappedGame);
+            _gameService.EditGame(gameKey, mappedGame);
 
             return RedirectToAction(nameof(GetGames));
         }
@@ -132,41 +132,38 @@ namespace OnlineGameStore.MVC.Controllers
         public IActionResult GetGames(SortFilterGameViewModel sortFilterGameViewModel,
             int pageNumber = 1, PageSize pageSize = PageSize.Ten)
         {
-            var sortFilterGameModel = _mapper.Map<SortFilterGameModel>(sortFilterGameViewModel);
+            SortFilterGameModel sortFilterGameModel = new SortFilterGameModelBuilder(sortFilterGameViewModel,
+                _genreService, _platformTypeService, _publisherService);
 
             var pageModel = new PageModel(pageNumber, pageSize);
-
-            var gamesNumber = _gameService.GetGamesNumber(sortFilterGameModel);
-
-            var pageViewModel = new PageViewModelBuilder(pageModel, gamesNumber);
             
-            var games = _gameService.GetAllGames(sortFilterGameModel, pageModel);
+            var games = _gameService.GetAllGames(out var gamesNumber, sortFilterGameModel, pageModel);
 
             var gamesViewModel = _mapper.Map<IEnumerable<GameViewModel>>(games);
+
+            var pageViewModel = new PageViewModelBuilder(pageModel, gamesNumber);
 
             var gameListViewModel = new GameListViewModel
             {
                 PageViewModel = pageViewModel,
                 Games = gamesViewModel,
                 SortFilterGameViewModel = new SortFilterGameViewModelBuilder(sortFilterGameModel,
-                    _genreService.GetAllGenres(),
-                    _platformTypeService.GetAllPlatformTypes(),
-                    _publisherService.GetAllPublishers()),
+                    _genreService, _platformTypeService, _publisherService)
             };
 
             return View("Index", gameListViewModel);
         }
 
-        [HttpPost("remove")]
+        [HttpPost("remove/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public IActionResult Remove(string gameKey)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            _gameService.DeleteGame(id.Value);
+            _gameService.DeleteGame(gameKey);
 
             return RedirectToAction(nameof(GetGames));
         }
@@ -209,7 +206,7 @@ namespace OnlineGameStore.MVC.Controllers
                 nameof(PlatformType.Type));
 
             model.Publishers = new SelectList(_publisherService.GetAllPublishers(),
-                nameof(Publisher.Id),
+                nameof(Publisher.CompanyName),
                 nameof(Publisher.CompanyName));
         }
 

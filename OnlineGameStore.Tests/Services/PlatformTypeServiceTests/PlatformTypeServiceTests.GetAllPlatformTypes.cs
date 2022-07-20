@@ -18,7 +18,7 @@ namespace OnlineGameStore.Tests.Services
         [Theory]
         [AutoMoqData]
         public void PlatformTypeService_GetAllPlatformTypes_ReturnsPlatformTypes(
-            IEnumerable<PlatformType> platformTypes,
+            List<PlatformType> platformTypes,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             PlatformTypeService sut)
         {
@@ -28,9 +28,7 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<Func<IQueryable<PlatformType>,IOrderedQueryable<PlatformType>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string[]>()))
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()))
                 .Returns(platformTypes);
 
             // Act
@@ -43,9 +41,7 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<Expression<Func<PlatformType, bool>>>(),
                     It.IsAny<bool>(),
                     It.IsAny<Func<IQueryable<PlatformType>,IOrderedQueryable<PlatformType>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string[]>()),
+                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()),
                 Times.Once);
         }
     }

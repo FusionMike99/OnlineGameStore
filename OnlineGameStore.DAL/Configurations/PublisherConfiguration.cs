@@ -10,21 +10,51 @@ namespace OnlineGameStore.DAL.Configurations
         {
             builder.HasKey(m => m.Id);
 
-            builder.Property(g => g.CompanyName)
+            builder.Property(p => p.CompanyName)
                 .HasColumnType("nvarchar(40)")
                 .IsRequired();
 
-            builder.Property(g => g.Description)
+            builder.Property(p => p.Description)
                 .HasColumnType("ntext")
                 .IsRequired();
 
-            builder.Property(g => g.HomePage)
+            builder.Property(p => p.HomePage)
                 .HasColumnType("ntext")
                 .IsRequired();
+            
+            builder.Property(p => p.CompanyName)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.ContactName)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.ContactTitle)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.Address)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.City)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.Region)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.PostalCode)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.Country)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.Phone)
+                .HasDefaultValue(string.Empty);
+            
+            builder.Property(p => p.Fax)
+                .HasDefaultValue(string.Empty);
 
-            builder.HasMany(c => c.Games)
-                .WithOne(g => g.Publisher)
-                .HasForeignKey(g => g.PublisherId);
+            builder.Ignore(p => p.DatabaseEntity);
+            
+            builder.Ignore(p => p.Games);
 
             builder.HasIndex(g => g.CompanyName).IsUnique();
         }

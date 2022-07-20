@@ -1,4 +1,6 @@
-﻿@model IEnumerable<PublisherViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using OnlineGameStore.BLL.Enums
+@model IEnumerable<PublisherViewModel>
 
 @{
     ViewData["Title"] = "Publishers";
@@ -30,10 +32,14 @@
                     @item.CompanyName
                 </a>
             </td>
+            <td>@item.HomePage</td>
             <td>
-                <div class="btn-group">
-                    <a asp-action="Update" asp-route-companyName="@item.CompanyName" class="btn btn-warning">Update</a>
-                </div>
+                @if (item.DatabaseEntity != DatabaseEntity.Northwind)
+                {
+                    <div class="btn-group">
+                        <a asp-action="Update" asp-route-companyName="@item.CompanyName" class="btn btn-warning">Update</a>
+                    </div>
+                }
             </td>
         </tr>
     }

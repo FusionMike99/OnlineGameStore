@@ -1,8 +1,10 @@
-﻿namespace OnlineGameStore.BLL.Entities
+﻿using System;
+
+namespace OnlineGameStore.BLL.Entities
 {
     public class OrderDetail
     {
-        public int ProductId { get; set; }
+        public string GameKey { get; set; }
 
         public Game Product { get; set; }
 
@@ -14,6 +16,6 @@
 
         public short Quantity { get; set; }
 
-        public float Discount { get; set; } = 0F;
+        public float Discount { get; set; }
     }
 }

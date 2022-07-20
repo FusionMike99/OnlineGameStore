@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -11,11 +16,21 @@ namespace OnlineGameStore.BLL.Services
     {
         private readonly ILogger<PublisherService> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
+        private readonly INorthwindLogService _logService;
+        private readonly IMapper _mapper;
 
-        public PublisherService(IUnitOfWork unitOfWork, ILogger<PublisherService> logger)
+        public PublisherService(ILogger<PublisherService> logger,
+            IUnitOfWork unitOfWork,
+            INorthwindUnitOfWork northwindUnitOfWork,
+            INorthwindLogService logService,
+            IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            _northwindUnitOfWork = northwindUnitOfWork;
+            _logService = logService;
+            _mapper = mapper;
         }
 
         public bool CheckCompanyNameForUnique(int publisherId, string companyName)
@@ -32,6 +47,8 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(CreatePublisher)}.
                     Creating publisher with id {createdPublisher.Id} successfully", createdPublisher);
+            
+            _logService.LogCreating(createdPublisher);
 
             return createdPublisher;
         }
@@ -50,49 +67,94 @@ namespace OnlineGameStore.BLL.Services
                 throw exception;
             }
 
+            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
+            {
+                throw new InvalidOperationException("You cannot delete Northwind suppliers");
+            }
+            
             _unitOfWork.Publishers.Delete(publisher);
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
                     Deleting publisher with id {publisherId} successfully", publisher);
+            
+            _logService.LogDeleting(publisher);
         }
 
-        public Publisher EditPublisher(Publisher publisher)
+        public Publisher EditPublisher(string companyName, Publisher publisher)
         {
+            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
+            {
+                throw new InvalidOperationException("You cannot edit Northwind suppliers");
+            }
+
+            var oldPublisher = GetPublisherByCompanyName(companyName);
+
             var editedPublisher = _unitOfWork.Publishers.Update(publisher);
             _unitOfWork.Commit();
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(EditPublisher)}.
                     Editing publisher with id {editedPublisher.Id} successfully", editedPublisher);
+            
+            _logService.LogUpdating(oldPublisher, editedPublisher);
 
             return editedPublisher;
         }
 
+        public IEnumerable<int> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
+        {
+            var suppliersIds = _northwindUnitOfWork.Suppliers
+                .GetMany(s => companiesNames.Contains(s.CompanyName))
+                .Select(s => s.SupplierId);
+
+            return suppliersIds;
+        }
+
         public IEnumerable<Publisher> GetAllPublishers()
         {
-            var publishers = _unitOfWork.Publishers.GetMany(null,
-                    false,
-                    null,
-                    null,
-                    null,
-                    $"{nameof(Publisher.Games)}");
+            var publishers = _unitOfWork.Publishers.GetMany();
+
+            var suppliers = _northwindUnitOfWork.Suppliers.GetMany();
+
+            var unionPublishersSuppliers = UnionPublishersSuppliers(publishers, suppliers);
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetAllPublishers)}.
-                    Receiving publishers successfully", publishers);
+                    Receiving publishers successfully", unionPublishersSuppliers);
 
-            return publishers;
+            return unionPublishersSuppliers;
         }
 
         public Publisher GetPublisherByCompanyName(string companyName)
         {
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.CompanyName == companyName,
-                    false,
-                    $"{nameof(Publisher.Games)}");
+            var publisher = _unitOfWork.Publishers.GetSingle(p => p.CompanyName == companyName);
+            
+            if (publisher == null)
+            {
+                var supplier = _northwindUnitOfWork.Suppliers.GetFirst(p => p.CompanyName == companyName);
+
+                if (supplier != null)
+                {
+                    publisher = _mapper.Map<Publisher>(supplier);
+                    publisher.DatabaseEntity = DatabaseEntity.Northwind;
+                }
+            }
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetPublisherByCompanyName)}.
                     Receiving publisher with company name {companyName} successfully", publisher);
 
             return publisher;
+        }
+        
+        private IEnumerable<Publisher> UnionPublishersSuppliers(IEnumerable<Publisher> publishers,
+            IEnumerable<NorthwindSupplier> suppliers)
+        {
+            var mappedProducts = _mapper.Map<List<Publisher>>(suppliers);
+            
+            mappedProducts.ForEach(p => p.DatabaseEntity = DatabaseEntity.Northwind);
+
+            var result = publishers.Concat(mappedProducts).DistinctBy(g => g.CompanyName).ToList();
+
+            return result;
         }
     }
 }

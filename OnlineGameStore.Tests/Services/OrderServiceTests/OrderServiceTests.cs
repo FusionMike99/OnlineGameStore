@@ -11,7 +11,7 @@ namespace OnlineGameStore.Tests.Services
             var orderDetail = new OrderDetail
             {
                 OrderId = 1,
-                ProductId = game.Id,
+                GameKey = game.Key,
                 Product = game,
                 Price = game.Price,
                 Quantity = 4
@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Services
                 {
                     orderDetail
                 },
-                CustomerId = 1,
+                CustomerId = "6A5CFAE0-C015-4AAA-9E7E-4C344BB0D287",
                 OrderStatusId = 1
             };
 
@@ -38,7 +38,7 @@ namespace OnlineGameStore.Tests.Services
             var orderDetail = new OrderDetail
             {
                 OrderId = 1,
-                ProductId = game.Id,
+                GameKey = game.Key,
                 Product = game,
                 Price = game.Price,
                 Quantity = 4
@@ -48,25 +48,25 @@ namespace OnlineGameStore.Tests.Services
             {
                 new Order
                 {
-                    Id = 1, CustomerId = 1,
+                    Id = 1, CustomerId = "B29B58C9-3A63-4EF5-A71F-96A71C9A26BD",
                     OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Subtract(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
-                    Id = 2, CustomerId = 1,
+                    Id = 2, CustomerId = "B29B58C9-3A63-4EF5-A71F-96A71C9A26BD",
                     OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Add(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
-                    Id = 3, CustomerId = 1,
+                    Id = 3, CustomerId = "B29B58C9-3A63-4EF5-A71F-96A71C9A26BD",
                     OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Subtract(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 },
                 new Order
                 {
-                    Id = 4, CustomerId = 1,
+                    Id = 4, CustomerId = "B29B58C9-3A63-4EF5-A71F-96A71C9A26BD",
                     OrderStatusId = 2, CancelledDate = DateTime.UtcNow.Add(timeoutTime),
                     OrderDetails = new List<OrderDetail>{ orderDetail }
                 }

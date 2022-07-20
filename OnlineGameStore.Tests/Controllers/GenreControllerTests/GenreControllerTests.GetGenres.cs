@@ -16,8 +16,8 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGames_ReturnsViewResult(
-            IEnumerable<Genre> genres,
+        public void GetGenres_ReturnsViewResult(
+            List<Genre> genres,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {

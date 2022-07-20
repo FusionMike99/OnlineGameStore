@@ -2,7 +2,8 @@
 {
     public enum OrderState
     {
-        Open = 1,
+        Unknown,
+        Open,
         InProgress,
         Cancelled,
         Closed

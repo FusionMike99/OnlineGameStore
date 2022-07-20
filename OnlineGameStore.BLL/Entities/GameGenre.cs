@@ -1,4 +1,6 @@
-﻿namespace OnlineGameStore.BLL.Entities
+﻿using System;
+
+namespace OnlineGameStore.BLL.Entities
 {
     public class GameGenre
     {

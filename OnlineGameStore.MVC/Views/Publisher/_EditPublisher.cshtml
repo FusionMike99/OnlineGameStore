@@ -29,4 +29,80 @@
         </div>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
+    
+    <div class="row my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="ContactName" class="input-group-text"></label>
+                <input asp-for="ContactName" class="form-control"/>
+            </div>
+            <span asp-validation-for="ContactName" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="ContactTitle" class="form-control"/>
+                <label asp-for="ContactTitle" class="input-group-text"></label>
+            </div>
+            <span asp-validation-for="ContactTitle" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="row my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="Address" class="input-group-text"></label>
+                <input asp-for="Address" class="form-control"/>
+            </div>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="City" class="form-control"/>
+                <label asp-for="City" class="input-group-text"></label>
+            </div>
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="row my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="PostalCode" class="input-group-text"></label>
+                <input asp-for="PostalCode" class="form-control"/>
+            </div>
+            <span asp-validation-for="PostalCode" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="Region" class="form-control"/>
+                <label asp-for="Region" class="input-group-text"></label>
+            </div>
+            <span asp-validation-for="Region" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="row my-3">
+        <div class="col">
+            <div class="input-group">
+                <label asp-for="Country" class="input-group-text"></label>
+                <input asp-for="Country" class="form-control"/>
+            </div>
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input asp-for="Phone" class="form-control"/>
+                <label asp-for="Phone" class="input-group-text"></label>
+            </div>
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="my-3">
+        <div class="input-group">
+            <label asp-for="Fax" class="input-group-text"></label>
+            <input asp-for="Fax" class="form-control" />
+        </div>
+        <span asp-validation-for="Fax" class="text-danger"></span>
+    </div>
 </div>

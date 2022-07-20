@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Controllers
             mockCustomerIdAccessor.Setup(x => x.GetCustomerId())
                 .Returns(order.CustomerId);
 
-            mockOrderService.Setup(x => x.ChangeStatusToInProcess(It.IsAny<int>()))
+            mockOrderService.Setup(x => x.ChangeStatusToInProcess(It.IsAny<string>()))
                 .Returns(order);
 
             // Act
@@ -39,7 +39,7 @@ namespace OnlineGameStore.Tests.Controllers
 
             mockCustomerIdAccessor.Verify(x => x.GetCustomerId(), Times.Once);
 
-            mockOrderService.Verify(x => x.ChangeStatusToInProcess(It.IsAny<int>()),
+            mockOrderService.Verify(x => x.ChangeStatusToInProcess(It.IsAny<string>()),
                 Times.Once);
         }
     }

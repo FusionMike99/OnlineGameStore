@@ -45,5 +45,23 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<ErrorViewModel>()
                 .Which.StatusCode.Should().BeEquivalentTo(statusCode);
         }
+        
+        [Theory]
+        [InlineAutoMoqData("404")]
+        public void Error_WithStatusCode404_ReturnsViewResult(
+            string statusCode,
+            HttpContext httpContext,
+            ErrorController sut)
+        {
+            // Arrange
+            sut.ControllerContext.HttpContext = httpContext;
+
+            // Act
+            var result = sut.Error(statusCode);
+
+            // Assert
+            result.Should().BeOfType<ViewResult>()
+                .Which.ViewName.Should().Be("NotFound");
+        }
     }
 }

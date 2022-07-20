@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.MVC.Infrastructure;
 
 namespace OnlineGameStore.MVC.Models
@@ -47,6 +48,19 @@ namespace OnlineGameStore.MVC.Models
         [UIHint("HiddenInput")]
         public ulong ViewsNumber { get; set; }
 
+        [Required]
+        [Display(Name = "Quantity per Unit")]
+        public string QuantityPerUnit { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public int UnitsOnOrder { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public int ReorderLevel { get; set; }
+        
+        [UIHint("HiddenInput")]
+        public DatabaseEntity DatabaseEntity { get; set; }
+
         public SelectList Genres { get; set; }
 
         public SelectList PlatformTypes { get; set; }
@@ -60,6 +74,6 @@ namespace OnlineGameStore.MVC.Models
         public List<int> SelectedPlatformTypes { get; set; }
 
         [Display(Name = "Publisher")]
-        public int? SelectedPublisher { get; set; }
+        public string SelectedPublisher { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+﻿@model FilterOrderViewModel
+
+<div class="container">
+    <form asp-controller="Order" asp-action="GetOrders" method="get">
+        <div class="row justify-content-start">
+            <div class="col-3">
+                <div class="input-group">
+                    <label asp-for="MinDate" class="input-group-text"></label>
+                    <input class="form-control" asp-for="MinDate"
+                           max="@DateTime.UtcNow.ToString("yyyy-MM-dd")">
+                </div>
+                <span asp-validation-for="MinDate" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <div class="input-group">
+                    <label asp-for="MaxDate" class="input-group-text"></label>
+                    <input class="form-control" asp-for="MaxDate" 
+                           max="@DateTime.UtcNow.ToString("yyyy-MM-dd")">
+                </div>
+                <span asp-validation-for="MaxDate" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+              <input type="submit" value="Filter" class="btn btn-info text-light"/>
+            </div>
+        </div>
+    </form>
+</div>

@@ -4,16 +4,16 @@
     <thead>
     <tr>
         <th scope="col">
-            @Html.DisplayName(nameof(OrderDetailViewModel.ProductName))
+            @Html.DisplayNameFor(o => o.OrderDetails.FirstOrDefault().ProductName)
         </th>
         <th scope="col">
-            @Html.DisplayName(nameof(OrderDetailViewModel.Price))
+            @Html.DisplayNameFor(o => o.OrderDetails.FirstOrDefault().Price)
         </th>
         <th scope="col">
-            @Html.DisplayName(nameof(OrderDetailViewModel.Quantity))
+            @Html.DisplayNameFor(o => o.OrderDetails.FirstOrDefault().Quantity)
         </th>
         <th scope="col">
-            @Html.DisplayName(nameof(OrderDetailViewModel.Discount))
+            @Html.DisplayNameFor(o => o.OrderDetails.FirstOrDefault().Discount)
         </th>
         @if (Model.EnableModification)
         {
@@ -41,7 +41,7 @@
             {
                 <td>
                     <form asp-controller="Order" asp-action="RemoveFromBasket"
-                          asp-route-productId="@item.ProductId" method="post">
+                          asp-route-gameKey="@item.GameKey" method="post">
                         <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
                     </form>
                 </td>
@@ -55,7 +55,7 @@
             <b>Total:</b>
         </td>
         <td class="text-right">
-            @Model.Total.ToString("c");
+            @Html.DisplayFor(model => model.Total)
         </td>
     </tr>
     </tfoot>

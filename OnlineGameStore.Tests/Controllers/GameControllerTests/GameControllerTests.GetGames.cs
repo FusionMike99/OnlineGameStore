@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +19,14 @@ namespace OnlineGameStore.Tests.Controllers
         [Theory]
         [AutoMoqData]
         public void GetGames_ReturnsViewResult(
-            IEnumerable<Game> games,
+            List<Game> games,
             SortFilterGameViewModel sortFilterGameViewModel,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
+            var expectedCount = games.Count;
+            mockGameService.Setup(x => x.GetAllGames(out expectedCount,It.IsAny<SortFilterGameModel>(),
                     It.IsAny<PageModel>()))
                 .Returns(games);
 
@@ -36,7 +38,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<GameListViewModel>()
                 .Which.Games.Should().HaveSameCount(games);
 
-            mockGameService.Verify(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
+            mockGameService.Verify(x => x.GetAllGames(out expectedCount, It.IsAny<SortFilterGameModel>(),
                 It.IsAny<PageModel>()),
                 Times.Once);
         }

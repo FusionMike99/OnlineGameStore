@@ -2,7 +2,10 @@
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -16,16 +19,19 @@ namespace OnlineGameStore.MVC.Controllers
         private readonly IGameService _gameService;
         private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
+        private readonly IShipperService _shipperService;
         private readonly IEnumerable<IPaymentMethodStrategy> _paymentMethodStrategies;
 
         public OrderController(IOrderService orderService,
             IGameService gameService,
+            IShipperService shipperService,
             IMapper mapper,
             IEnumerable<IPaymentMethodStrategy> paymentMethodStrategies,
             ICustomerIdAccessor customerIdAccessor)
         {
             _orderService = orderService;
             _gameService = gameService;
+            _shipperService = shipperService;
             _paymentMethodStrategies = paymentMethodStrategies;
             _mapper = mapper;
             _customerIdAccessor = customerIdAccessor;
@@ -57,27 +63,86 @@ namespace OnlineGameStore.MVC.Controllers
 
             var order = _orderService.GetOpenOrder(customerId);
 
-            var orderViewModel = PrepareOrderViewModel(order);
-
-            orderViewModel.EnableModification = true;
+            var orderViewModel = PrepareOrderViewModel(order, true);
 
             return View("Basket", orderViewModel);
         }
         
-        [HttpPost("basket/remove/{productId:int}")]
+        [HttpPost("basket/remove/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult RemoveFromBasket(int? productId)
+        public IActionResult RemoveFromBasket(string gameKey)
         {
-            if (!productId.HasValue)
+            if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
             
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            _orderService.RemoveFromOrder(customerId, productId.Value);
+            _orderService.RemoveFromOrder(customerId, gameKey);
 
             return RedirectToAction(nameof(GetBasket));
+        }
+        
+        [HttpGet("orders/history")]
+        public IActionResult GetOrders(FilterOrderViewModel filterOrderViewModel = null)
+        {
+            var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            
+            var orders = _orderService.GetOrders(filterOrderModel);
+
+            var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
+
+            var orderListViewModel = new OrderListViewModel
+            {
+                Orders = ordersViewModel,
+                FilterOrderViewModel = filterOrderViewModel
+            };
+
+            return View("Index", orderListViewModel);
+        }
+        
+        [HttpGet("orders/ship/{orderId:int}")]
+        public IActionResult Ship(int orderId)
+        {
+            var order = _orderService.GetOrderById(orderId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var editOrderViewModel = _mapper.Map<ShipOrderViewModel>(order);
+
+            ConfigureShipOrderViewModel(editOrderViewModel);
+
+            return View(editOrderViewModel);
+        }
+
+        [HttpPost("orders/ship/{orderId:int}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Ship(int orderId, [FromForm] ShipOrderViewModel order)
+        {
+            if (!ModelState.IsValid)
+            {
+                ConfigureShipOrderViewModel(order);
+
+                return View(order);
+            }
+
+            order.Id = orderId;
+            var mappedOrder = _mapper.Map<Order>(order);
+
+            _orderService.EditOrder(mappedOrder);
+
+            return RedirectToAction(nameof(Make));
+        }
+
+        private void ConfigureShipOrderViewModel(ShipOrderViewModel shipOrderViewModel)
+        {
+            shipOrderViewModel.Shippers = new SelectList(_shipperService.GetAllShippers(),
+                nameof(NorthwindShipper.CompanyName),
+                nameof(NorthwindShipper.CompanyName));
         }
 
         [HttpGet("orders/make")]
@@ -88,8 +153,6 @@ namespace OnlineGameStore.MVC.Controllers
             var order = _orderService.ChangeStatusToInProcess(customerId);
 
             var orderViewModel = PrepareOrderViewModel(order);
-
-            orderViewModel.EnableModification = false;
 
             return View(orderViewModel);
         }
@@ -115,9 +178,11 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GameController.GetGames), "Game");
         }
 
-        private OrderViewModel PrepareOrderViewModel(Order order)
+        private OrderViewModel PrepareOrderViewModel(Order order, bool enableModification = false)
         {
             var orderViewModel = _mapper.Map<OrderViewModel>(order);
+
+            orderViewModel.EnableModification = enableModification;
 
             return orderViewModel;
         }

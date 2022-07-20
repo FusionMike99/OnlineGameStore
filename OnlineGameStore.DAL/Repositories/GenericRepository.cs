@@ -44,9 +44,9 @@ namespace OnlineGameStore.DAL.Repositories
             return entitiesNumber;
         }
 
-        public TEntity Update(TEntity entity)
+        public TEntity Update(TEntity entity, Expression<Func<TEntity, bool>> predicate = null)
         {
-            var exist = _entities.Find(entity.Id);
+            var exist = predicate != null ? GetSingle(predicate, true) : _entities.Find(entity.Id);
 
             foreach (var navEntity in _context.Entry(entity).Navigations)
             {

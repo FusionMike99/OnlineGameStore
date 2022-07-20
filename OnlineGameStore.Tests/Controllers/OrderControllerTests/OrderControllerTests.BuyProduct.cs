@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Controllers
                     It.IsAny<bool>()))
                 .Returns(game);
 
-            mockOrderService.Setup(x => x.AddToOpenOrder(It.IsAny<int>(),
+            mockOrderService.Setup(x => x.AddToOpenOrder(It.IsAny<string>(),
                 It.IsAny<Game>(),
                 It.IsAny<short>()));
 
@@ -40,7 +40,7 @@ namespace OnlineGameStore.Tests.Controllers
                 It.IsAny<bool>()),
                 Times.Once);
 
-            mockOrderService.Verify(x => x.AddToOpenOrder(It.IsAny<int>(),
+            mockOrderService.Verify(x => x.AddToOpenOrder(It.IsAny<string>(),
                     It.IsAny<Game>(),
                     It.IsAny<short>()),
                 Times.Once);

@@ -2,6 +2,6 @@
 {
     public interface ICustomerIdAccessor
     {
-        int GetCustomerId();
+        string GetCustomerId();
     }
 }
