@@ -44,9 +44,10 @@ namespace OnlineGameStore.BLL.Services
             return leavedComment;
         }
 
-        public Comment GetCommentById(int commentId)
+        public Comment GetCommentById(string commentId)
         {
-            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId,
+            var commentGuid = Guid.Parse(commentId);
+            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentGuid,
                 false,
                 $"{nameof(Comment.Game)}",
                 $"{nameof(Comment.Replies)}");
@@ -60,10 +61,7 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
         {
             var comments = _unitOfWork.Comments.GetMany(c => c.Game.Key == gameKey,
-                    true,
-                    null,
-                    null,
-                    null,
+                    true, null, null, null,
                     $"{nameof(Comment.Game)}",
                     $"{nameof(Comment.Replies)}");
 
@@ -77,7 +75,7 @@ namespace OnlineGameStore.BLL.Services
 
         public Comment EditComment(Comment comment)
         {
-            var oldComment = GetCommentById(comment.Id);
+            var oldComment = GetCommentById(comment.Id.ToString());
             
             var editedComment = _unitOfWork.Comments.Update(comment);
             _unitOfWork.Commit();
@@ -90,9 +88,10 @@ namespace OnlineGameStore.BLL.Services
             return editedComment;
         }
 
-        public void DeleteComment(int commentId)
+        public void DeleteComment(string commentId)
         {
-            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId);
+            var commentGuid = Guid.Parse(commentId);
+            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentGuid);
 
             if (comment == null)
             {

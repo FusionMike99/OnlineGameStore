@@ -7,12 +7,12 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Comment LeaveCommentToGame(string gameKey, Comment comment);
 
-        Comment GetCommentById(int commentId);
+        Comment GetCommentById(string commentId);
         
         IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey);
         
         Comment EditComment(Comment comment);
 
-        void DeleteComment(int commentId);
+        void DeleteComment(string commentId);
     }
 }

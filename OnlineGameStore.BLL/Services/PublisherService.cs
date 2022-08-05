@@ -33,11 +33,12 @@ namespace OnlineGameStore.BLL.Services
             _mapper = mapper;
         }
 
-        public bool CheckCompanyNameForUnique(int publisherId, string companyName)
+        public bool CheckCompanyNameForUnique(string publisherId, string companyName)
         {
+            var publisherGuid = Guid.Parse(publisherId);
             var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName, true);
 
-            return publisher != null && publisher.Id != publisherId;
+            return publisher != null && publisher.Id != publisherGuid;
         }
 
         public Publisher CreatePublisher(Publisher publisher)
@@ -53,9 +54,10 @@ namespace OnlineGameStore.BLL.Services
             return createdPublisher;
         }
 
-        public void DeletePublisher(int publisherId)
+        public void DeletePublisher(string publisherId)
         {
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.Id == publisherId);
+            var publisherGuid = Guid.Parse(publisherId);
+            var publisher = _unitOfWork.Publishers.GetSingle(p => p.Id == publisherGuid);
 
             if (publisher == null)
             {
@@ -101,11 +103,11 @@ namespace OnlineGameStore.BLL.Services
             return editedPublisher;
         }
 
-        public IEnumerable<int> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
+        public IEnumerable<string> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
         {
             var suppliersIds = _northwindUnitOfWork.Suppliers
                 .GetMany(s => companiesNames.Contains(s.CompanyName))
-                .Select(s => s.SupplierId);
+                .Select(s => s.Id.ToString());
 
             return suppliersIds;
         }

@@ -60,15 +60,15 @@ namespace OnlineGameStore.MVC.Controllers
             return View("Index", aggregateCommentViewModel);
         }
         
-        [HttpGet("updateComment/{commentId:int}")]
-        public IActionResult UpdateComment([FromRoute] int? commentId, [FromRoute] string gameKey)
+        [HttpGet("updateComment/{commentId}")]
+        public IActionResult UpdateComment([FromRoute] string commentId, [FromRoute] string gameKey)
         {
-            if (!commentId.HasValue)
+            if (string.IsNullOrWhiteSpace(commentId))
             {
                 return BadRequest();
             }
 
-            var comment = _commentService.GetCommentById(commentId.Value);
+            var comment = _commentService.GetCommentById(commentId);
 
             if (comment == null)
             {
@@ -80,9 +80,9 @@ namespace OnlineGameStore.MVC.Controllers
             return PartialView("_Update", editCommentViewModel);
         }
 
-        [HttpPost("updateComment/{commentId:int}")]
+        [HttpPost("updateComment/{commentId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateComment(int commentId, EditCommentViewModel comment, string gameKey)
+        public IActionResult UpdateComment(string commentId, EditCommentViewModel comment, string gameKey)
         {
             if (commentId != comment.Id)
             {
@@ -101,15 +101,15 @@ namespace OnlineGameStore.MVC.Controllers
             return Json(new { url = Url.Action(nameof(GetCommentsByGameKey), new { gameKey }) });
         }
         
-        [HttpGet("removeComment/{id:int?}")]
-        public IActionResult RemoveComment([FromRoute] int? id, [FromRoute] string gameKey)
+        [HttpGet("removeComment/{id}")]
+        public IActionResult RemoveComment([FromRoute] string id, [FromRoute] string gameKey)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            var comment = _commentService.GetCommentById(id.Value);
+            var comment = _commentService.GetCommentById(id);
 
             if (comment == null)
             {
@@ -121,17 +121,17 @@ namespace OnlineGameStore.MVC.Controllers
             return PartialView("_Remove", commentViewModel);
         }
         
-        [HttpPost("removeComment/{id:int}")]
+        [HttpPost("removeComment/{id}")]
         [ValidateAntiForgeryToken]
         [ActionName("Remove")]
-        public IActionResult RemoveCommentConfirmed([FromRoute] int? id, [FromRoute] string gameKey)
+        public IActionResult RemoveCommentConfirmed([FromRoute] string id, [FromRoute] string gameKey)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            _commentService.DeleteComment(id.Value);
+            _commentService.DeleteComment(id);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }

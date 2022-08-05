@@ -28,8 +28,6 @@ namespace OnlineGameStore.DAL.Data
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<OrderStatus> OrderStatuses { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

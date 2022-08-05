@@ -6,13 +6,13 @@ namespace OnlineGameStore.MVC.Models
     public class GenreViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
         
         public string Description { get; set; }
 
-        public int? ParentId { get; set; }
+        public string ParentId { get; set; }
 
         [Display(Name = "Parent genre")]
         public string ParentName { get; set; }

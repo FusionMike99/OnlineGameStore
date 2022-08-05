@@ -8,7 +8,7 @@ namespace OnlineGameStore.MVC.Models
 {
     public class OrderViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Customer")]
         public string CustomerId { get; set; }

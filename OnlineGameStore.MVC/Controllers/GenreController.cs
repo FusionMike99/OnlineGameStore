@@ -52,15 +52,15 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("update/{genreId:int}")]
-        public IActionResult Update([FromRoute] int? genreId)
+        [HttpGet("update/{genreId}")]
+        public IActionResult Update([FromRoute] string genreId)
         {
-            if (!genreId.HasValue)
+            if (string.IsNullOrWhiteSpace(genreId))
             {
                 return BadRequest();
             }
 
-            var genre = _genreService.GetGenreById(genreId.Value);
+            var genre = _genreService.GetGenreById(genreId);
 
             if (genre == null)
             {
@@ -74,9 +74,9 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editGenreViewModel);
         }
 
-        [HttpPost("update/{genreId:int}")]
+        [HttpPost("update/{genreId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int genreId, [FromForm] EditGenreViewModel genre)
+        public IActionResult Update(string genreId, [FromForm] EditGenreViewModel genre)
         {
             if (genreId != genre.Id)
             {
@@ -99,15 +99,15 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("{genreId:int}")]
-        public IActionResult GetGenreById([FromRoute] int? genreId)
+        [HttpGet("{genreId}")]
+        public IActionResult GetGenreById([FromRoute] string genreId)
         {
-            if (!genreId.HasValue)
+            if (string.IsNullOrWhiteSpace(genreId))
             {
                 return BadRequest();
             }
 
-            var genre = _genreService.GetGenreById(genreId.Value);
+            var genre = _genreService.GetGenreById(genreId);
 
             if (genre == null)
             {
@@ -131,14 +131,14 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public IActionResult Remove([FromForm] string id)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            _genreService.DeleteGenre(id.Value);
+            _genreService.DeleteGenre(id);
 
             return RedirectToAction(nameof(GetGenres));
         }

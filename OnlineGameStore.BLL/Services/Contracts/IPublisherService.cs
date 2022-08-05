@@ -9,14 +9,14 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Publisher EditPublisher(string companyName, Publisher publisher);
 
-        void DeletePublisher(int publisherId);
+        void DeletePublisher(string publisherId);
 
         Publisher GetPublisherByCompanyName(string companyName);
         
-        IEnumerable<int> GetSuppliersIdsByNames(IEnumerable<string> companiesNames);
+        IEnumerable<string> GetSuppliersIdsByNames(IEnumerable<string> companiesNames);
 
         IEnumerable<Publisher> GetAllPublishers();
 
-        bool CheckCompanyNameForUnique(int publisherId, string companyName);
+        bool CheckCompanyNameForUnique(string publisherId, string companyName);
     }
 }

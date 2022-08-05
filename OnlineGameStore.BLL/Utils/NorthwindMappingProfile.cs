@@ -61,9 +61,9 @@ namespace OnlineGameStore.BLL.Utils
                     opts => opts.MapFrom(no => no.RequiredDate))
                 .ForMember(o => o.ShipVia,
                     opts => opts.MapFrom(no => no.Shipper.CompanyName))
-                .ForMember(o => o.OrderStatusId,
+                .ForMember(o => o.OrderState,
                     opts => opts.Ignore())
-                .ForMember(o => o.OrderStatus,
+                .ForMember(o => o.OrderState,
                     opts => opts.Ignore())
                 .ForMember(o => o.IsDeleted,
                     opts => opts.Ignore())

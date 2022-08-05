@@ -9,20 +9,20 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Genre EditGenre(Genre genre);
 
-        void DeleteGenre(int genreId);
+        void DeleteGenre(string genreId);
 
-        Genre GetGenreById(int genreId);
+        Genre GetGenreById(string genreId);
 
         IEnumerable<Genre> GetAllGenres();
         
         IEnumerable<Genre> GetAllParentGenres();
 
-        IEnumerable<Genre> GetAllWithoutGenre(int genreId);
+        IEnumerable<Genre> GetAllWithoutGenre(string genreId);
         
-        IEnumerable<int> GetGenresIdsByNames(params string[] genresNames);
+        IEnumerable<string> GetGenresIdsByNames(params string[] genresNames);
         
-        IEnumerable<int> GetCategoriesIdsByNames(IEnumerable<string> genresNames);
+        IEnumerable<string> GetCategoriesIdsByNames(IEnumerable<string> genresNames);
 
-        bool CheckNameForUnique(int genreId, string name);
+        bool CheckNameForUnique(string genreId, string name);
     }
 }

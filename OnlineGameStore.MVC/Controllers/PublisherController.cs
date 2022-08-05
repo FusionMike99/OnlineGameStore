@@ -119,14 +119,14 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public IActionResult Remove([FromForm] string id)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            _publisherService.DeletePublisher(id.Value);
+            _publisherService.DeletePublisher(id);
 
             return RedirectToAction(nameof(GetPublishers));
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoMapper;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.MVC.Models;
@@ -23,14 +24,14 @@ namespace OnlineGameStore.MVC.Mapper
                 .ForMember(dest => dest.GameGenres, source => source.MapFrom(game =>
                     game.SelectedGenres.Select(selected => new GameGenre
                     {
-                        GameId = game.Id,
-                        GenreId = selected
+                        GameId = Guid.Parse(game.Id),
+                        GenreId = Guid.Parse(selected)
                     })))
                 .ForMember(dest => dest.GamePlatformTypes, source => source.MapFrom(game =>
                     game.SelectedPlatformTypes.Select(selected => new GamePlatformType
                     {
-                        GameId = game.Id,
-                        PlatformId = selected
+                        GameId = Guid.Parse(game.Id),
+                        PlatformId = Guid.Parse(selected)
                     })))
                 .ForMember(dest => dest.PublisherName, source => source.MapFrom(game => game.SelectedPublisher))
                 .ForMember(dest => dest.Comments, source => source.Ignore())

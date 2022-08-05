@@ -35,7 +35,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
         public static implicit operator SortFilterGameViewModel(SortFilterGameViewModelBuilder builder) =>
             builder._model;
 
-        private void SetGenres(IGenreService genreService, ICollection<int> selectedGenres)
+        private void SetGenres(IGenreService genreService, ICollection<string> selectedGenres)
         {
             var genres = genreService.GetAllGenres().ToList();
             
@@ -48,7 +48,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
             if (selectedGenres?.Any() == true)
             {
                 selectedGenresNames = genres
-                    .Where(g => selectedGenres.Contains(g.Id))
+                    .Where(g => selectedGenres.Contains(g.Id.ToString()))
                     .Select(g => g.Name).ToList();
                 
                 SetUpSelectList(_model.Genres, selectedGenresNames);
@@ -57,7 +57,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
             _model.SelectedGenres = selectedGenresNames;
         }
         
-        private void SetPlatformTypes(IPlatformTypeService platformTypeService, ICollection<int> selectedPlatformTypes)
+        private void SetPlatformTypes(IPlatformTypeService platformTypeService, ICollection<string> selectedPlatformTypes)
         {
             var platformTypes = platformTypeService.GetAllPlatformTypes().ToList();
             
@@ -70,7 +70,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
             if (selectedPlatformTypes?.Any() == true)
             {
                 selectedPlatformTypesNames = platformTypes
-                    .Where(pt => selectedPlatformTypes.Contains(pt.Id))
+                    .Where(pt => selectedPlatformTypes.Contains(pt.Id.ToString()))
                     .Select(pt => pt.Type).ToList();
                 
                 SetUpSelectList(_model.PlatformTypes, selectedPlatformTypesNames);

@@ -16,7 +16,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Products
             
             if (selectedSuppliers?.Any() == true)
             {
-                filterExpression = p => selectedSuppliers.Contains(p.SupplierId);
+                filterExpression = p => selectedSuppliers.Contains(p.SupplierId.ToString());
             }
 
             return filterExpression;

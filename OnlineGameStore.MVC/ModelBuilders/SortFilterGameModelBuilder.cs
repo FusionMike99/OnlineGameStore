@@ -34,8 +34,8 @@ namespace OnlineGameStore.MVC.ModelBuilders
         
         private void SetGenres(IGenreService genreService, ICollection<string> selectedGenres)
         {
-            List<int> selectedGenresIds = null;
-            List<int> selectedCategoriesIds = null;
+            List<string> selectedGenresIds = null;
+            List<string> selectedCategoriesIds = null;
             
             if (selectedGenres?.Any() == true)
             {
@@ -50,7 +50,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
         
         private void SetPlatformTypes(IPlatformTypeService platformTypeService, ICollection<string> selectedPlatformTypes)
         {
-            List<int> selectedPlatformTypesIds = null;
+            List<string> selectedPlatformTypesIds = null;
             
             if (selectedPlatformTypes?.Any() == true)
             {
@@ -62,7 +62,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
         
         private void SetPublishers(IPublisherService publisherService, List<string> selectedPublishers)
         {
-            List<int> selectedSuppliersIds = null;
+            List<string> selectedSuppliersIds = null;
             
             if (selectedPublishers?.Any() == true)
             {

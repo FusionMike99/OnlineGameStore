@@ -47,15 +47,15 @@ namespace OnlineGameStore.MVC.Controllers
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
-        [HttpGet("update/{platformTypeId:int}")]
-        public IActionResult Update([FromRoute] int? platformTypeId)
+        [HttpGet("update/{platformTypeId}")]
+        public IActionResult Update([FromRoute] string platformTypeId)
         {
-            if (!platformTypeId.HasValue)
+            if (string.IsNullOrWhiteSpace(platformTypeId))
             {
                 return BadRequest();
             }
 
-            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
+            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId);
 
             if (platformType == null)
             {
@@ -67,9 +67,9 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPlatformTypeViewModel);
         }
 
-        [HttpPost("update/{platformTypeId:int}")]
+        [HttpPost("update/{platformTypeId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int platformTypeId, [FromForm] EditPlatformTypeViewModel platformType)
+        public IActionResult Update(string platformTypeId, [FromForm] EditPlatformTypeViewModel platformType)
         {
             if (platformTypeId != platformType.Id)
             {
@@ -91,14 +91,14 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{platformTypeId}")]
-        public IActionResult GetPlatformTypeById([FromRoute] int? platformTypeId)
+        public IActionResult GetPlatformTypeById([FromRoute] string platformTypeId)
         {
-            if (!platformTypeId.HasValue)
+            if (string.IsNullOrWhiteSpace(platformTypeId))
             {
                 return BadRequest();
             }
 
-            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
+            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId);
 
             if (platformType == null)
             {
@@ -122,14 +122,14 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public IActionResult Remove([FromForm] string id)
         {
-            if (!id.HasValue)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
 
-            _platformTypeService.DeletePlatformType(id.Value);
+            _platformTypeService.DeletePlatformType(id);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }

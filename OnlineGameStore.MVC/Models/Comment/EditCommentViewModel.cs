@@ -5,7 +5,7 @@ namespace OnlineGameStore.MVC.Models
     public class EditCommentViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public string Id { get; set; }
         
         [Required]
         public string Name { get; set; }
@@ -19,9 +19,9 @@ namespace OnlineGameStore.MVC.Models
         public bool IsQuoted { get; set; }
         
         [UIHint("HiddenInput")]
-        public int GameId { get; set; }
+        public string GameId { get; set; }
 
         [UIHint("HiddenInput")]
-        public int? ReplyToId { get; set; }
+        public string ReplyToId { get; set; }
     }
 }

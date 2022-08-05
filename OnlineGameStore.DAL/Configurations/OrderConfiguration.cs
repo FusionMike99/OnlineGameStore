@@ -10,6 +10,9 @@ namespace OnlineGameStore.DAL.Configurations
         {
             builder.HasKey(m => m.Id);
 
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
+
             builder.Property(o => o.OrderDate)
                 .IsRequired();
 
@@ -18,9 +21,6 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(o => o.IsDeleted)
                 .HasDefaultValue(false);
-
-            builder.Property(o => o.OrderStatusId)
-                .HasDefaultValue(1);
             
             builder.Property(o => o.Freight)
                 .HasDefaultValue(0D);
@@ -42,10 +42,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(o => o.ShipCountry)
                 .HasDefaultValue(string.Empty);
-
-            builder.HasOne(o => o.OrderStatus)
-                .WithMany(os => os.Orders)
-                .HasForeignKey(o => o.OrderStatusId);
         }
     }
 }

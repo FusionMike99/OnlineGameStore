@@ -72,7 +72,7 @@ namespace OnlineGameStore.BLL.Services
             }
             else
             {
-                game.Id = 0;
+                game.Id = Guid.NewGuid();
                 game.IsDeleted = true;
                 game.DeletedAt = DateTime.UtcNow;
 
@@ -98,7 +98,7 @@ namespace OnlineGameStore.BLL.Services
             }
             else
             {
-                game.Id = 0;
+                game.Id = Guid.NewGuid();
                 editedGame = CreateGame(game);
             }
 
@@ -216,14 +216,15 @@ namespace OnlineGameStore.BLL.Services
             return game;
         }
 
-        public bool CheckKeyForUnique(int gameId, string gameKey)
+        public bool CheckKeyForUnique(string gameId, string gameKey)
         {
+            var gameGuid = Guid.Parse(gameId);
             var game = _unitOfWork.Games.GetSingle(g => g.Key == gameKey, true);
 
-            return game != null && game.Id != gameId;
+            return game != null && game.Id != gameGuid;
         }
 
-        private void AddSubgenresToList(List<int> genreIds)
+        private void AddSubgenresToList(List<string> genreIds)
         {
             if (genreIds == null)
             {
@@ -232,10 +233,10 @@ namespace OnlineGameStore.BLL.Services
             
             for (var i = 0; i < genreIds.Count; i++)
             {
-                var index = i;
+                var genreGuid = Guid.Parse(genreIds[i]);
                 var subgenreIds = _unitOfWork.Genres
-                    .GetSingle(g => g.Id == genreIds[index], false, $"{nameof(Genre.SubGenres)}")
-                    .SubGenres.Select(g => g.Id).ToList();
+                    .GetSingle(g => g.Id == genreGuid, false, $"{nameof(Genre.SubGenres)}")
+                    .SubGenres.Select(g => g.Id.ToString()).ToList();
 
                 AddSubgenresToList(subgenreIds);
                 genreIds.AddRange(subgenreIds);
@@ -402,7 +403,7 @@ namespace OnlineGameStore.BLL.Services
             {
                 model.SelectedSuppliers = _northwindUnitOfWork.Suppliers
                     .GetMany(s => model.SelectedPublishers.Contains(s.CompanyName))
-                    .Select(s => s.SupplierId).ToList();
+                    .Select(s => s.Id.ToString()).ToList();
             }
         }
     }

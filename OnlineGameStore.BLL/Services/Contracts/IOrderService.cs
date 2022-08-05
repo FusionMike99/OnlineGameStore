@@ -9,7 +9,7 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Order GetOpenOrder(string customerId);
 
-        Order GetOrderById(int orderId);
+        Order GetOrderById(string orderId);
 
         IEnumerable<Order> GetOrders(FilterOrderModel filterOrderModel = null);
 
@@ -21,10 +21,10 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Order ChangeStatusToInProcess(string customerId);
 
-        Order ChangeStatusToClosed(int orderId);
+        Order ChangeStatusToClosed(string orderId);
 
         void CancelOrdersWithTimeout();
 
-        void SetCancelledDate(int orderId, DateTime cancelledDate);
+        void SetCancelledDate(string orderId, DateTime cancelledDate);
     }
 }

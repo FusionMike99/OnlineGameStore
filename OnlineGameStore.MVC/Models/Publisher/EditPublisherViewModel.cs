@@ -7,7 +7,7 @@ namespace OnlineGameStore.MVC.Models
     public class EditPublisherViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [Display(Name = "Company name")]

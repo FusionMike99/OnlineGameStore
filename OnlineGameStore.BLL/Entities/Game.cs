@@ -4,9 +4,9 @@ using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Game : IBaseEntity<int>
+    public class Game : IBaseEntity<Guid>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Key { get; set; }
 

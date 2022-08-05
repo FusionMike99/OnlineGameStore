@@ -23,20 +23,21 @@ namespace OnlineGameStore.BLL.Services
             _logger = logger;
         }
 
-        public IEnumerable<int> GetPlatformTypesIdsByNames(IEnumerable<string> types)
+        public IEnumerable<string> GetPlatformTypesIdsByNames(IEnumerable<string> types)
         {
             var platformTypesIds = _unitOfWork.PlatformTypes
                 .GetMany(s => types.Contains(s.Type))
-                .Select(s => s.Id);
+                .Select(s => s.Id.ToString());
 
             return platformTypesIds;
         }
 
-        public bool CheckTypeForUnique(int platformTypeId, string type)
+        public bool CheckTypeForUnique(string platformTypeId, string type)
         {
+            var platformTypeGuid = Guid.Parse(platformTypeId);
             var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Type == type, true);
 
-            return platformType != null && platformType.Id != platformTypeId;
+            return platformType != null && platformType.Id != platformTypeGuid;
         }
 
         public PlatformType CreatePlatformType(PlatformType platformType)
@@ -52,9 +53,10 @@ namespace OnlineGameStore.BLL.Services
             return createdPlatformType;
         }
 
-        public void DeletePlatformType(int platformTypeId)
+        public void DeletePlatformType(string platformTypeId)
         {
-            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeId);
+            var platformTypeGuid = Guid.Parse(platformTypeId);
+            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeGuid);
 
             if (platformType == null)
             {
@@ -78,7 +80,7 @@ namespace OnlineGameStore.BLL.Services
 
         public PlatformType EditPlatformType(PlatformType platformType)
         {
-            var oldPlatformType = GetPlatformTypeById(platformType.Id);
+            var oldPlatformType = GetPlatformTypeById(platformType.Id.ToString());
             
             var editedPlatformType = _unitOfWork.PlatformTypes.Update(platformType);
             _unitOfWork.Commit();
@@ -94,10 +96,7 @@ namespace OnlineGameStore.BLL.Services
         public IEnumerable<PlatformType> GetAllPlatformTypes()
         {
             var platformTypes = _unitOfWork.PlatformTypes.GetMany(null,
-                    false,
-                    null,
-                    null,
-                    null,
+                    false, null, null, null,
                     $"{nameof(PlatformType.GamePlatformTypes)}.{nameof(GamePlatformType.Game)}");
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(GetAllPlatformTypes)}.
@@ -106,9 +105,10 @@ namespace OnlineGameStore.BLL.Services
             return platformTypes;
         }
 
-        public PlatformType GetPlatformTypeById(int platformTypeId)
+        public PlatformType GetPlatformTypeById(string platformTypeId)
         {
-            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeId,
+            var platformTypeGuid = Guid.Parse(platformTypeId);
+            var platformType = _unitOfWork.PlatformTypes.GetSingle(pt => pt.Id == platformTypeGuid,
                     false,
                     $"{nameof(PlatformType.GamePlatformTypes)}.{nameof(GamePlatformType.Game)}");
 

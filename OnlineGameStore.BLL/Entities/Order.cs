@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Order : IBaseEntity<int>
+    public class Order : IBaseEntity<Guid>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         public DateTime OrderDate { get; set; }
         
@@ -31,9 +32,7 @@ namespace OnlineGameStore.BLL.Entities
 
         public string CustomerId { get; set; }
 
-        public int OrderStatusId { get; set; }
-
-        public OrderStatus OrderStatus { get; set; }
+        public OrderState OrderState { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
 

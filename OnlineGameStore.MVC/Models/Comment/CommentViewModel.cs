@@ -5,7 +5,7 @@ namespace OnlineGameStore.MVC.Models
 {
     public class CommentViewModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Name { get; set; }
 
@@ -14,7 +14,7 @@ namespace OnlineGameStore.MVC.Models
         
         public bool IsQuoted { get; set; }
 
-        public int? ReplyToId { get; set; }
+        public string ReplyToId { get; set; }
 
         public CommentViewModel ReplyTo { get; set; }
 

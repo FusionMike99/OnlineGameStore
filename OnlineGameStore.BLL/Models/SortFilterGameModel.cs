@@ -5,15 +5,15 @@ namespace OnlineGameStore.BLL.Models
 {
     public class SortFilterGameModel
     {
-        public List<int> SelectedGenres { get; set; }
+        public List<string> SelectedGenres { get; set; }
         
-        public List<int> SelectedPlatformTypes { get; set; }
+        public List<string> SelectedPlatformTypes { get; set; }
         
         public List<string> SelectedPublishers { get; set; }
         
-        public List<int> SelectedCategories { get; set; }
+        public List<string> SelectedCategories { get; set; }
         
-        public List<int> SelectedSuppliers { get; set; }
+        public List<string> SelectedSuppliers { get; set; }
         
         public GameSortState GameSortState { get; set; }
         

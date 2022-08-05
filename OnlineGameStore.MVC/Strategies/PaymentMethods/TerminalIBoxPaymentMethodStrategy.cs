@@ -45,7 +45,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             
             var cancelledDate = DateTime.UtcNow.Add(TimeSpan.FromMinutes(minutes));
             
-            _orderService.SetCancelledDate(order.Id, cancelledDate);
+            _orderService.SetCancelledDate(order.Id.ToString(), cancelledDate);
             
             return viewResult;
         }

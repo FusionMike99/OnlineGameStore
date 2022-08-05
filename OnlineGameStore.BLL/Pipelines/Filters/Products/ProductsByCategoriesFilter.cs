@@ -16,7 +16,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Products
             
             if (selectedCategories != null)
             {
-                filterExpression = p => selectedCategories.Contains(p.CategoryId);
+                filterExpression = p => selectedCategories.Contains(p.CategoryId.ToString());
             }
 
             return filterExpression;

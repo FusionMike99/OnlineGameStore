@@ -1,4 +1,6 @@
-﻿namespace OnlineGameStore.BLL.Enums
+﻿using System;
+
+namespace OnlineGameStore.BLL.Enums
 {
     public enum OrderState
     {

@@ -9,14 +9,14 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         PlatformType EditPlatformType(PlatformType platformType);
 
-        void DeletePlatformType(int platformTypeId);
+        void DeletePlatformType(string platformTypeId);
 
-        PlatformType GetPlatformTypeById(int platformTypeId);
+        PlatformType GetPlatformTypeById(string platformTypeId);
 
         IEnumerable<PlatformType> GetAllPlatformTypes();
         
-        IEnumerable<int> GetPlatformTypesIdsByNames(IEnumerable<string> types);
+        IEnumerable<string> GetPlatformTypesIdsByNames(IEnumerable<string> types);
 
-        bool CheckTypeForUnique(int platformTypeId, string type);
+        bool CheckTypeForUnique(string platformTypeId, string type);
     }
 }

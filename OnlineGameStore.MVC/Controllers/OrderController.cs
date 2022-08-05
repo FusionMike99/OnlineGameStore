@@ -102,8 +102,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View("Index", orderListViewModel);
         }
         
-        [HttpGet("orders/ship/{orderId:int}")]
-        public IActionResult Ship(int orderId)
+        [HttpGet("orders/ship/{orderId}")]
+        public IActionResult Ship(string orderId)
         {
             var order = _orderService.GetOrderById(orderId);
 
@@ -119,9 +119,9 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editOrderViewModel);
         }
 
-        [HttpPost("orders/ship/{orderId:int}")]
+        [HttpPost("orders/ship/{orderId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Ship(int orderId, [FromForm] ShipOrderViewModel order)
+        public IActionResult Ship(string orderId, [FromForm] ShipOrderViewModel order)
         {
             if (!ModelState.IsValid)
             {
@@ -157,8 +157,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View(orderViewModel);
         }
 
-        [HttpGet("orders/{orderId:int}/pay")]
-        public IActionResult Pay(int orderId, PaymentMethod paymentMethod)
+        [HttpGet("orders/{orderId}/pay")]
+        public IActionResult Pay(string orderId, PaymentMethod paymentMethod)
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
 
@@ -169,9 +169,9 @@ namespace OnlineGameStore.MVC.Controllers
             return result;
         }
 
-        [HttpPost("orders/{orderId:int}/pay")]
+        [HttpPost("orders/{orderId}/pay")]
         [ValidateAntiForgeryToken]
-        public IActionResult Pay([FromRoute] int orderId)
+        public IActionResult Pay([FromRoute] string orderId)
         {
             _orderService.ChangeStatusToClosed(orderId);
 

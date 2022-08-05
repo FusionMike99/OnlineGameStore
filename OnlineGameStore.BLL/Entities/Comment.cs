@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Comment : IBaseEntity<int>
+    public class Comment : IBaseEntity<Guid>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Name { get; set; }
 
@@ -13,11 +13,11 @@ namespace OnlineGameStore.BLL.Entities
         
         public bool IsQuoted { get; set; }
 
-        public int GameId { get; set; }
+        public Guid GameId { get; set; }
 
         public Game Game { get; set; }
 
-        public int? ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
 
         public Comment ReplyTo { get; set; }
 

@@ -17,7 +17,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Games
             if (selectedPlatformTypes != null)
             {
                 filterExpression = g => g.GamePlatformTypes.Any(gp =>
-                    selectedPlatformTypes.Any(id => id == gp.PlatformId));
+                    selectedPlatformTypes.Any(id => id == gp.PlatformId.ToString()));
             }
 
             return filterExpression;

@@ -9,6 +9,9 @@ namespace OnlineGameStore.DAL.Configurations
         public void Configure(EntityTypeBuilder<Game> builder)
         {
             builder.HasKey(m => m.Id);
+            
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(g => g.Key)
                 .IsRequired();

@@ -8,7 +8,7 @@ namespace OnlineGameStore.BLL.Entities
 
         public Game Product { get; set; }
 
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
 
         public Order Order { get; set; }
 

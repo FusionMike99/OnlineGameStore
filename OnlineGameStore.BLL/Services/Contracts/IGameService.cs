@@ -25,6 +25,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         int GetGamesNumber(SortFilterGameModel sortFilterModel = null);
 
-        bool CheckKeyForUnique(int gameId, string gameKey);
+        bool CheckKeyForUnique(string gameId, string gameKey);
     }
 }

@@ -11,7 +11,7 @@ namespace OnlineGameStore.MVC.Models
     public class EditGameViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [BindProperty(BinderType = typeof(TrimmingModelBinder))]
@@ -68,10 +68,10 @@ namespace OnlineGameStore.MVC.Models
         public SelectList Publishers { get; set; }
 
         [Display(Name = "Choose genres")]
-        public List<int> SelectedGenres { get; set; }
+        public List<string> SelectedGenres { get; set; }
 
         [Display(Name = "Choose platform types")]
-        public List<int> SelectedPlatformTypes { get; set; }
+        public List<string> SelectedPlatformTypes { get; set; }
 
         [Display(Name = "Publisher")]
         public string SelectedPublisher { get; set; }

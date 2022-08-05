@@ -42,7 +42,8 @@ namespace OnlineGameStore.BLL.Services
         {
             var order = _unitOfWork.Orders
                 .GetSingle(o => o.CustomerId == customerId 
-                                && o.OrderStatusId <= (int)OrderState.InProgress && o.CancelledDate == null,
+                                && o.OrderState <= OrderState.InProgress 
+                                && o.CancelledDate == null,
                     false, $"{nameof(Order.OrderDetails)}");
 
             if (order == null)
@@ -50,7 +51,7 @@ namespace OnlineGameStore.BLL.Services
                 var creatingOrder = new Order
                 {
                     CustomerId = customerId,
-                    OrderStatusId = (int)OrderState.Open,
+                    OrderState = OrderState.Open,
                     OrderDate = DateTime.UtcNow,
                     OrderDetails = new List<OrderDetail>()
                 };
@@ -91,7 +92,7 @@ namespace OnlineGameStore.BLL.Services
 
         public Order EditOrder(Order order)
         {
-            var oldOrder = GetOrderById(order.Id);
+            var oldOrder = GetOrderById(order.Id.ToString());
             
             var editedOrder = _unitOfWork.Orders.Update(order);
             _unitOfWork.Commit();
@@ -169,7 +170,7 @@ namespace OnlineGameStore.BLL.Services
             CheckOrderExisting(order);
             var oldOrder = order.DeepClone();
 
-            order.OrderStatusId = (int)OrderState.InProgress;
+            order.OrderState = OrderState.InProgress;
 
             UpdateGamesQuantities(order.OrderDetails, (a, b) => (short)(a - b));
 
@@ -184,13 +185,13 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
-        public Order ChangeStatusToClosed(int orderId)
+        public Order ChangeStatusToClosed(string orderId)
         {
             var order = GetOrderById(orderId);
             CheckOrderExisting(order);
             var oldOrder = order.DeepClone();
             
-            order.OrderStatusId = (int)OrderState.Closed;
+            order.OrderState = OrderState.Closed;
 
             _unitOfWork.Orders.Update(order);
             _unitOfWork.Commit();
@@ -203,9 +204,10 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
-        public Order GetOrderById(int orderId)
+        public Order GetOrderById(string orderId)
         {
-            var order = _unitOfWork.Orders.GetSingle(o => o.Id == orderId,
+            var orderGuid = Guid.Parse(orderId);
+            var order = _unitOfWork.Orders.GetSingle(o => o.Id == orderGuid,
                     false, $"{nameof(Order.OrderDetails)}");
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(GetOrderById)}.
@@ -229,7 +231,7 @@ namespace OnlineGameStore.BLL.Services
 
                 UpdateGamesQuantities(order.OrderDetails, (a, b) => (short)(a + b));
                 
-                order.OrderStatusId = (int)OrderState.Cancelled;
+                order.OrderState = OrderState.Cancelled;
 
                 _unitOfWork.Orders.Update(order);
                 
@@ -242,7 +244,7 @@ namespace OnlineGameStore.BLL.Services
                     Cancelling orders successfully", orders);
         }
 
-        public void SetCancelledDate(int orderId, DateTime cancelledDate)
+        public void SetCancelledDate(string orderId, DateTime cancelledDate)
         {
             var order = GetOrderById(orderId);
             CheckOrderExisting(order);
@@ -262,7 +264,7 @@ namespace OnlineGameStore.BLL.Services
         private Order GetOrderByCustomerId(string customerId, OrderState orderState = OrderState.Open)
         {
             var order = _unitOfWork.Orders
-                .GetSingle(o => o.CustomerId == customerId && o.OrderStatusId == (int)orderState,
+                .GetSingle(o => o.CustomerId == customerId && o.OrderState == orderState,
                     false, $"{nameof(Order.OrderDetails)}");
 
             SetOrderDetailsGames(order?.OrderDetails);
@@ -275,7 +277,7 @@ namespace OnlineGameStore.BLL.Services
 
         private IEnumerable<Order> GetOrdersWithStatus(OrderState orderState)
         {
-            var orders = _unitOfWork.Orders.GetMany(o => o.OrderStatusId == (int)orderState,
+            var orders = _unitOfWork.Orders.GetMany(o => o.OrderState == orderState,
                     false, null, null, null, $"{nameof(Order.OrderDetails)}");
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(GetOrdersWithStatus)}.

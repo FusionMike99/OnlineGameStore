@@ -17,7 +17,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Games
             if (selectedGenres != null)
             {
                 filterExpression = g => g.GameGenres.Any(gg =>
-                    selectedGenres.Any(id => id == gg.GenreId));
+                    selectedGenres.Any(id => id == gg.GenreId.ToString()));
             }
 
             return filterExpression;

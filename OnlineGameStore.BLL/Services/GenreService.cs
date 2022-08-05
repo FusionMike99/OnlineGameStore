@@ -39,9 +39,10 @@ namespace OnlineGameStore.BLL.Services
             return createdGenre;
         }
 
-        public void DeleteGenre(int genreId)
+        public void DeleteGenre(string genreId)
         {
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId,
+            var genreGuid = Guid.Parse(genreId);
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreGuid,
                 includeDeleteEntities: false,
                 $"{nameof(Genre.SubGenres)}");
 
@@ -70,7 +71,7 @@ namespace OnlineGameStore.BLL.Services
 
         public Genre EditGenre(Genre genre)
         {
-            var oldGenre = GetGenreById(genre.Id);
+            var oldGenre = GetGenreById(genre.Id.ToString());
             
             var editedGenre = _unitOfWork.Genres.Update(genre);
             _unitOfWork.Commit();
@@ -111,9 +112,10 @@ namespace OnlineGameStore.BLL.Services
             return genres;
         }
 
-        public IEnumerable<Genre> GetAllWithoutGenre(int genreId)
+        public IEnumerable<Genre> GetAllWithoutGenre(string genreId)
         {
-            var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreId && g.ParentId != genreId,
+            var genreGuid = Guid.Parse(genreId);
+            var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreGuid && g.ParentId != genreGuid,
                     false, null, null, null,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}");
 
@@ -123,27 +125,28 @@ namespace OnlineGameStore.BLL.Services
             return genres;
         }
 
-        public IEnumerable<int> GetGenresIdsByNames(params string[] genresNames)
+        public IEnumerable<string> GetGenresIdsByNames(params string[] genresNames)
         {
             var genresIds = _unitOfWork.Genres
                 .GetMany(g => genresNames.Contains(g.Name))
-                .Select(g => g.Id);
+                .Select(g => g.Id.ToString());
 
             return genresIds;
         }
 
-        public IEnumerable<int> GetCategoriesIdsByNames(IEnumerable<string> genresNames)
+        public IEnumerable<string> GetCategoriesIdsByNames(IEnumerable<string> genresNames)
         {
             var suppliersIds = _northwindUnitOfWork.Categories
                 .GetMany(s => genresNames.Contains(s.Name))
-                .Select(s => s.CategoryId);
+                .Select(s => s.Id.ToString());
 
             return suppliersIds;
         }
 
-        public Genre GetGenreById(int genreId)
+        public Genre GetGenreById(string genreId)
         {
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreId,
+            var genreGuid = Guid.Parse(genreId);
+            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreGuid,
                     false,
                     $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
                     $"{nameof(Genre.Parent)}",
@@ -155,11 +158,12 @@ namespace OnlineGameStore.BLL.Services
             return genre;
         }
 
-        public bool CheckNameForUnique(int genreId, string name)
+        public bool CheckNameForUnique(string genreId, string name)
         {
+            var genreGuid = Guid.Parse(genreId);
             var genre = _unitOfWork.Genres.GetSingle(g => g.Name == name, true);
 
-            return genre != null && genre.Id != genreId;
+            return genre != null && genre.Id != genreGuid;
         }
     }
 }

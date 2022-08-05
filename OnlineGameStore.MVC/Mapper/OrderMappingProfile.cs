@@ -17,7 +17,7 @@ namespace OnlineGameStore.MVC.Mapper
                     source.MapFrom(order => order.OrderDetails.Sum(od => od.Price * od.Quantity * (decimal)(1 - od.Discount))))
                 .ForMember(dest => dest.OrderDetails, source => source.MapFrom(order => order.OrderDetails))
                 .ForMember(dest => dest.OrderState,
-                    opts => opts.MapFrom(order => (OrderState)order.OrderStatusId))
+                    opts => opts.MapFrom(order => order.OrderState))
                 .ForMember(o => o.EnableModification,
                     opts => opts.Ignore());
 
