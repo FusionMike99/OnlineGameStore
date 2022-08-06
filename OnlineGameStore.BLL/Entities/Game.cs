@@ -4,10 +4,8 @@ using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Game : IBaseEntity<Guid>
+    public class Game : BaseEntity
     {
-        public Guid Id { get; set; }
-        
         public string Key { get; set; }
 
         public string Name { get; set; }
@@ -43,10 +41,6 @@ namespace OnlineGameStore.BLL.Entities
         public ICollection<GamePlatformType> GamePlatformTypes { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
 
         public DatabaseEntity DatabaseEntity { get; set; }
     }

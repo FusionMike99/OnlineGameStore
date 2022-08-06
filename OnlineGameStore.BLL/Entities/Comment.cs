@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Comment : IBaseEntity<Guid>
+    public class Comment : BaseEntity
     {
-        public Guid Id { get; set; }
-        
         public string Name { get; set; }
 
         public string Body { get; set; }
@@ -22,9 +20,5 @@ namespace OnlineGameStore.BLL.Entities
         public Comment ReplyTo { get; set; }
 
         public ICollection<Comment> Replies { get; set; }
-        
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
     }
 }

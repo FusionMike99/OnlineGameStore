@@ -6,18 +6,16 @@ namespace OnlineGameStore.BLL.Repositories
 {
     public interface INorthwindUnitOfWork
     {
-        INorthwindGenericRepository<NorthwindCategory, ObjectId> Categories { get; }
+        INorthwindGenericRepository<NorthwindCategory> Categories { get; }
         
-        INorthwindGenericRepository<NorthwindOrder, ObjectId> Orders { get; }
+        INorthwindGenericRepository<NorthwindOrder> Orders { get; }
         
-        INorthwindGenericRepository<NorthwindOrderDetail, ObjectId> OrderDetails { get; }
+        INorthwindGenericRepository<NorthwindOrderDetail> OrderDetails { get; }
         
-        INorthwindGenericRepository<NorthwindProduct, ObjectId> Products { get; }
+        INorthwindGenericRepository<NorthwindProduct> Products { get; }
         
-        INorthwindGenericRepository<NorthwindShipper, ObjectId> Shippers { get; }
+        INorthwindGenericRepository<NorthwindShipper> Shippers { get; }
 
-        INorthwindGenericRepository<NorthwindSupplier, ObjectId> Suppliers { get; }
-        
-        INorthwindGenericRepository<LogModel, ObjectId> Logs { get; }
+        INorthwindGenericRepository<NorthwindSupplier> Suppliers { get; }
     }
 }

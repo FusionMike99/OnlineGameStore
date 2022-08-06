@@ -5,17 +5,17 @@ namespace OnlineGameStore.BLL.Repositories
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<Game, Guid> Games { get; }
+        IGenericRepository<Game> Games { get; }
 
-        IGenericRepository<Comment, Guid> Comments { get; }
+        IGenericRepository<Comment> Comments { get; }
 
-        IGenericRepository<Genre, Guid> Genres { get; }
+        IGenericRepository<Genre> Genres { get; }
 
-        IGenericRepository<PlatformType, Guid> PlatformTypes { get; }
+        IGenericRepository<PlatformType> PlatformTypes { get; }
 
-        IGenericRepository<Publisher, Guid> Publishers { get; }
+        IGenericRepository<Publisher> Publishers { get; }
 
-        IGenericRepository<Order, Guid> Orders { get; }
+        IGenericRepository<Order> Orders { get; }
 
         int Commit();
     }

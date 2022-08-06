@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Genre : IBaseEntity<Guid>
+    public class Genre : BaseEntity
     {
-        public Guid Id { get; set; }
-        
         public string Name { get; set; }
         
         public string Description { get; set; }
@@ -18,9 +16,5 @@ namespace OnlineGameStore.BLL.Entities
         public ICollection<Genre> SubGenres { get; set; }
 
         public ICollection<GameGenre> GameGenres { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
     }
 }

@@ -11,15 +11,12 @@ namespace OnlineGameStore.BLL.Services
     public class PlatformTypeService : IPlatformTypeService
     {
         private readonly ILogger<PlatformTypeService> _logger;
-        private readonly INorthwindLogService _logService;
         private readonly IUnitOfWork _unitOfWork;
 
         public PlatformTypeService(IUnitOfWork unitOfWork,
-            INorthwindLogService logService,
             ILogger<PlatformTypeService> logger)
         {
             _unitOfWork = unitOfWork;
-            _logService = logService;
             _logger = logger;
         }
 
@@ -47,8 +44,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(CreatePlatformType)}.
                     Creating paltform type with id {createdPlatformType.Id} successfully", createdPlatformType);
-            
-            _logService.LogCreating(createdPlatformType);
 
             return createdPlatformType;
         }
@@ -74,8 +69,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
                     Deleting platform type with id {platformTypeId} successfully", platformType);
-            
-            _logService.LogDeleting(platformType);
         }
 
         public PlatformType EditPlatformType(PlatformType platformType)
@@ -87,8 +80,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(EditPlatformType)}.
                     Editing platform type with id {editedPlatformType.Id} successfully", editedPlatformType);
-            
-            _logService.LogUpdating(oldPlatformType, editedPlatformType);
 
             return editedPlatformType;
         }

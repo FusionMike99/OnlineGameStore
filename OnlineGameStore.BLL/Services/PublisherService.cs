@@ -17,19 +17,16 @@ namespace OnlineGameStore.BLL.Services
         private readonly ILogger<PublisherService> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindUnitOfWork _northwindUnitOfWork;
-        private readonly INorthwindLogService _logService;
         private readonly IMapper _mapper;
 
         public PublisherService(ILogger<PublisherService> logger,
             IUnitOfWork unitOfWork,
             INorthwindUnitOfWork northwindUnitOfWork,
-            INorthwindLogService logService,
             IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _northwindUnitOfWork = northwindUnitOfWork;
-            _logService = logService;
             _mapper = mapper;
         }
 
@@ -48,8 +45,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(CreatePublisher)}.
                     Creating publisher with id {createdPublisher.Id} successfully", createdPublisher);
-            
-            _logService.LogCreating(createdPublisher);
 
             return createdPublisher;
         }
@@ -79,8 +74,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
                     Deleting publisher with id {publisherId} successfully", publisher);
-            
-            _logService.LogDeleting(publisher);
         }
 
         public Publisher EditPublisher(string companyName, Publisher publisher)
@@ -97,8 +90,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(EditPublisher)}.
                     Editing publisher with id {editedPublisher.Id} successfully", editedPublisher);
-            
-            _logService.LogUpdating(oldPublisher, editedPublisher);
 
             return editedPublisher;
         }

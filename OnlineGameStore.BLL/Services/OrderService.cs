@@ -20,21 +20,18 @@ namespace OnlineGameStore.BLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindUnitOfWork _northwindUnitOfWork;
         private readonly IGameService _gameService;
-        private readonly INorthwindLogService _logService;
         private readonly IMapper _mapper;
 
         public OrderService(ILogger<OrderService> logger,
             IUnitOfWork unitOfWork,
             INorthwindUnitOfWork northwindUnitOfWork,
             IGameService gameService,
-            INorthwindLogService logService,
             IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _northwindUnitOfWork = northwindUnitOfWork;
             _gameService = gameService;
-            _logService = logService;
             _mapper = mapper;
         }
 
@@ -58,8 +55,6 @@ namespace OnlineGameStore.BLL.Services
 
                 order = _unitOfWork.Orders.Create(creatingOrder);
                 _unitOfWork.Commit();
-                
-                _logService.LogCreating(creatingOrder);
             }
             
             SetOrderDetailsGames(order.OrderDetails);
@@ -99,8 +94,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(EditOrder)}.
                     Editing order with id {editedOrder.Id} successfully", editedOrder);
-            
-            _logService.LogUpdating(oldOrder, editedOrder);
 
             return editedOrder;
         }
@@ -137,8 +130,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(AddToOpenOrder)}.
                     Adding order detail to order successfully", order);
-            
-            _logService.LogUpdating(oldOrder, order);
         }
 
         public void RemoveFromOrder(string customerId, string gameKey)
@@ -160,8 +151,6 @@ namespace OnlineGameStore.BLL.Services
             
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(RemoveFromOrder)}.
                     Removing from order successfully", order);
-            
-            _logService.LogUpdating(oldOrder, order);
         }
 
         public Order ChangeStatusToInProcess(string customerId)
@@ -179,8 +168,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(ChangeStatusToInProcess)}.
                     Changing order with id {order.Id} 'in processing' successfully", order);
-            
-            _logService.LogUpdating(oldOrder, order);
 
             return order;
         }
@@ -198,8 +185,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(ChangeStatusToClosed)}.
                     Changing order with id {order.Id} 'closed' successfully", order);
-            
-            _logService.LogUpdating(oldOrder, order);
 
             return order;
         }
@@ -234,8 +219,6 @@ namespace OnlineGameStore.BLL.Services
                 order.OrderState = OrderState.Cancelled;
 
                 _unitOfWork.Orders.Update(order);
-                
-                _logService.LogUpdating(oldOrder, order);
             }
             
             _unitOfWork.Commit();
@@ -257,8 +240,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(OrderService)}; Method: {nameof(SetCancelledDate)}.
                     Setting cancelled date for order with id {order.Id} 'closed' successfully", order);
-            
-            _logService.LogUpdating(oldOrder, order);
         }
 
         private Order GetOrderByCustomerId(string customerId, OrderState orderState = OrderState.Open)

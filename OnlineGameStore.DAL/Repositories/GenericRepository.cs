@@ -9,8 +9,8 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey>
-        where TEntity : class, IBaseEntity<TKey>
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity>
+        where TEntity : BaseEntity
     {
         private readonly StoreDbContext _context;
         private readonly DbSet<TEntity> _entities;

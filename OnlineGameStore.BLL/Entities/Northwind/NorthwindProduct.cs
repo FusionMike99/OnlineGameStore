@@ -5,11 +5,8 @@ using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.BLL.Entities.Northwind
 {
-    public class NorthwindProduct : INorthwindBaseEntity<ObjectId>
+    public class NorthwindProduct : NorthwindBaseEntity
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-        
         [BsonElement("ProductID")]
         public int ProductId { get; set; }
         

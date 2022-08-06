@@ -3,11 +3,8 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace OnlineGameStore.BLL.Entities.Northwind
 {
-    public class NorthwindSupplier : INorthwindBaseEntity<ObjectId>
+    public class NorthwindSupplier : NorthwindBaseEntity
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-        
         [BsonElement("SupplierID")]
         public int SupplierId { get; set; }
         

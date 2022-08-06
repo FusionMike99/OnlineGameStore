@@ -6,8 +6,8 @@ using OnlineGameStore.BLL.Entities.Northwind;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface INorthwindGenericRepository<TEntity, TKey>
-        where TEntity : INorthwindBaseEntity<TKey>
+    public interface INorthwindGenericRepository<TEntity>
+        where TEntity : NorthwindBaseEntity
     {
         TEntity Create(TEntity entity);
         

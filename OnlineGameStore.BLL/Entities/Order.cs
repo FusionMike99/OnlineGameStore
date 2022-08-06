@@ -4,10 +4,8 @@ using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Order : IBaseEntity<Guid>
+    public class Order : BaseEntity
     {
-        public Guid Id { get; set; }
-        
         public DateTime OrderDate { get; set; }
         
         public DateTime? CancelledDate { get; set; }
@@ -35,9 +33,5 @@ namespace OnlineGameStore.BLL.Entities
         public OrderState OrderState { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime? DeletedAt { get; set; }
     }
 }

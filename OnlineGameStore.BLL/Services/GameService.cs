@@ -22,19 +22,16 @@ namespace OnlineGameStore.BLL.Services
         private readonly ILogger<GameService> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindUnitOfWork _northwindUnitOfWork;
-        private readonly INorthwindLogService _logService;
         private readonly IMapper _mapper;
 
         public GameService(ILogger<GameService> logger,
             IUnitOfWork unitOfWork,
             INorthwindUnitOfWork northwindUnitOfWork,
-            INorthwindLogService logService,
             IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _northwindUnitOfWork = northwindUnitOfWork;
-            _logService = logService;
             _mapper = mapper;
         }
 
@@ -45,8 +42,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(CreateGame)}.
                     Creating game with id {createdGame.Id} successfully", createdGame);
-            
-            _logService.LogCreating(game);
 
             return createdGame;
         }
@@ -81,8 +76,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(DeleteGame)}.
                     Deleting game with id {gameKey} successfully", game);
-            
-            _logService.LogDeleting(game);
         }
 
         public Game EditGame(string gameKey, Game game)
@@ -104,8 +97,6 @@ namespace OnlineGameStore.BLL.Services
 
             _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(EditGame)}.
                     Editing game with id {editedGame.Id} successfully", editedGame);
-            
-            _logService.LogUpdating(oldGame, editedGame);
 
             return editedGame;
         }
@@ -126,8 +117,6 @@ namespace OnlineGameStore.BLL.Services
                 var product = _mapper.Map<NorthwindProduct>(game);
                 _northwindUnitOfWork.Products.Update(p => p.Key == product.Key, product);
             }
-            
-            _logService.LogUpdating(oldGame, game);
         }
 
         public IEnumerable<Game> GetAllGames(SortFilterGameModel sortFilterModel = null, PageModel pageModel = null)
@@ -393,8 +382,6 @@ namespace OnlineGameStore.BLL.Services
                 var product = _mapper.Map<NorthwindProduct>(game);
                 _northwindUnitOfWork.Products.Update(p => p.Key == product.Key, product);
             }
-            
-            _logService.LogUpdating(oldGame, game);
         }
 
         private void SetSuppliersIds(SortFilterGameModel model)

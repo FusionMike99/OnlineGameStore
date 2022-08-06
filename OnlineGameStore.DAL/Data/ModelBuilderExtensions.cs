@@ -128,10 +128,13 @@ namespace OnlineGameStore.DAL.Data
             {
                 new GameGenre
                 {
+                    Id = Guid.Parse("297C1914-86E5-4F50-A6D4-D0A83CCE8C7B"),
                     GameId = Guid.Parse("94C979FA-20E5-412E-895B-A694B94F5AD4"),
                     GenreId = Guid.Parse("E49F4755-02D6-444A-B25C-9E65C5298CC5")
                 },
-                new GameGenre {
+                new GameGenre 
+                {
+                    Id = Guid.Parse("54716B49-D5E9-44D0-9C11-559D8B17D3DC"),
                     GameId = Guid.Parse("94C979FA-20E5-412E-895B-A694B94F5AD4"),
                     GenreId = Guid.Parse("2D96D846-DD30-4982-95EA-1BF4AADF38F9") 
                 }
@@ -141,11 +144,13 @@ namespace OnlineGameStore.DAL.Data
             {
                 new GamePlatformType
                 {
+                    Id = Guid.Parse("639847CA-2477-44FD-82C3-31204BE47F80"),
                     GameId = Guid.Parse("94C979FA-20E5-412E-895B-A694B94F5AD4"),
                     PlatformId = Guid.Parse("9F07B51A-F2CB-4C1B-ADA4-B4EBB652CE0B")
                 },
                 new GamePlatformType
                 {
+                    Id = Guid.Parse("07BCAD23-3D65-43AD-B930-BE5042BD77BE"),
                     GameId = Guid.Parse("94C979FA-20E5-412E-895B-A694B94F5AD4"),
                     PlatformId = Guid.Parse("8DAC1629-29CE-4054-89F0-6D5BBA95280F")
                 }
@@ -157,7 +162,7 @@ namespace OnlineGameStore.DAL.Data
         {
             modelBuilder.Entity<Genre>().HasData(Genres);
 
-            var genres = northwindUnitOfWork.Categories.GetMany()
+            /*var genres = northwindUnitOfWork.Categories.GetMany()
                 .Select(category => new Genre 
                     { 
                         Id = Guid.NewGuid(),
@@ -165,7 +170,7 @@ namespace OnlineGameStore.DAL.Data
                         Description = category.Description
                     });
 
-            modelBuilder.Entity<Genre>().HasData(genres);
+            modelBuilder.Entity<Genre>().HasData(genres);*/
 
             modelBuilder.Entity<PlatformType>().HasData(PlatformTypes);
 
@@ -207,6 +212,7 @@ namespace OnlineGameStore.DAL.Data
 
             var fakeGameGenre = new Faker<GameGenre>()
                 .UseSeed(666)
+                .RuleFor(gg => gg.Id, f => f.Random.Guid())
                 .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
                 .RuleFor(gg => gg.GenreId, f => f.PickRandom(Genres).Id);
 
@@ -220,6 +226,7 @@ namespace OnlineGameStore.DAL.Data
             
             var fakeGamePlatformType = new Faker<GamePlatformType>()
                 .UseSeed(777)
+                .RuleFor(gg => gg.Id, f => f.Random.Guid())
                 .RuleFor(gg => gg.GameId, f => f.PickRandom(games).Id)
                 .RuleFor(gg => gg.PlatformId, f => f.PickRandom(PlatformTypes).Id);
             

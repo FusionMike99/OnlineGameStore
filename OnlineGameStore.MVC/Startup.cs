@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using Hangfire;
-using Hangfire.Client;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -64,8 +63,6 @@ namespace OnlineGameStore.MVC
             services.AddScoped<IUserService, UserService>();
             
             services.AddScoped<IShipperService, ShipperService>();
-            
-            services.AddScoped<INorthwindLogService, NorthwindLogService>();
 
             services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
 

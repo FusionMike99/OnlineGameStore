@@ -12,8 +12,8 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class NorthwindGenericRepository<TEntity, TKey> : INorthwindGenericRepository<TEntity, TKey>
-        where TEntity : class, INorthwindBaseEntity<TKey>
+    public class NorthwindGenericRepository<TEntity> : INorthwindGenericRepository<TEntity>
+        where TEntity : NorthwindBaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
 

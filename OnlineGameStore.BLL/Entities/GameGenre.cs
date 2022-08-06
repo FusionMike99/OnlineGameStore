@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class GameGenre
+    public class GameGenre : BaseEntity
     {
         public Guid GameId { get; set; }
 

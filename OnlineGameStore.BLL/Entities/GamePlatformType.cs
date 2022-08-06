@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class GamePlatformType
+    public class GamePlatformType : BaseEntity
     {
         public Guid GameId { get; set; }
 

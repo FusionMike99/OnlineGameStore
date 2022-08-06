@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class OrderDetail
+    public class OrderDetail : BaseEntity
     {
         public string GameKey { get; set; }
 

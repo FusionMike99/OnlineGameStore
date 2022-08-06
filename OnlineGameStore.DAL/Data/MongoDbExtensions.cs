@@ -19,8 +19,7 @@ namespace OnlineGameStore.DAL.Data
                 [typeof(NorthwindOrder)] = "orders",
                 [typeof(NorthwindProduct)] = "products",
                 [typeof(NorthwindShipper)] = "shippers",
-                [typeof(NorthwindSupplier)] = "suppliers",
-                [typeof(LogModel)] = "logs"
+                [typeof(NorthwindSupplier)] = "suppliers"
             };
         }
 

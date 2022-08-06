@@ -6,8 +6,8 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGenericRepository<TEntity, TKey>
-        where TEntity : IBaseEntity<TKey>
+    public interface IGenericRepository<TEntity>
+        where TEntity : BaseEntity
     {
         TEntity Create(TEntity entity);
 
