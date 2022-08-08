@@ -1,7 +1,6 @@
-﻿using System;
-using OnlineGameStore.BLL.Entities;
+﻿using OnlineGameStore.BLL.Entities;
 
-namespace OnlineGameStore.BLL.Repositories
+namespace OnlineGameStore.BLL.Repositories.GameStore
 {
     public interface IUnitOfWork
     {

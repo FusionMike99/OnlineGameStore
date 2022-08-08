@@ -1,9 +1,8 @@
-﻿using System;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
+﻿using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.DAL.Data;
 
-namespace OnlineGameStore.DAL.Repositories
+namespace OnlineGameStore.DAL.Repositories.GameStore
 {
     public class UnitOfWork : IUnitOfWork
     {

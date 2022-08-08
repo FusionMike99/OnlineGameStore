@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<OrderViewModel>()
-                .Which.Id.Should().Be(order.Id);
+                .Which.Id.Should().Be(order.Id.ToString());
         }
     }
 }

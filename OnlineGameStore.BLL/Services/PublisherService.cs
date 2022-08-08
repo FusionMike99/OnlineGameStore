@@ -1,58 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class PublisherService : IPublisherService
     {
         private readonly ILogger<PublisherService> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IGeneralPublisherRepository _publisherRepository;
 
         public PublisherService(ILogger<PublisherService> logger,
-            IUnitOfWork unitOfWork,
-            INorthwindUnitOfWork northwindUnitOfWork,
-            IMapper mapper)
+            IGeneralPublisherRepository publisherRepository)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
-            _northwindUnitOfWork = northwindUnitOfWork;
-            _mapper = mapper;
+            _publisherRepository = publisherRepository;
         }
 
-        public bool CheckCompanyNameForUnique(string publisherId, string companyName)
+        public async Task<bool> CheckCompanyNameForUnique(string publisherId, string companyName)
         {
-            var publisherGuid = Guid.Parse(publisherId);
-            var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName, true);
+            var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted: true);
 
-            return publisher != null && publisher.Id != publisherGuid;
+            return publisher != null && publisher.Id != publisherId;
         }
 
-        public Publisher CreatePublisher(Publisher publisher)
+        public async Task<PublisherModel> CreatePublisher(PublisherModel publisher)
         {
-            var createdPublisher = _unitOfWork.Publishers.Create(publisher);
-            _unitOfWork.Commit();
+            await _publisherRepository.CreateAsync(publisher);
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(CreatePublisher)}.
-                    Creating publisher with id {createdPublisher.Id} successfully", createdPublisher);
+                    Creating publisher with id {publisher.Id} successfully", publisher);
 
-            return createdPublisher;
+            return publisher;
         }
 
-        public void DeletePublisher(string publisherId)
+        public async Task DeletePublisher(string publisherId)
         {
-            var publisherGuid = Guid.Parse(publisherId);
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.Id == publisherGuid);
+            var publisher = await _publisherRepository.GetByIdAsync(publisherId);
 
             if (publisher == null)
             {
@@ -69,85 +57,44 @@ namespace OnlineGameStore.BLL.Services
                 throw new InvalidOperationException("You cannot delete Northwind suppliers");
             }
             
-            _unitOfWork.Publishers.Delete(publisher);
-            _unitOfWork.Commit();
+            await _publisherRepository.DeleteAsync(publisher);
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
                     Deleting publisher with id {publisherId} successfully", publisher);
         }
 
-        public Publisher EditPublisher(string companyName, Publisher publisher)
+        public async Task<PublisherModel> EditPublisher(string companyName, PublisherModel publisher)
         {
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {
                 throw new InvalidOperationException("You cannot edit Northwind suppliers");
             }
 
-            var oldPublisher = GetPublisherByCompanyName(companyName);
-
-            var editedPublisher = _unitOfWork.Publishers.Update(publisher);
-            _unitOfWork.Commit();
+            await _publisherRepository.UpdateAsync(publisher);
 
             _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(EditPublisher)}.
-                    Editing publisher with id {editedPublisher.Id} successfully", editedPublisher);
-
-            return editedPublisher;
-        }
-
-        public IEnumerable<string> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
-        {
-            var suppliersIds = _northwindUnitOfWork.Suppliers
-                .GetMany(s => companiesNames.Contains(s.CompanyName))
-                .Select(s => s.Id.ToString());
-
-            return suppliersIds;
-        }
-
-        public IEnumerable<Publisher> GetAllPublishers()
-        {
-            var publishers = _unitOfWork.Publishers.GetMany();
-
-            var suppliers = _northwindUnitOfWork.Suppliers.GetMany();
-
-            var unionPublishersSuppliers = UnionPublishersSuppliers(publishers, suppliers);
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetAllPublishers)}.
-                    Receiving publishers successfully", unionPublishersSuppliers);
-
-            return unionPublishersSuppliers;
-        }
-
-        public Publisher GetPublisherByCompanyName(string companyName)
-        {
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.CompanyName == companyName);
-            
-            if (publisher == null)
-            {
-                var supplier = _northwindUnitOfWork.Suppliers.GetFirst(p => p.CompanyName == companyName);
-
-                if (supplier != null)
-                {
-                    publisher = _mapper.Map<Publisher>(supplier);
-                    publisher.DatabaseEntity = DatabaseEntity.Northwind;
-                }
-            }
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetPublisherByCompanyName)}.
-                    Receiving publisher with company name {companyName} successfully", publisher);
+                    Editing publisher with id {publisher.Id} successfully", publisher);
 
             return publisher;
         }
-        
-        private IEnumerable<Publisher> UnionPublishersSuppliers(IEnumerable<Publisher> publishers,
-            IEnumerable<NorthwindSupplier> suppliers)
+
+        public async Task<IEnumerable<string>> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
         {
-            var mappedProducts = _mapper.Map<List<Publisher>>(suppliers);
-            
-            mappedProducts.ForEach(p => p.DatabaseEntity = DatabaseEntity.Northwind);
+            return await _publisherRepository.GetSuppliersIdsByNamesAsync(companiesNames);
+        }
 
-            var result = publishers.Concat(mappedProducts).DistinctBy(g => g.CompanyName).ToList();
+        public async Task<IEnumerable<PublisherModel>> GetAllPublishers()
+        {
+            var publishers = await _publisherRepository.GetAllAsync();
 
-            return result;
+            return publishers;
+        }
+
+        public async Task<PublisherModel> GetPublisherByCompanyName(string companyName)
+        {
+            var publisher = await _publisherRepository.GetByNameAsync(companyName);
+
+            return publisher;
         }
     }
 }

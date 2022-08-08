@@ -140,7 +140,7 @@ namespace OnlineGameStore.MVC.Controllers
 
         private void ConfigureShipOrderViewModel(ShipOrderViewModel shipOrderViewModel)
         {
-            shipOrderViewModel.Shippers = new SelectList(_shipperService.GetAllShippers(),
+            shipOrderViewModel.Shippers = new SelectList(_shipperService.GetAllShippersAsync(),
                 nameof(NorthwindShipper.CompanyName),
                 nameof(NorthwindShipper.CompanyName));
         }

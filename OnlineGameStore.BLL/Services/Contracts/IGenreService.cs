@@ -1,28 +1,29 @@
 ﻿using System.Collections.Generic;
-using OnlineGameStore.BLL.Entities;
+using System.Threading.Tasks;
+using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IGenreService
     {
-        Genre CreateGenre(Genre genre);
+        Task<GenreModel> CreateGenre(GenreModel genre);
 
-        Genre EditGenre(Genre genre);
+        Task<GenreModel> EditGenre(GenreModel genre);
 
-        void DeleteGenre(string genreId);
+        Task DeleteGenre(string genreId);
 
-        Genre GetGenreById(string genreId);
+        Task<GenreModel> GetGenreById(string genreId);
 
-        IEnumerable<Genre> GetAllGenres();
+        Task<IEnumerable<GenreModel>> GetAllGenres();
         
-        IEnumerable<Genre> GetAllParentGenres();
+        Task<IEnumerable<GenreModel>> GetAllParentGenres();
 
-        IEnumerable<Genre> GetAllWithoutGenre(string genreId);
+        Task<IEnumerable<GenreModel>> GetAllWithoutGenre(string genreId);
         
-        IEnumerable<string> GetGenresIdsByNames(params string[] genresNames);
+        Task<IEnumerable<string>> GetGenresIdsByNames(params string[] genresNames);
         
-        IEnumerable<string> GetCategoriesIdsByNames(IEnumerable<string> genresNames);
+        Task<IEnumerable<string>> GetCategoriesIdsByNames(IEnumerable<string> categoriesNames);
 
-        bool CheckNameForUnique(string genreId, string name);
+        Task<bool> CheckNameForUnique(string genreId, string name);
     }
 }

@@ -1,8 +1,6 @@
-﻿using MongoDB.Bson;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Models;
+﻿using OnlineGameStore.BLL.Entities.Northwind;
 
-namespace OnlineGameStore.BLL.Repositories
+namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindUnitOfWork
     {

@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
-using OnlineGameStore.BLL.Entities;
+using System.Threading.Tasks;
+using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IPlatformTypeService
     {
-        PlatformType CreatePlatformType(PlatformType platformType);
+        Task<PlatformTypeModel> CreatePlatformType(PlatformTypeModel platformType);
 
-        PlatformType EditPlatformType(PlatformType platformType);
+        Task<PlatformTypeModel> EditPlatformType(PlatformTypeModel platformType);
 
-        void DeletePlatformType(string platformTypeId);
+        Task DeletePlatformType(string platformTypeId);
 
-        PlatformType GetPlatformTypeById(string platformTypeId);
+        Task<PlatformTypeModel> GetPlatformTypeById(string platformTypeId);
 
-        IEnumerable<PlatformType> GetAllPlatformTypes();
+        Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypes();
         
-        IEnumerable<string> GetPlatformTypesIdsByNames(IEnumerable<string> types);
+        Task<IEnumerable<string>> GetPlatformTypesIdsByNames(IEnumerable<string> types);
 
-        bool CheckTypeForUnique(string platformTypeId, string type);
+        Task<bool> CheckTypeForUnique(string platformTypeId, string type);
     }
 }

@@ -1,11 +1,9 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.Northwind;
 
-namespace OnlineGameStore.DAL.Repositories
+namespace OnlineGameStore.DAL.Repositories.Northwind
 {
     public class NorthwindUnitOfWork : INorthwindUnitOfWork
     {

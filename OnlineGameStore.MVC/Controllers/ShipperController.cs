@@ -21,7 +21,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("shippers")]
         public IActionResult GetShippers()
         {
-            var shippers = _shipperService.GetAllShippers();
+            var shippers = _shipperService.GetAllShippersAsync();
 
             var shippersViewModel = _mapper.Map<IEnumerable<ShipperViewModel>>(shippers);
 

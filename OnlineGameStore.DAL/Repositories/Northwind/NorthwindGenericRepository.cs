@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
 
-namespace OnlineGameStore.DAL.Repositories
+namespace OnlineGameStore.DAL.Repositories.Northwind
 {
     public class NorthwindGenericRepository<TEntity> : INorthwindGenericRepository<TEntity>
         where TEntity : NorthwindBaseEntity
@@ -22,23 +23,16 @@ namespace OnlineGameStore.DAL.Repositories
             _collection = database.GetCollection<TEntity>();
         }
 
-        public TEntity Create(TEntity entity)
-        {
-            _collection.InsertOne(entity);
-
-            return entity;
-        }
-
-        public TEntity GetFirst(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
         {
             var query = _collection.AsQueryable();
 
-            var foundEntity = query.FirstOrDefault(predicate);
+            var foundEntity = await query.FirstOrDefaultAsync(predicate);
 
             return foundEntity;
         }
 
-        public IEnumerable<TEntity> GetMany(Expression<Func<TEntity, bool>> predicate = null,
+        public async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             int? skip = null,
             int? take = null)
@@ -65,14 +59,26 @@ namespace OnlineGameStore.DAL.Repositories
                 query = query.Take(take.Value);
             }
             
-            var foundList = query.ToList();
+            var foundList = await query.ToListAsync();
             
             return foundList;
         }
 
-        public TEntity Update(Expression<Func<TEntity, bool>> predicate, TEntity entity)
+        public virtual async Task<TEntity> GetById(ObjectId id)
         {
-            var filter = Builders<TEntity>.Filter.Where(predicate);
+            Expression<Func<TEntity, bool>> predicate = m => m.Id == id;
+
+            return await GetFirst(predicate);
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> GetAll()
+        {
+            return await GetMany();
+        }
+
+        public virtual async Task<TEntity> Update(TEntity entity)
+        {
+            var filter = Builders<TEntity>.Filter.Eq(m => m.Id, entity.Id);
             var updateBuilder = Builders<TEntity>.Update;
             var updateDefinitions = new List<UpdateDefinition<TEntity>>();
 
@@ -106,7 +112,7 @@ namespace OnlineGameStore.DAL.Repositories
             
             var update = updateBuilder.Combine(updateDefinitions);
                 
-            _collection.UpdateMany(filter, update);
+            await _collection.UpdateOneAsync(filter, update);
 
             return entity;
         }

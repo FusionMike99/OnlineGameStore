@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Controllers.ShipperControllerTests
             ShipperController sut)
         {
             // Arrange
-            mockShipperService.Setup(x => x.GetAllShippers())
+            mockShipperService.Setup(x => x.GetAllShippersAsync())
                 .Returns(shippers);
 
             // Act
@@ -33,7 +33,7 @@ namespace OnlineGameStore.Tests.Controllers.ShipperControllerTests
                 .Which.Model.Should().BeAssignableTo<IEnumerable<ShipperViewModel>>()
                 .Which.Should().HaveSameCount(shippers);
 
-            mockShipperService.Verify(x => x.GetAllShippers(), Times.Once);
+            mockShipperService.Verify(x => x.GetAllShippersAsync(), Times.Once);
         }
     }
 }

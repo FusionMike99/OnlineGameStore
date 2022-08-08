@@ -12,6 +12,8 @@ using OnlineGameStore.BLL.Pipelines;
 using OnlineGameStore.BLL.Pipelines.Filters.Games;
 using OnlineGameStore.BLL.Pipelines.Filters.Products;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.BLL.Utils;
 
@@ -81,7 +83,6 @@ namespace OnlineGameStore.BLL.Services
         public Game EditGame(string gameKey, Game game)
         {
             Game editedGame;
-            var oldGame = game.DeepClone();
             
             if (game.DatabaseEntity is DatabaseEntity.GameStore)
             {
@@ -115,7 +116,7 @@ namespace OnlineGameStore.BLL.Services
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(game);
-                _northwindUnitOfWork.Products.Update(p => p.Key == product.Key, product);
+                _northwindUnitOfWork.Products.Update(product);
             }
         }
 
@@ -293,7 +294,7 @@ namespace OnlineGameStore.BLL.Services
             {
                 product.Key ??= product.Name.ToKebabCase();
                 
-                _northwindUnitOfWork.Products.Update(pr => pr.Id == product.Id, product);
+                _northwindUnitOfWork.Products.Update(product);
 
                 product.DateAdded ??= Constants.AddedAtDefault;
             });
@@ -380,7 +381,7 @@ namespace OnlineGameStore.BLL.Services
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(game);
-                _northwindUnitOfWork.Products.Update(p => p.Key == product.Key, product);
+                _northwindUnitOfWork.Products.Update(product);
             }
         }
 

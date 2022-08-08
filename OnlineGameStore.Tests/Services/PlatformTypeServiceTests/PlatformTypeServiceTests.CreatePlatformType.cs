@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;

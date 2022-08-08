@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services.Contracts;
 
@@ -11,35 +12,28 @@ namespace OnlineGameStore.BLL.Services
     public class GenreService : IGenreService
     {
         private readonly ILogger<GenreService> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
+        private readonly IGeneralGenreRepository _genreRepository;
 
         public GenreService(ILogger<GenreService> logger,
-            IUnitOfWork unitOfWork,
-            INorthwindUnitOfWork northwindUnitOfWork)
+            IGeneralGenreRepository genreRepository)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
-            _northwindUnitOfWork = northwindUnitOfWork;
+            _genreRepository = genreRepository;
         }
 
-        public Genre CreateGenre(Genre genre)
+        public async Task<GenreModel> CreateGenre(GenreModel genre)
         {
-            var createdGenre = _unitOfWork.Genres.Create(genre);
-            _unitOfWork.Commit();
+            await _genreRepository.CreateAsync(genre);
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(CreateGenre)}.
-                    Creating genre with id {createdGenre.Id} successfully", createdGenre);
+                    Creating genre with id {genre.Id} successfully", genre);
 
-            return createdGenre;
+            return genre;
         }
 
-        public void DeleteGenre(string genreId)
+        public async Task DeleteGenre(string genreId)
         {
-            var genreGuid = Guid.Parse(genreId);
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreGuid,
-                includeDeleteEntities: false,
-                $"{nameof(Genre.SubGenres)}");
+            var genre = await _genreRepository.GetByIdAsync(genreId);
 
             if (genre == null)
             {
@@ -51,37 +45,25 @@ namespace OnlineGameStore.BLL.Services
                 throw exception;
             }
 
-            _unitOfWork.Genres.Delete(genre);
-
-            genre.SubGenres.ToList()
-                .ForEach(g => g.ParentId = g.Parent.ParentId);
-            
-            _unitOfWork.Commit();
+            await _genreRepository.DeleteAsync(genre);
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(DeleteGenre)}.
                     Deleting genre with id {genreId} successfully", genre);
         }
 
-        public Genre EditGenre(Genre genre)
+        public async Task<GenreModel> EditGenre(GenreModel genre)
         {
-            var oldGenre = GetGenreById(genre.Id.ToString());
-            
-            var editedGenre = _unitOfWork.Genres.Update(genre);
-            _unitOfWork.Commit();
+            await _genreRepository.UpdateAsync(genre);
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(EditGenre)}.
-                    Editing genre with id {editedGenre.Id} successfully", editedGenre);
+                    Editing genre with id {genre.Id} successfully", genre);
 
-            return editedGenre;
+            return genre;
         }
 
-        public IEnumerable<Genre> GetAllGenres()
+        public async Task<IEnumerable<GenreModel>> GetAllGenres()
         {
-            var genres = _unitOfWork.Genres.GetMany(null,
-                    false, null, null, null,
-                    $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
-                    $"{nameof(Genre.Parent)}",
-                    $"{nameof(Genre.SubGenres)}");
+            var genres = await _genreRepository.GetAllAsync();
 
             _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllGenres)}.
                     Receiving genres successfully", genres);
@@ -89,72 +71,48 @@ namespace OnlineGameStore.BLL.Services
             return genres;
         }
 
-        public IEnumerable<Genre> GetAllParentGenres()
+        public async Task<IEnumerable<GenreModel>> GetAllParentGenres()
         {
-            var genres = _unitOfWork.Genres.GetMany(g => !g.ParentId.HasValue,
-                    false, null, null, null,
-                    $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
-                    $"{nameof(Genre.Parent)}",
-                    $"{nameof(Genre.SubGenres)}");
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllParentGenres)}.
-                    Receiving parent genres successfully", genres);
+            var genres = await _genreRepository
+                .GetParentGenres(includeProperties: $"{nameof(Genre.SubGenres)}");
 
             return genres;
         }
 
-        public IEnumerable<Genre> GetAllWithoutGenre(string genreId)
+        public async Task<IEnumerable<GenreModel>> GetAllWithoutGenre(string genreId)
         {
-            var genreGuid = Guid.Parse(genreId);
-            var genres = _unitOfWork.Genres.GetMany(g => g.Id != genreGuid && g.ParentId != genreGuid,
-                    false, null, null, null,
-                    $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}");
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllWithoutGenre)}.
-                    Receiving genres without genre with id {genreId} successfully", genres);
+            var genres = await _genreRepository.GetWithoutGenre(genreId);
 
             return genres;
         }
 
-        public IEnumerable<string> GetGenresIdsByNames(params string[] genresNames)
+        public async Task<IEnumerable<string>> GetGenresIdsByNames(params string[] genresNames)
         {
-            var genresIds = _unitOfWork.Genres
-                .GetMany(g => genresNames.Contains(g.Name))
-                .Select(g => g.Id.ToString());
+            var genresIds = await _genreRepository.GetGenreIdsByNamesAsync(genresNames);
 
             return genresIds;
         }
 
-        public IEnumerable<string> GetCategoriesIdsByNames(IEnumerable<string> genresNames)
+        public async Task<IEnumerable<string>> GetCategoriesIdsByNames(IEnumerable<string> categoriesNames)
         {
-            var suppliersIds = _northwindUnitOfWork.Categories
-                .GetMany(s => genresNames.Contains(s.Name))
-                .Select(s => s.Id.ToString());
+            var categoryIds = await _genreRepository.GetCategoryIdsByNamesAsync(categoriesNames);
 
-            return suppliersIds;
+            return categoryIds;
         }
 
-        public Genre GetGenreById(string genreId)
+        public async Task<GenreModel> GetGenreById(string genreId)
         {
-            var genreGuid = Guid.Parse(genreId);
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Id == genreGuid,
-                    false,
-                    $"{nameof(Genre.GameGenres)}.{nameof(GameGenre.Game)}",
-                    $"{nameof(Genre.Parent)}",
-                    $"{nameof(Genre.SubGenres)}");
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetGenreById)}.
-                    Receiving genre with id {genreId} successfully", genre);
+            var genre = await _genreRepository.GetByIdAsync(genreId,
+                includeProperties: $"{nameof(Genre.SubGenres)}");
 
             return genre;
         }
 
-        public bool CheckNameForUnique(string genreId, string name)
+        public async Task<bool> CheckNameForUnique(string genreId, string name)
         {
-            var genreGuid = Guid.Parse(genreId);
-            var genre = _unitOfWork.Genres.GetSingle(g => g.Name == name, true);
+            var genre = await _genreRepository.GetByNameAsync(name, includeDeleted: true);
 
-            return genre != null && genre.Id != genreGuid;
+            return genre != null && genre.Id != genreId;
         }
     }
 }

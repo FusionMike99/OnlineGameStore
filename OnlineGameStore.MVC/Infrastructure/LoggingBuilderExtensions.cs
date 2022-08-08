@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.DAL.Repositories;
+using OnlineGameStore.DAL.Repositories.GameStore;
+using OnlineGameStore.DAL.Repositories.Northwind;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;

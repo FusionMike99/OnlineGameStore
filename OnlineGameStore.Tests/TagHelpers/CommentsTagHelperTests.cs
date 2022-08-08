@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -110,7 +111,7 @@ namespace OnlineGameStore.Tests.TagHelpers
         {
             var comment1 = new CommentViewModel
             {
-                Id = 1,
+                Id = Guid.NewGuid().ToString(),
                 Name = "Name1",
                 Body = "Body1",
                 ReplyToId = null,
@@ -121,10 +122,10 @@ namespace OnlineGameStore.Tests.TagHelpers
 
             var comment2 = new CommentViewModel
             {
-                Id = 2,
+                Id = Guid.NewGuid().ToString(),
                 Name = "Name2",
                 Body = "Body2",
-                ReplyToId = 1,
+                ReplyToId = comment1.Id,
                 ReplyTo = comment1,
                 Replies = null,
                 IsQuoted = false
@@ -132,10 +133,10 @@ namespace OnlineGameStore.Tests.TagHelpers
             
             var comment3 = new CommentViewModel
             {
-                Id = 3,
+                Id = Guid.NewGuid().ToString(),
                 Name = "Name3",
                 Body = "Body3",
-                ReplyToId = 1,
+                ReplyToId = comment1.Id,
                 ReplyTo = comment1,
                 Replies = null,
                 IsQuoted = true

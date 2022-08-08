@@ -5,6 +5,7 @@ using FluentAssertions;
 using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -17,7 +18,7 @@ namespace OnlineGameStore.Tests.Services
         [AutoMoqData]
         public void CheckCompanyNameForUniqueness_ReturnsTrue_WhenPublisherIsNotNullAndIdIsNotSame(
             Publisher publisher,
-            int id,
+            string id,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             PublisherService sut)
         {
@@ -46,7 +47,7 @@ namespace OnlineGameStore.Tests.Services
         [InlineAutoMoqData(null)]
         public void CheckCompanyNameForUniqueness_ReturnsFalse_WhenPublisherIsNull(
             Publisher publisher,
-            int id,
+            string id,
             string companyName,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             PublisherService sut)
@@ -88,7 +89,7 @@ namespace OnlineGameStore.Tests.Services
                 .Returns(publisher);
 
             // Act
-            var actualResult = sut.CheckCompanyNameForUnique(publisher.Id, publisher.CompanyName);
+            var actualResult = sut.CheckCompanyNameForUnique(publisher.Id.ToString(), publisher.CompanyName);
 
             // Assert
             actualResult.Should().BeFalse();

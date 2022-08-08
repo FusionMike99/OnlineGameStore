@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.DAL.Data;
 
-namespace OnlineGameStore.DAL.Repositories
+namespace OnlineGameStore.DAL.Repositories.GameStore
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity>
         where TEntity : BaseEntity
     {
-        private readonly StoreDbContext _context;
+        protected readonly StoreDbContext _context;
         private readonly DbSet<TEntity> _entities;
 
         public GenericRepository(StoreDbContext context)
@@ -22,31 +23,31 @@ namespace OnlineGameStore.DAL.Repositories
             _entities = context.Set<TEntity>();
         }
 
-        public TEntity Create(TEntity entity)
+        public virtual async Task<TEntity> Create(TEntity entity)
         {
-            _entities.Add(entity);
+            await _entities.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }
 
-        public void Delete(TEntity entity)
+        public virtual async Task Delete(TEntity entity)
         {
             entity.IsDeleted = true;
             entity.DeletedAt = DateTime.UtcNow;
 
-            Update(entity);
+            await Update(entity);
         }
 
-        public int CountEntities(Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<IEnumerable<TEntity>> GetAll(bool includeDeleted = false, params string[] includeProperties)
         {
-            var entitiesNumber = predicate != null ? _entities.Count(predicate) : _entities.Count();
-            
-            return entitiesNumber;
+            return await GetMany(includeDeleted: includeDeleted,
+                includeProperties: includeProperties);
         }
 
-        public TEntity Update(TEntity entity, Expression<Func<TEntity, bool>> predicate = null)
+        public virtual async Task<TEntity> Update(TEntity entity)
         {
-            var exist = predicate != null ? GetSingle(predicate, true) : _entities.Find(entity.Id);
+            var exist = await _entities.FindAsync(entity.Id);
 
             foreach (var navEntity in _context.Entry(entity).Navigations)
             {
@@ -59,35 +60,35 @@ namespace OnlineGameStore.DAL.Repositories
 
                 var navExist = _context.Entry(exist).Navigation(navEntityName);
 
-                navExist.Load();
+                await navExist.LoadAsync();
 
                 navExist.CurrentValue = navEntity.CurrentValue;
             }
 
             _context.Entry(exist).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }
 
-        public TEntity GetSingle(Expression<Func<TEntity, bool>> predicate,
-            bool includeDeleteEntities = false,
+        public async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
+            bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var query = IncludeProperties(includeDeleteEntities, includeProperties);
+            var query = IncludeProperties(includeDeleted, includeProperties);
 
-            var foundEntity = query.SingleOrDefault(predicate);
+            var foundEntity = await query.SingleOrDefaultAsync(predicate);
             
             return foundEntity;
         }
 
-        public IEnumerable<TEntity> GetMany(Expression<Func<TEntity, bool>> predicate = null,
-            bool includeDeleteEntities = false,
+        public async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
+            bool includeDeleted = false,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            int? skip = null,
-            int? take = null,
+            int? skip = null, int? take = null,
             params string[] includeProperties)
         {
-            var query = IncludeProperties(includeDeleteEntities, includeProperties);
+            var query = IncludeProperties(includeDeleted, includeProperties);
 
             if (predicate != null)
             {
@@ -109,9 +110,16 @@ namespace OnlineGameStore.DAL.Repositories
                 query = query.Take(take.Value);
             }
 
-            var foundList = query.ToList();
+            var foundList = await query.ToListAsync();
             
             return foundList;
+        }
+
+        public virtual async Task<TEntity> GetById(Guid id, bool includeDeleted = false, params string[] includeProperties)
+        {
+            Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
+            
+            return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
         private IQueryable<TEntity> IncludeProperties(bool includeDeleteEntities = false,

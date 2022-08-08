@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.Northwind;
 
 namespace OnlineGameStore.DAL.Data
 {

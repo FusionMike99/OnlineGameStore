@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface ICommentService
     {
-        Comment LeaveCommentToGame(string gameKey, Comment comment);
+        Task<CommentModel> LeaveCommentToGame(string gameKey, CommentModel comment);
 
-        Comment GetCommentById(string commentId);
+        Task<CommentModel> GetCommentById(string commentId);
         
-        IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey);
+        Task<IEnumerable<CommentModel>> GetAllCommentsByGameKey(string gameKey);
         
-        Comment EditComment(Comment comment);
+        Task<CommentModel> EditComment(CommentModel comment);
 
-        void DeleteComment(string commentId);
+        Task DeleteComment(string commentId);
     }
 }

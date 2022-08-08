@@ -6,6 +6,7 @@ using Moq;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -34,7 +35,7 @@ namespace OnlineGameStore.Tests.Services
             mockUnitOfWork.Setup(x => x.Publishers.Delete(It.IsAny<Publisher>()));
 
             // Act
-            sut.DeletePublisher(publisher.Id);
+            sut.DeletePublisher(publisher.Id.ToString());
 
             // Assert
             mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
@@ -51,7 +52,7 @@ namespace OnlineGameStore.Tests.Services
         [InlineAutoMoqData(null)]
         public void PublisherService_DeletePublisher_ThrowsInvalidOperationExceptionWithNullEntity(
             Publisher publisher,
-            int publisherId,
+            string publisherId,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             PublisherService sut)
         {
@@ -93,7 +94,7 @@ namespace OnlineGameStore.Tests.Services
                 .Returns(publisher);
 
             // Act
-            Action actual = () => sut.DeletePublisher(publisher.Id);
+            Action actual = () => sut.DeletePublisher(publisher.Id.ToString());
 
             // Assert
             actual.Should().Throw<InvalidOperationException>();

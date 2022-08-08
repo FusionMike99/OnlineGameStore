@@ -9,6 +9,8 @@ using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Repositories;
+using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.BLL.Utils;
 
