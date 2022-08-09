@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models.General;
 
@@ -12,7 +13,7 @@ namespace OnlineGameStore.BLL.Repositories
 
         Task DeleteAsync(CommentModel commentModel);
         
-        Task<CommentModel> GetByIdAsync(string id,
+        Task<CommentModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties);
 

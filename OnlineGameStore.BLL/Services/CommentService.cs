@@ -40,7 +40,7 @@ namespace OnlineGameStore.BLL.Services
             return comment;
         }
 
-        public async Task<CommentModel> GetCommentById(string commentId)
+        public async Task<CommentModel> GetCommentById(Guid commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId,
                 includeProperties: $"{nameof(Comment.Replies)}");
@@ -68,7 +68,7 @@ namespace OnlineGameStore.BLL.Services
             return comment;
         }
 
-        public async Task DeleteComment(string commentId)
+        public async Task DeleteComment(Guid commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId);
 

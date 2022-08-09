@@ -21,7 +21,7 @@ namespace OnlineGameStore.BLL.Services
             _publisherRepository = publisherRepository;
         }
 
-        public async Task<bool> CheckCompanyNameForUnique(string publisherId, string companyName)
+        public async Task<bool> CheckCompanyNameForUnique(Guid publisherId, string companyName)
         {
             var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted: true);
 
@@ -38,7 +38,7 @@ namespace OnlineGameStore.BLL.Services
             return publisher;
         }
 
-        public async Task DeletePublisher(string publisherId)
+        public async Task DeletePublisher(Guid publisherId)
         {
             var publisher = await _publisherRepository.GetByIdAsync(publisherId);
 
@@ -63,7 +63,7 @@ namespace OnlineGameStore.BLL.Services
                     Deleting publisher with id {publisherId} successfully", publisher);
         }
 
-        public async Task<PublisherModel> EditPublisher(string companyName, PublisherModel publisher)
+        public async Task<PublisherModel> EditPublisher(PublisherModel publisher)
         {
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {

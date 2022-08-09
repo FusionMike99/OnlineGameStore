@@ -31,7 +31,7 @@ namespace OnlineGameStore.BLL.Services
             return genre;
         }
 
-        public async Task DeleteGenre(string genreId)
+        public async Task DeleteGenre(Guid genreId)
         {
             var genre = await _genreRepository.GetByIdAsync(genreId);
 
@@ -79,7 +79,7 @@ namespace OnlineGameStore.BLL.Services
             return genres;
         }
 
-        public async Task<IEnumerable<GenreModel>> GetAllWithoutGenre(string genreId)
+        public async Task<IEnumerable<GenreModel>> GetAllWithoutGenre(Guid genreId)
         {
             var genres = await _genreRepository.GetWithoutGenre(genreId);
 
@@ -100,7 +100,7 @@ namespace OnlineGameStore.BLL.Services
             return categoryIds;
         }
 
-        public async Task<GenreModel> GetGenreById(string genreId)
+        public async Task<GenreModel> GetGenreById(Guid genreId)
         {
             var genre = await _genreRepository.GetByIdAsync(genreId,
                 includeProperties: $"{nameof(Genre.SubGenres)}");
@@ -108,7 +108,7 @@ namespace OnlineGameStore.BLL.Services
             return genre;
         }
 
-        public async Task<bool> CheckNameForUnique(string genreId, string name)
+        public async Task<bool> CheckNameForUnique(Guid genreId, string name)
         {
             var genre = await _genreRepository.GetByNameAsync(name, includeDeleted: true);
 

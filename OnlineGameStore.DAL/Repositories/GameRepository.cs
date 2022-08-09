@@ -46,7 +46,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             var createdGame = await _gameRepository.Create(game);
 
-            gameModel.Id = createdGame.Id.ToString();
+            gameModel.Id = createdGame.Id;
         }
 
         public async Task UpdateAsync(GameModel gameModel)

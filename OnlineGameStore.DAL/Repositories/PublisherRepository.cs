@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MongoDB.Bson;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models.General;
@@ -35,7 +34,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             var createdPublisher = await _publisherRepository.Create(publisher);
 
-            publisherModel.Id = createdPublisher.Id.ToString();
+            publisherModel.Id = createdPublisher.Id;
         }
 
         public async Task UpdateAsync(PublisherModel publisherModel)
@@ -76,39 +75,25 @@ namespace OnlineGameStore.DAL.Repositories
             return publisherModel;
         }
 
-        public async Task<PublisherModel> GetByIdAsync(string id, bool includeDeleted = false)
+        public async Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false)
         {
-            PublisherModel publisherModel;
-            var isParsed = Guid.TryParse(id, out var publisherGuid);
+            PublisherModel publisherModel = null;
             
-            if (isParsed)
-            {
-                var publisher = await _publisherRepository.GetById(publisherGuid, includeDeleted);
+            var publisher = await _publisherRepository.GetById(id, includeDeleted);
 
-                if (publisher == null)
-                {
-                    return null;
-                }
-                
+            if (publisher != null)
+            {
                 publisherModel = _mapper.Map<PublisherModel>(publisher);
             }
             else
             {
-                isParsed = ObjectId.TryParse(id, out var supplierObjectId);
+                var objectId = id.AsObjectId();
+                var supplier = await _supplierRepository.GetById(objectId);
 
-                if (!isParsed)
+                if (supplier != null)
                 {
-                    return null;
+                    publisherModel = _mapper.Map<PublisherModel>(supplier);
                 }
-                
-                var supplier = await _supplierRepository.GetById(supplierObjectId);
-
-                if (supplier == null)
-                {
-                    return null;
-                }
-                
-                publisherModel = _mapper.Map<PublisherModel>(supplier);
             }
 
             return publisherModel;

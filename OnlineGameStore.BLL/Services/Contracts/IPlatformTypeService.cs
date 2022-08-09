@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models.General;
 
@@ -10,14 +11,14 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Task<PlatformTypeModel> EditPlatformType(PlatformTypeModel platformType);
 
-        Task DeletePlatformType(string platformTypeId);
+        Task DeletePlatformType(Guid platformTypeId);
 
-        Task<PlatformTypeModel> GetPlatformTypeById(string platformTypeId);
+        Task<PlatformTypeModel> GetPlatformTypeById(Guid platformTypeId);
 
         Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypes();
         
         Task<IEnumerable<string>> GetPlatformTypesIdsByNames(IEnumerable<string> types);
 
-        Task<bool> CheckTypeForUnique(string platformTypeId, string type);
+        Task<bool> CheckTypeForUnique(Guid platformTypeId, string type);
     }
 }

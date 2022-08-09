@@ -31,7 +31,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             var createdGenre = await _genreRepository.Create(genre);
 
-            genreModel.Id = createdGenre.Id.ToString();
+            genreModel.Id = createdGenre.Id;
         }
 
         public async Task UpdateAsync(GenreModel genreModel)
@@ -48,18 +48,11 @@ namespace OnlineGameStore.DAL.Repositories
             await _genreRepository.Delete(genre);
         }
 
-        public async Task<GenreModel> GetByIdAsync(string id,
+        public async Task<GenreModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var isParsed = Guid.TryParse(id, out var genreGuid);
-
-            if (!isParsed)
-            {
-                return null;
-            }
-            
-            var genre = await _genreRepository.GetById(genreGuid, includeDeleted, includeProperties);
+            var genre = await _genreRepository.GetById(id, includeDeleted, includeProperties);
             var mappedGenre = _mapper.Map<GenreModel>(genre);
 
             return mappedGenre;
@@ -103,18 +96,11 @@ namespace OnlineGameStore.DAL.Repositories
             return mappedGenres;
         }
 
-        public async Task<IEnumerable<GenreModel>> GetWithoutGenre(string id,
+        public async Task<IEnumerable<GenreModel>> GetWithoutGenre(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var isParsed = Guid.TryParse(id, out var genreGuid);
-
-            if (!isParsed)
-            {
-                return null;
-            }
-            
-            var genres = await _genreRepository.GetWithoutGenre(genreGuid, includeDeleted, includeProperties);
+            var genres = await _genreRepository.GetWithoutGenre(id, includeDeleted, includeProperties);
             var mappedGenres = _mapper.Map<IEnumerable<GenreModel>>(genres);
 
             return mappedGenres;

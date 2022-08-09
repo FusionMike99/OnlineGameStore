@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models.General;
 
@@ -14,7 +15,7 @@ namespace OnlineGameStore.BLL.Repositories
         
         Task<PublisherModel> GetByNameAsync(string companyName, bool includeDeleted = false);
         
-        Task<PublisherModel> GetByIdAsync(string id, bool includeDeleted = false);
+        Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false);
 
         Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames);
 

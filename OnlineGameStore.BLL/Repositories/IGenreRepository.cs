@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models.General;
 
@@ -12,7 +13,7 @@ namespace OnlineGameStore.BLL.Repositories
 
         Task DeleteAsync(GenreModel genreModel);
         
-        Task<GenreModel> GetByIdAsync(string id,
+        Task<GenreModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties);
         
@@ -30,7 +31,7 @@ namespace OnlineGameStore.BLL.Repositories
         Task<IEnumerable<GenreModel>> GetParentGenres(bool includeDeleted = false,
             params string[] includeProperties);
         
-        Task<IEnumerable<GenreModel>> GetWithoutGenre(string id,
+        Task<IEnumerable<GenreModel>> GetWithoutGenre(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties);
     }

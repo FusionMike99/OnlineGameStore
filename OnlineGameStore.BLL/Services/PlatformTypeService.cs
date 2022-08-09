@@ -27,7 +27,7 @@ namespace OnlineGameStore.BLL.Services
             return platformTypesIds;
         }
 
-        public async Task<bool> CheckTypeForUnique(string platformTypeId, string type)
+        public async Task<bool> CheckTypeForUnique(Guid platformTypeId, string type)
         {
             var platformType = await _platformTypeRepository.GetByTypeAsync(type, includeDeleted: true);
 
@@ -44,7 +44,7 @@ namespace OnlineGameStore.BLL.Services
             return platformType;
         }
 
-        public async Task DeletePlatformType(string platformTypeId)
+        public async Task DeletePlatformType(Guid platformTypeId)
         {
             var platformType = await _platformTypeRepository.GetByIdAsync(platformTypeId);
 
@@ -82,7 +82,7 @@ namespace OnlineGameStore.BLL.Services
             return platformTypes;
         }
 
-        public async Task<PlatformTypeModel> GetPlatformTypeById(string platformTypeId)
+        public async Task<PlatformTypeModel> GetPlatformTypeById(Guid platformTypeId)
         {
             var platformType = await _platformTypeRepository.GetByIdAsync(platformTypeId);
 

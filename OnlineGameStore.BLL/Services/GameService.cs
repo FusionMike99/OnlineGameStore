@@ -93,7 +93,7 @@ namespace OnlineGameStore.BLL.Services
             return gamesNumber;
         }
 
-        public async Task<bool> CheckKeyForUnique(string gameId, string gameKey)
+        public async Task<bool> CheckKeyForUnique(Guid gameId, string gameKey)
         {
             var game = await _gameRepository.GetByKeyAsync(gameKey, increaseViews: false, includeDeleted: true);
 

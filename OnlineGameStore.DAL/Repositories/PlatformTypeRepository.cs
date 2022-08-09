@@ -27,7 +27,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             var createdPlatformType = await _platformTypeRepository.Create(platformType);
 
-            platformTypeModel.Id = createdPlatformType.Id.ToString();
+            platformTypeModel.Id = createdPlatformType.Id;
         }
 
         public async Task UpdateAsync(PlatformTypeModel platformTypeModel)
@@ -44,17 +44,10 @@ namespace OnlineGameStore.DAL.Repositories
             await _platformTypeRepository.Delete(platformType);
         }
 
-        public async Task<PlatformTypeModel> GetByIdAsync(string id, bool includeDeleted = false,
+        public async Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var isParsed = Guid.TryParse(id, out var platformTypeGuid);
-
-            if (!isParsed)
-            {
-                return null;
-            }
-            
-            var platformType = await _platformTypeRepository.GetById(platformTypeGuid, includeDeleted, includeProperties);
+            var platformType = await _platformTypeRepository.GetById(id, includeDeleted, includeProperties);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;

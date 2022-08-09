@@ -27,7 +27,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             var createdComment = await _commentRepository.Create(comment);
 
-            commentModel.Id = createdComment.Id.ToString();
+            commentModel.Id = createdComment.Id;
         }
 
         public async Task UpdateAsync(CommentModel commentModel)
@@ -44,18 +44,11 @@ namespace OnlineGameStore.DAL.Repositories
             await _commentRepository.Delete(comment);
         }
 
-        public async Task<CommentModel> GetByIdAsync(string id,
+        public async Task<CommentModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var isParsed = Guid.TryParse(id, out var commentGuid);
-
-            if (!isParsed)
-            {
-                return null;
-            }
-            
-            var comment = await _commentRepository.GetById(commentGuid, includeDeleted, includeProperties);
+            var comment = await _commentRepository.GetById(id, includeDeleted, includeProperties);
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
             return mappedComment;

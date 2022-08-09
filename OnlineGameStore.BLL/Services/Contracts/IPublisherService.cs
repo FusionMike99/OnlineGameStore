@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
@@ -9,9 +9,9 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Task<PublisherModel> CreatePublisher(PublisherModel publisher);
 
-        Task<PublisherModel> EditPublisher(string companyName, PublisherModel publisher);
+        Task<PublisherModel> EditPublisher(PublisherModel publisher);
 
-        Task DeletePublisher(string publisherId);
+        Task DeletePublisher(Guid publisherId);
 
         Task<PublisherModel> GetPublisherByCompanyName(string companyName);
         
@@ -19,6 +19,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Task<IEnumerable<PublisherModel>> GetAllPublishers();
 
-        Task<bool> CheckCompanyNameForUnique(string publisherId, string companyName);
+        Task<bool> CheckCompanyNameForUnique(Guid publisherId, string companyName);
     }
 }

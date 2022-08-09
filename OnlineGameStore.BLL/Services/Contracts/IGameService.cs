@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Models.General;
@@ -24,6 +25,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Task<int> GetGamesNumber(SortFilterGameModel sortFilterModel = null);
 
-        Task<bool> CheckKeyForUnique(string gameId, string gameKey);
+        Task<bool> CheckKeyForUnique(Guid gameId, string gameKey);
     }
 }

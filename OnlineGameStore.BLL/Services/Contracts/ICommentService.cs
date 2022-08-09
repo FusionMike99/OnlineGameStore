@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
@@ -9,12 +9,12 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Task<CommentModel> LeaveCommentToGame(string gameKey, CommentModel comment);
 
-        Task<CommentModel> GetCommentById(string commentId);
+        Task<CommentModel> GetCommentById(Guid commentId);
         
         Task<IEnumerable<CommentModel>> GetAllCommentsByGameKey(string gameKey);
         
         Task<CommentModel> EditComment(CommentModel comment);
 
-        Task DeleteComment(string commentId);
+        Task DeleteComment(Guid commentId);
     }
 }
