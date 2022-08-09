@@ -11,10 +11,10 @@ namespace OnlineGameStore.BLL.Services
     public class PlatformTypeService : IPlatformTypeService
     {
         private readonly ILogger<PlatformTypeService> _logger;
-        private readonly IGeneralPlatformTypeRepository _platformTypeRepository;
+        private readonly IPlatformTypeRepository _platformTypeRepository;
 
         public PlatformTypeService(ILogger<PlatformTypeService> logger,
-            IGeneralPlatformTypeRepository platformTypeRepository)
+            IPlatformTypeRepository platformTypeRepository)
         {
             _logger = logger;
             _platformTypeRepository = platformTypeRepository;

@@ -3,7 +3,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface IPublisherRepository : IGenericRepository<Publisher>
+    public interface IGameStorePublisherRepository : IGameStoreGenericRepository<Publisher>
     {
         Task<Publisher> GetByName(string companyName,
             bool includeDeleted = false,

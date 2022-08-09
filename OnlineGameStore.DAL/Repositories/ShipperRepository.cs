@@ -7,12 +7,12 @@ using OnlineGameStore.BLL.Repositories.Northwind;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GeneralShipperRepository : IGeneralShipperRepository
+    public class ShipperRepository : IShipperRepository
     {
         private readonly INorthwindShipperRepository _shipperRepository;
         private readonly IMapper _mapper;
 
-        public GeneralShipperRepository(INorthwindShipperRepository shipperRepository,
+        public ShipperRepository(INorthwindShipperRepository shipperRepository,
             IMapper mapper)
         {
             _shipperRepository = shipperRepository;

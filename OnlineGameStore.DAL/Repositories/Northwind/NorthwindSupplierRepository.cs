@@ -23,6 +23,13 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return await GetFirst(predicate);
         }
 
+        public async Task<NorthwindSupplier> GetBySupplierId(int supplierId)
+        {
+            Expression<Func<NorthwindSupplier, bool>> predicate = c => c.SupplierId == supplierId;
+
+            return await GetFirst(predicate);
+        }
+
         public async Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> companiesNames)
         {
             var suppliers = await GetMany(s => companiesNames.Contains(s.CompanyName));

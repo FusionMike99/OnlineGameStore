@@ -8,9 +8,9 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class CommentRepository : GenericRepository<Comment>, ICommentRepository
+    public class GameStoreCommentRepository : GameStoreGenericRepository<Comment>, IGameStoreCommentRepository
     {
-        public CommentRepository(StoreDbContext context) : base(context)
+        public GameStoreCommentRepository(StoreDbContext context) : base(context)
         {
         }
 

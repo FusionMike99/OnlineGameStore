@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGeneralCommentRepository
+    public interface ICommentRepository
     {
         Task CreateAsync(CommentModel commentModel);
 

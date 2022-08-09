@@ -9,12 +9,12 @@ using OnlineGameStore.BLL.Repositories.GameStore;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GeneralPlatformTypeRepository : IGeneralPlatformTypeRepository
+    public class PlatformTypeRepository : IPlatformTypeRepository
     {
-        private readonly IPlatformTypeRepository _platformTypeRepository;
+        private readonly IGameStorePlatformTypeRepository _platformTypeRepository;
         private readonly IMapper _mapper;
 
-        public GeneralPlatformTypeRepository(IPlatformTypeRepository platformTypeRepository,
+        public PlatformTypeRepository(IGameStorePlatformTypeRepository platformTypeRepository,
             IMapper mapper)
         {
             _platformTypeRepository = platformTypeRepository;

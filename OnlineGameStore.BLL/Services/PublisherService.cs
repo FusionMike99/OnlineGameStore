@@ -12,10 +12,10 @@ namespace OnlineGameStore.BLL.Services
     public class PublisherService : IPublisherService
     {
         private readonly ILogger<PublisherService> _logger;
-        private readonly IGeneralPublisherRepository _publisherRepository;
+        private readonly IPublisherRepository _publisherRepository;
 
         public PublisherService(ILogger<PublisherService> logger,
-            IGeneralPublisherRepository publisherRepository)
+            IPublisherRepository publisherRepository)
         {
             _logger = logger;
             _publisherRepository = publisherRepository;

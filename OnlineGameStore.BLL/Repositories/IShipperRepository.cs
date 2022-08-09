@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGeneralShipperRepository
+    public interface IShipperRepository
     {
         Task<IEnumerable<ShipperModel>> GetAllAsync();
     }

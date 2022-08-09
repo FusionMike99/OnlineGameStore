@@ -8,9 +8,9 @@ namespace OnlineGameStore.BLL.Services
 {
     public class ShipperService : IShipperService
     {
-        private readonly IGeneralShipperRepository _shipperRepository;
+        private readonly IShipperRepository _shipperRepository;
 
-        public ShipperService(IGeneralShipperRepository shipperRepository)
+        public ShipperService(IShipperRepository shipperRepository)
         {
             _shipperRepository = shipperRepository;
         }

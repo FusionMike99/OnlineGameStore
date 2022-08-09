@@ -10,13 +10,13 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity>
+    public class GameStoreGenericRepository<TEntity> : IGameStoreGenericRepository<TEntity>
         where TEntity : BaseEntity
     {
         protected readonly StoreDbContext _context;
         private readonly DbSet<TEntity> _entities;
 
-        public GenericRepository(StoreDbContext context)
+        public GameStoreGenericRepository(StoreDbContext context)
         {
             _context = context;
             

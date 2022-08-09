@@ -9,9 +9,9 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GenreRepository : GenericRepository<Genre>, IGenreRepository
+    public class GameStoreGenreRepository : GameStoreGenericRepository<Genre>, IGameStoreGenreRepository
     {
-        public GenreRepository(StoreDbContext context) : base(context)
+        public GameStoreGenreRepository(StoreDbContext context) : base(context)
         {
         }
 

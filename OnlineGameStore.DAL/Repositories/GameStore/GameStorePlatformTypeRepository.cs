@@ -9,9 +9,9 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class PlatformTypeRepository : GenericRepository<PlatformType>, IPlatformTypeRepository
+    public class GameStorePlatformTypeRepository : GameStoreGenericRepository<PlatformType>, IGameStorePlatformTypeRepository
     {
-        public PlatformTypeRepository(StoreDbContext context) : base(context)
+        public GameStorePlatformTypeRepository(StoreDbContext context) : base(context)
         {
         }
 

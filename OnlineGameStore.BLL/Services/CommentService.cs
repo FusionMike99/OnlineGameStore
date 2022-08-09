@@ -14,12 +14,12 @@ namespace OnlineGameStore.BLL.Services
     {
         private readonly IGameService _gameService;
         private readonly ILogger<CommentService> _logger;
-        private readonly IGeneralCommentRepository _commentRepository;
+        private readonly ICommentRepository _commentRepository;
 
         public CommentService(
             IGameService gameService,
             ILogger<CommentService> logger,
-            IGeneralCommentRepository commentRepository)
+            ICommentRepository commentRepository)
         {
             _gameService = gameService;
             _logger = logger;

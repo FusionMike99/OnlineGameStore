@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface ICommentRepository : IGenericRepository<Comment>
+    public interface IGameStoreCommentRepository : IGameStoreGenericRepository<Comment>
     {
         Task<IEnumerable<Comment>> GetAllByGameKey(string gameKey,
             bool includeDeleted = false,

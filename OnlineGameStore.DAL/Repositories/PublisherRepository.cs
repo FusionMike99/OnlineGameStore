@@ -14,13 +14,13 @@ using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GeneralPublisherRepository : IGeneralPublisherRepository
+    public class PublisherRepository : IPublisherRepository
     {
-        private readonly IPublisherRepository _publisherRepository;
+        private readonly IGameStorePublisherRepository _publisherRepository;
         private readonly INorthwindSupplierRepository _supplierRepository;
         private readonly IMapper _mapper;
 
-        public GeneralPublisherRepository(IPublisherRepository publisherRepository,
+        public PublisherRepository(IGameStorePublisherRepository publisherRepository,
             INorthwindSupplierRepository supplierRepository,
             IMapper mapper)
         {

@@ -7,9 +7,9 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class PublisherRepository : GenericRepository<Publisher>, IPublisherRepository
+    public class GameStorePublisherRepository : GameStoreGenericRepository<Publisher>, IGameStorePublisherRepository
     {
-        public PublisherRepository(StoreDbContext context) : base(context)
+        public GameStorePublisherRepository(StoreDbContext context) : base(context)
         {
         }
 

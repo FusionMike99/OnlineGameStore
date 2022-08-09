@@ -104,7 +104,7 @@ namespace OnlineGameStore.Tests.Services
             var expectedGenresCount = sortFilterGameModel.SelectedGenres.Count;
 
             // Act
-            var actualGames = sut.GetAllGames(out var gamesNumber, sortFilterGameModel);
+            var actualGames = sut.GetAllGamesWithNumber(out var gamesNumber, sortFilterGameModel);
 
             // Assert
             actualGames.Should().HaveCount(expectedCount);

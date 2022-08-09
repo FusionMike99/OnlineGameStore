@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGeneralPlatformTypeRepository
+    public interface IPlatformTypeRepository
     {
         Task CreateAsync(PlatformTypeModel platformTypeModel);
 

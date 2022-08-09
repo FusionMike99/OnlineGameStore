@@ -9,12 +9,12 @@ using OnlineGameStore.BLL.Repositories.GameStore;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GeneralCommentRepository : IGeneralCommentRepository
+    public class CommentRepository : ICommentRepository
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly IGameStoreCommentRepository _commentRepository;
         private readonly IMapper _mapper;
 
-        public GeneralCommentRepository(ICommentRepository commentRepository,
+        public CommentRepository(IGameStoreCommentRepository commentRepository,
             IMapper mapper)
         {
             _commentRepository = commentRepository;

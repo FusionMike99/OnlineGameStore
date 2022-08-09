@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGeneralPublisherRepository
+    public interface IPublisherRepository
     {
         Task CreateAsync(PublisherModel publisherModel);
 

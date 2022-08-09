@@ -12,10 +12,10 @@ namespace OnlineGameStore.BLL.Services
     public class GenreService : IGenreService
     {
         private readonly ILogger<GenreService> _logger;
-        private readonly IGeneralGenreRepository _genreRepository;
+        private readonly IGenreRepository _genreRepository;
 
         public GenreService(ILogger<GenreService> logger,
-            IGeneralGenreRepository genreRepository)
+            IGenreRepository genreRepository)
         {
             _logger = logger;
             _genreRepository = genreRepository;

@@ -1,30 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using OnlineGameStore.BLL.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IGameService
     {
-        Game CreateGame(Game game);
+        Task<GameModel> CreateGame(GameModel game);
 
-        Game EditGame(string gameKey, Game game);
+        Task<GameModel> EditGame(GameModel game);
 
-        void DeleteGame(string gameKey);
+        Task DeleteGame(string gameKey);
 
-        Game GetGameByKey(string gameKey, bool increaseViews = false);
-
-        void UpdateGameQuantity(string gameKey, short quantity, Func<short, short, short> operation);
+        Task<GameModel> GetGameByKey(string gameKey, bool increaseViews = false);
         
-        IEnumerable<Game> GetAllGames(SortFilterGameModel sortFilterModel = null, PageModel pageModel = null);
+        Task IncreaseGameQuantity(string gameKey, short quantity);
         
-        IEnumerable<Game> GetAllGames(out int gamesNumber, 
-            SortFilterGameModel sortFilterModel = null,
+        Task DecreaseGameQuantity(string gameKey, short quantity);
+        
+        Task<(IEnumerable<GameModel>, int)> GetAllGames(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null);
 
-        int GetGamesNumber(SortFilterGameModel sortFilterModel = null);
+        Task<int> GetGamesNumber(SortFilterGameModel sortFilterModel = null);
 
-        bool CheckKeyForUnique(string gameId, string gameKey);
+        Task<bool> CheckKeyForUnique(string gameId, string gameKey);
     }
 }

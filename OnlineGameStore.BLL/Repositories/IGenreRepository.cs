@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Repositories
 {
-    public interface IGeneralGenreRepository
+    public interface IGenreRepository
     {
         Task CreateAsync(GenreModel genreModel);
 

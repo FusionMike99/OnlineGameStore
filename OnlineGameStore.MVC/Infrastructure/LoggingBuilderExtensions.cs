@@ -38,7 +38,7 @@ namespace OnlineGameStore.MVC.Infrastructure
                     });
                     l.Filter.ByIncludingOnly(e =>
                         e.Properties.GetValueOrDefault("SourceContext") is ScalarValue sv &&
-                        (sv.Value.ToString()!.Contains(typeof(GenericRepository<>).Namespace!)
+                        (sv.Value.ToString()!.Contains(typeof(GameStoreGenericRepository<>).Namespace!)
                         || sv.Value.ToString()!.Contains(typeof(NorthwindGenericRepository<>).Namespace!)));
                 })
                 .WriteTo.Console(outputTemplate: OutputTemplate)

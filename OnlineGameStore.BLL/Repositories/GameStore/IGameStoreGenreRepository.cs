@@ -5,7 +5,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface IGenreRepository : IGenericRepository<Genre>
+    public interface IGameStoreGenreRepository : IGameStoreGenericRepository<Genre>
     {
         Task<Genre> GetByName(string name,
             bool includeDeleted = false,

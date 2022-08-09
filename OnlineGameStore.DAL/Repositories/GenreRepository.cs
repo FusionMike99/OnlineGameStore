@@ -10,13 +10,13 @@ using OnlineGameStore.BLL.Repositories.Northwind;
 
 namespace OnlineGameStore.DAL.Repositories
 {
-    public class GeneralGenreRepository : IGeneralGenreRepository
+    public class GenreRepository : IGenreRepository
     {
-        private readonly IGenreRepository _genreRepository;
+        private readonly IGameStoreGenreRepository _genreRepository;
         private readonly INorthwindCategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public GeneralGenreRepository(IGenreRepository genreRepository,
+        public GenreRepository(IGameStoreGenreRepository genreRepository,
             INorthwindCategoryRepository categoryRepository,
             IMapper mapper)
         {

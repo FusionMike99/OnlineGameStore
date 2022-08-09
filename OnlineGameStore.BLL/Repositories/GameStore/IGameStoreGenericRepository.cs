@@ -7,7 +7,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface IGenericRepository<TEntity>
+    public interface IGameStoreGenericRepository<TEntity>
         where TEntity : BaseEntity
     {
         Task<TEntity> Create(TEntity entity);
