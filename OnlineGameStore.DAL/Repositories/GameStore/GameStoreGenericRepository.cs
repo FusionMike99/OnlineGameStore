@@ -10,15 +10,15 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreGenericRepository<TEntity> : IGameStoreGenericRepository<TEntity>
+    public abstract class GameStoreGenericRepository<TEntity> : IGameStoreGenericRepository<TEntity>
         where TEntity : BaseEntity
     {
-        protected readonly StoreDbContext _context;
+        protected readonly StoreDbContext Context;
         private readonly DbSet<TEntity> _entities;
 
-        public GameStoreGenericRepository(StoreDbContext context)
+        protected GameStoreGenericRepository(StoreDbContext context)
         {
-            _context = context;
+            Context = context;
             
             _entities = context.Set<TEntity>();
         }
@@ -26,7 +26,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public virtual async Task<TEntity> Create(TEntity entity)
         {
             await _entities.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
             return entity;
         }
@@ -49,7 +49,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
             var exist = await _entities.FindAsync(entity.Id);
 
-            foreach (var navEntity in _context.Entry(entity).Navigations)
+            foreach (var navEntity in Context.Entry(entity).Navigations)
             {
                 if (navEntity.CurrentValue == null)
                 {
@@ -58,20 +58,27 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 
                 var navEntityName = navEntity.Metadata.Name;
 
-                var navExist = _context.Entry(exist).Navigation(navEntityName);
+                var navExist = Context.Entry(exist).Navigation(navEntityName);
 
                 await navExist.LoadAsync();
 
                 navExist.CurrentValue = navEntity.CurrentValue;
             }
 
-            _context.Entry(exist).CurrentValues.SetValues(entity);
-            await _context.SaveChangesAsync();
+            Context.Entry(exist).CurrentValues.SetValues(entity);
+            await Context.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
+        public virtual async Task<TEntity> GetById(Guid id, bool includeDeleted = false, params string[] includeProperties)
+        {
+            Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
+            
+            return await GetSingle(predicate, includeDeleted, includeProperties);
+        }
+
+        protected async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
@@ -82,7 +89,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return foundEntity;
         }
 
-        public async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
+        protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             bool includeDeleted = false,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             int? skip = null, int? take = null,
@@ -113,13 +120,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             var foundList = await query.ToListAsync();
             
             return foundList;
-        }
-
-        public virtual async Task<TEntity> GetById(Guid id, bool includeDeleted = false, params string[] includeProperties)
-        {
-            Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
-            
-            return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
         private IQueryable<TEntity> IncludeProperties(bool includeDeleteEntities = false,

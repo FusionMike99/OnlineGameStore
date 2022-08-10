@@ -61,7 +61,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            var order = _orderService.GetOpenOrder(customerId);
+            var order = _orderService.GetOpenOrInProcessOrderAsync(customerId);
 
             var orderViewModel = PrepareOrderViewModel(order, true);
 

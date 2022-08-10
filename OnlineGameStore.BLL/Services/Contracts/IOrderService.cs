@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using OnlineGameStore.BLL.Entities;
+using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Models.General;
 
 namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IOrderService
     {
-        Order GetOpenOrder(string customerId);
+        Task<OrderModel> GetOpenOrInProcessOrderAsync(Guid customerId);
 
-        Order GetOrderById(string orderId);
+        Task<OrderModel> GetOrderById(Guid orderId);
 
-        IEnumerable<Order> GetOrders(FilterOrderModel filterOrderModel = null);
+        Task<IEnumerable<OrderModel>> GetOrders(FilterOrderModel filterOrderModel = null);
 
-        Order EditOrder(Order order);
+        Task<OrderModel> EditOrder(OrderModel order);
 
-        void AddToOpenOrder(string customerId, Game product, short quantity);
+        Task AddToOpenOrder(Guid customerId, GameModel product, short quantity);
 
-        void RemoveFromOrder(string customerId, string gameKey);
+        Task RemoveFromOrder(Guid customerId, string gameKey);
 
-        Order ChangeStatusToInProcess(string customerId);
+        Task<OrderModel> ChangeStatusToInProcess(Guid customerId);
 
-        Order ChangeStatusToClosed(string orderId);
+        Task<OrderModel> ChangeStatusToClosed(Guid orderId);
 
-        void CancelOrdersWithTimeout();
+        Task CancelOrdersWithTimeout();
 
-        void SetCancelledDate(string orderId, DateTime cancelledDate);
+        Task SetCancelledDate(Guid orderId, DateTime cancelledDate);
     }
 }

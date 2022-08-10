@@ -61,16 +61,6 @@ namespace OnlineGameStore.BLL.Services
             return game;
         }
 
-        public async Task IncreaseGameQuantity(string gameKey, short quantity)
-        {
-            await _gameRepository.IncreaseGameQuantityAsync(gameKey, quantity);
-        }
-
-        public async Task DecreaseGameQuantity(string gameKey, short quantity)
-        {
-            await _gameRepository.DecreaseGameQuantityAsync(gameKey, quantity);
-        }
-
         public async Task<(IEnumerable<GameModel>, int)> GetAllGames(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null)
         {

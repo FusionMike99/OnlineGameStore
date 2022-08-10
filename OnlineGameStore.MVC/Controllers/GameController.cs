@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -129,10 +130,10 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGames(SortFilterGameViewModel sortFilterGameViewModel,
+        public async Task<IActionResult> GetGames(SortFilterGameViewModel sortFilterGameViewModel,
             int pageNumber = 1, PageSize pageSize = PageSize.Ten)
         {
-            SortFilterGameModel sortFilterGameModel = new SortFilterGameModelBuilder(sortFilterGameViewModel,
+            SortFilterGameModel sortFilterGameModel = await SortFilterGameModelBuilder.Create(sortFilterGameViewModel,
                 _genreService, _platformTypeService, _publisherService);
 
             var pageModel = new PageModel(pageNumber, pageSize);
@@ -147,7 +148,7 @@ namespace OnlineGameStore.MVC.Controllers
             {
                 PageViewModel = pageViewModel,
                 Games = gamesViewModel,
-                SortFilterGameViewModel = new SortFilterGameViewModelBuilder(sortFilterGameModel,
+                SortFilterGameViewModel = await SortFilterGameViewModelBuilder.Create(sortFilterGameModel,
                     _genreService, _platformTypeService, _publisherService)
             };
 

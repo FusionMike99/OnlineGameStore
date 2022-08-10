@@ -13,17 +13,17 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class NorthwindGenericRepository<TEntity> : INorthwindGenericRepository<TEntity>
+    public abstract class NorthwindGenericRepository<TEntity> : INorthwindGenericRepository<TEntity>
         where TEntity : NorthwindBaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
 
-        public NorthwindGenericRepository(IMongoDatabase database)
+        protected NorthwindGenericRepository(IMongoDatabase database)
         {
             _collection = database.GetCollection<TEntity>();
         }
 
-        public async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
+        protected async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
         {
             var query = _collection.AsQueryable();
 
@@ -32,7 +32,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return foundEntity;
         }
 
-        public async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
+        protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             int? skip = null,
             int? take = null)

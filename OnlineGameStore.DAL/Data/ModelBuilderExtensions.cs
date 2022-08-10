@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Utils;
 
@@ -158,12 +158,12 @@ namespace OnlineGameStore.DAL.Data
             };
         }
 
-        internal static void StoreSeed(this ModelBuilder modelBuilder,
-            INorthwindUnitOfWork northwindUnitOfWork)
+        internal static async Task StoreSeed(this ModelBuilder modelBuilder,
+            INorthwindCategoryRepository categoryRepository)
         {
             modelBuilder.Entity<Genre>().HasData(Genres);
 
-            /*var genres = northwindUnitOfWork.Categories.GetMany()
+            var genres = (await categoryRepository.GetAll())
                 .Select(category => new Genre 
                     { 
                         Id = Guid.NewGuid(),
@@ -171,7 +171,7 @@ namespace OnlineGameStore.DAL.Data
                         Description = category.Description
                     });
 
-            modelBuilder.Entity<Genre>().HasData(genres);*/
+            modelBuilder.Entity<Genre>().HasData(genres);
 
             modelBuilder.Entity<PlatformType>().HasData(PlatformTypes);
 

@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
                 .Returns(order);
 
             // Act
-            var actualOrder = sut.GetOpenOrder(order.CustomerId);
+            var actualOrder = sut.GetOpenOrInProcessOrderAsync(order.CustomerId);
 
             // Assert
             actualOrder.Should().BeEquivalentTo(order);
@@ -57,7 +57,7 @@ namespace OnlineGameStore.Tests.Services
                 .Returns(createdOrder);
 
             // Act
-            var actualGenre = sut.GetOpenOrder(createdOrder.CustomerId);
+            var actualGenre = sut.GetOpenOrInProcessOrderAsync(createdOrder.CustomerId);
 
             // Assert
             actualGenre.Should().BeEquivalentTo(createdOrder);

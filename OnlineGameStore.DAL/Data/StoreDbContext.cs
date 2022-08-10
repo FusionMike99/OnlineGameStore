@@ -1,20 +1,20 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Repositories.Northwind;
 
 namespace OnlineGameStore.DAL.Data
 {
     public class StoreDbContext : DbContext
     {
-        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
+        private readonly INorthwindCategoryRepository _categoryRepository;
         
         public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options,
-            INorthwindUnitOfWork northwindUnitOfWork) : base(options)
+            INorthwindCategoryRepository categoryRepository) : base(options)
         {
-            _northwindUnitOfWork = northwindUnitOfWork;
+            _categoryRepository = categoryRepository;
         }
 
         public DbSet<Game> Games { get; set; }
@@ -29,7 +29,7 @@ namespace OnlineGameStore.DAL.Data
 
         public DbSet<Order> Orders { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -39,7 +39,7 @@ namespace OnlineGameStore.DAL.Data
                 if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
-            modelBuilder.StoreSeed(_northwindUnitOfWork);
+            await modelBuilder.StoreSeed(_categoryRepository);
         }
     }
 }

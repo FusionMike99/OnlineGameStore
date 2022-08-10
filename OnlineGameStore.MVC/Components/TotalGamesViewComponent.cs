@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Contracts;
 
@@ -13,9 +14,9 @@ namespace OnlineGameStore.MVC.Components
             _gameService = gameService;
         }
 
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> Invoke()
         {
-            var totalGames = _gameService.GetGamesNumber();
+            var totalGames = await _gameService.GetGamesNumber();
 
             return View(totalGames);
         }

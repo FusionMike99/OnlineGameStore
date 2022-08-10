@@ -12,16 +12,6 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
     {
         Task<TEntity> Create(TEntity entity);
 
-        Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
-            bool includeDeleted = false,
-            params string[] includeProperties);
-
-        Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
-            bool includeDeleted = false,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            int? skip = null, int? take = null,
-            params string[] includeProperties);
-
         Task<TEntity> GetById(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties);

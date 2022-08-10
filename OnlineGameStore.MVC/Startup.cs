@@ -47,11 +47,6 @@ namespace OnlineGameStore.MVC
             services.AddDbContext<StoreDbContext>(options =>
                 options.UseSqlServer(gameStoreConnection));
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddScoped<INorthwindUnitOfWork>(provider =>
-                new NorthwindUnitOfWork(northwindConnection));
-
             services.AddScoped<IGameService, GameService>();
 
             services.AddScoped<ICommentService, CommentService>();

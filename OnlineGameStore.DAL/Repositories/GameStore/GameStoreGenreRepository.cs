@@ -21,7 +21,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             
             genre.SubGenres.ToList().ForEach(g => g.ParentId = g.Parent.ParentId);
 
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public async Task<Genre> GetByName(string name,

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -22,7 +24,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult NewComment([FromRoute] string gameKey, [FromForm] EditCommentViewModel comment)
+        public async Task<IActionResult> NewComment([FromRoute] string gameKey, [FromForm] EditCommentViewModel comment)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
@@ -31,44 +33,39 @@ namespace OnlineGameStore.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                var aggregateCommentViewModel = CreateAggregateCommentViewModel(gameKey);
+                var aggregateCommentViewModel = await CreateAggregateCommentViewModel(gameKey);
 
                 aggregateCommentViewModel.EditComment = comment;
 
                 return View("Index", aggregateCommentViewModel);
             }
 
-            var mappedComment = _mapper.Map<Comment>(comment);
+            var mappedComment = _mapper.Map<CommentModel>(comment);
 
-            _commentService.LeaveCommentToGame(gameKey, mappedComment);
+            await _commentService.LeaveCommentToGame(gameKey, mappedComment);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
         [HttpGet("comments")]
-        public IActionResult GetCommentsByGameKey([FromRoute] string gameKey)
+        public async Task<IActionResult> GetCommentsByGameKey([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            var aggregateCommentViewModel = CreateAggregateCommentViewModel(gameKey);
+            var aggregateCommentViewModel = await CreateAggregateCommentViewModel(gameKey);
 
             aggregateCommentViewModel.EditComment = new EditCommentViewModel();
 
             return View("Index", aggregateCommentViewModel);
         }
         
-        [HttpGet("updateComment/{commentId}")]
-        public IActionResult UpdateComment([FromRoute] string commentId, [FromRoute] string gameKey)
+        [HttpGet("updateComment/{commentId:guid}")]
+        public async Task<IActionResult> UpdateComment([FromRoute] Guid commentId, [FromRoute] string gameKey)
         {
-            if (string.IsNullOrWhiteSpace(commentId))
-            {
-                return BadRequest();
-            }
-
-            var comment = _commentService.GetCommentById(commentId);
+            var comment = await _commentService.GetCommentById(commentId);
 
             if (comment == null)
             {
@@ -80,9 +77,9 @@ namespace OnlineGameStore.MVC.Controllers
             return PartialView("_Update", editCommentViewModel);
         }
 
-        [HttpPost("updateComment/{commentId}")]
+        [HttpPost("updateComment/{commentId:guid}")]
         [ValidateAntiForgeryToken]
-        public IActionResult UpdateComment(string commentId, EditCommentViewModel comment, string gameKey)
+        public async Task<IActionResult> UpdateComment(Guid commentId, EditCommentViewModel comment, string gameKey)
         {
             if (commentId != comment.Id)
             {
@@ -94,22 +91,17 @@ namespace OnlineGameStore.MVC.Controllers
                 return PartialView("_Update", comment);
             }
 
-            var mappedComment = _mapper.Map<Comment>(comment);
+            var mappedComment = _mapper.Map<CommentModel>(comment);
 
-            _commentService.EditComment(mappedComment);
+            await _commentService.EditComment(mappedComment);
 
             return Json(new { url = Url.Action(nameof(GetCommentsByGameKey), new { gameKey }) });
         }
         
-        [HttpGet("removeComment/{id}")]
-        public IActionResult RemoveComment([FromRoute] string id, [FromRoute] string gameKey)
+        [HttpGet("removeComment/{id:guid}")]
+        public async Task<IActionResult> RemoveComment([FromRoute] Guid id, [FromRoute] string gameKey)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-
-            var comment = _commentService.GetCommentById(id);
+            var comment = await _commentService.GetCommentById(id);
 
             if (comment == null)
             {
@@ -121,24 +113,19 @@ namespace OnlineGameStore.MVC.Controllers
             return PartialView("_Remove", commentViewModel);
         }
         
-        [HttpPost("removeComment/{id}")]
+        [HttpPost("removeComment/{id:guid}")]
         [ValidateAntiForgeryToken]
         [ActionName("Remove")]
-        public IActionResult RemoveCommentConfirmed([FromRoute] string id, [FromRoute] string gameKey)
+        public IActionResult RemoveCommentConfirmed([FromRoute] Guid id, [FromRoute] string gameKey)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-
             _commentService.DeleteComment(id);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
-        private AggregateCommentViewModel CreateAggregateCommentViewModel(string gameKey)
+        private async Task<AggregateCommentViewModel> CreateAggregateCommentViewModel(string gameKey)
         {
-            var comments = _commentService.GetAllCommentsByGameKey(gameKey);
+            var comments = await _commentService.GetAllCommentsByGameKey(gameKey);
 
             var commentsViewModel = _mapper.Map<IEnumerable<CommentViewModel>>(comments);
 

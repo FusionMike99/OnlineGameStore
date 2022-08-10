@@ -28,7 +28,7 @@ namespace OnlineGameStore.BLL.Models.General
         
         public string ShipVia { get; set; }
 
-        public string CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         public OrderState OrderState { get; set; }
 

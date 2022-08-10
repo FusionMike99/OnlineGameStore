@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using MongoDB.Driver;
+using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Repositories.Northwind;
+
+namespace OnlineGameStore.DAL.Repositories.Northwind
+{
+    public class NorthwindOrderDetailRepository : NorthwindGenericRepository<NorthwindOrderDetail>,
+        INorthwindOrderDetailRepository
+    {
+        public NorthwindOrderDetailRepository(IMongoDatabase database) : base(database)
+        {
+        }
+
+        public async Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderId(int orderId)
+        {
+            Expression<Func<NorthwindOrderDetail, bool>> predicate = od => od.OrderId == orderId;
+
+            return await GetMany(predicate);
+        }
+    }
+}

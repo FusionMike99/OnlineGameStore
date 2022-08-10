@@ -16,10 +16,6 @@ namespace OnlineGameStore.BLL.Services.Contracts
 
         Task<GameModel> GetGameByKey(string gameKey, bool increaseViews = false);
         
-        Task IncreaseGameQuantity(string gameKey, short quantity);
-        
-        Task DecreaseGameQuantity(string gameKey, short quantity);
-        
         Task<(IEnumerable<GameModel>, int)> GetAllGames(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null);
 

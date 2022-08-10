@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MongoDB.Driver;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.DAL.Data
 {

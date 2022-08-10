@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace OnlineGameStore.BLL.Utils
 {
-    internal static class ExpressionDelegateExtensions
+    public static class ExpressionDelegateExtensions
     {
         public static Expression<Func<T, bool>> AndAlso<T>(this Expression<Func<T, bool>> expr1,
             Expression<Func<T, bool>> expr2)
