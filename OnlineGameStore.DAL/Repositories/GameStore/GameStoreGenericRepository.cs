@@ -4,8 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
@@ -15,11 +18,13 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
     {
         protected readonly StoreDbContext Context;
         private readonly DbSet<TEntity> _entities;
+        private readonly ILogger<GameStoreGenericRepository<TEntity>> _logger;
 
-        protected GameStoreGenericRepository(StoreDbContext context)
+        protected GameStoreGenericRepository(StoreDbContext context, ILoggerFactory logger)
         {
             Context = context;
-            
+            _logger = logger.CreateLogger<GameStoreGenericRepository<TEntity>>();
+
             _entities = context.Set<TEntity>();
         }
 
@@ -28,6 +33,9 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             await _entities.AddAsync(entity);
             await Context.SaveChangesAsync();
 
+            _logger.LogDebug("Action: {Action}\nEntity Type: {EntityType}\nObject: {@Object}", ActionTypes.Create,
+                typeof(TEntity), entity);
+            
             return entity;
         }
 
@@ -37,6 +45,10 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             entity.DeletedAt = DateTime.UtcNow;
 
             await Update(entity);
+            
+            _logger.LogDebug("Action: {Action}\nEntity Type: {EntityType}\nObject: {@Object}", ActionTypes.Delete,
+                typeof(TEntity), entity);
+
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAll(bool includeDeleted = false, params string[] includeProperties)
@@ -48,6 +60,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public virtual async Task<TEntity> Update(TEntity entity)
         {
             var exist = await _entities.FindAsync(entity.Id);
+            var oldEntity = exist.DeepClone();
 
             foreach (var navEntity in Context.Entry(entity).Navigations)
             {
@@ -67,6 +80,10 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 
             Context.Entry(exist).CurrentValues.SetValues(entity);
             await Context.SaveChangesAsync();
+            
+            _logger.LogInformation("{Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
+                ActionTypes.Update, typeof(TEntity), oldEntity, entity);
+
 
             return entity;
         }
@@ -91,8 +108,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 
         protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
             bool includeDeleted = false,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            int? skip = null, int? take = null,
             params string[] includeProperties)
         {
             var query = IncludeProperties(includeDeleted, includeProperties);
@@ -100,21 +115,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             if (predicate != null)
             {
                 query = query.Where(predicate);
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            if (skip.HasValue)
-            {
-                query = query.Skip(skip.Value);
-            }
-
-            if (take.HasValue)
-            {
-                query = query.Take(take.Value);
             }
 
             var foundList = await query.ToListAsync();

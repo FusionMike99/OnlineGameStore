@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Pipelines;
@@ -13,7 +14,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 {
     public class GameStoreGameRepository : GameStoreGenericRepository<Game>, IGameStoreGameRepository
     {
-        public GameStoreGameRepository(StoreDbContext context) : base(context)
+        public GameStoreGameRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 

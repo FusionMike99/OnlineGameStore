@@ -37,12 +37,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(g => g.QuantityPerUnit)
                 .HasDefaultValue(string.Empty);
-            
-            builder.Property(g => g.UnitsOnOrder)
-                .HasDefaultValue(0);
-            
-            builder.Property(g => g.ReorderLevel)
-                .HasDefaultValue(0);
 
             builder.Ignore(g => g.DatabaseEntity);
             

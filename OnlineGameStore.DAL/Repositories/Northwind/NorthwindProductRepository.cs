@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
@@ -17,9 +18,10 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         INorthwindProductRepository
     {
         private readonly INorthwindSupplierRepository _supplierRepository;
-        
+
         public NorthwindProductRepository(IMongoDatabase database,
-            INorthwindSupplierRepository supplierRepository) : base(database)
+            ILoggerFactory loggerFactory,
+            INorthwindSupplierRepository supplierRepository) : base(database, loggerFactory)
         {
             _supplierRepository = supplierRepository;
         }

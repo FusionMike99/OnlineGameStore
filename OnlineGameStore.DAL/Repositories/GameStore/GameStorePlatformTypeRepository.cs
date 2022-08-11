@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.DAL.Data;
@@ -11,7 +12,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 {
     public class GameStorePlatformTypeRepository : GameStoreGenericRepository<PlatformType>, IGameStorePlatformTypeRepository
     {
-        public GameStorePlatformTypeRepository(StoreDbContext context) : base(context)
+        public GameStorePlatformTypeRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 

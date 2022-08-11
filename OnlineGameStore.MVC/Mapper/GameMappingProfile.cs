@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -9,7 +10,7 @@ namespace OnlineGameStore.MVC.Mapper
     {
         public GameMappingProfile()
         {
-            CreateMap<Game, EditGameViewModel>()
+            CreateMap<GameModel, EditGameViewModel>()
                 .ForMember(dest => dest.SelectedGenres,
                     source => source.MapFrom(game => game.GameGenres.Select(gg => gg.GenreId)))
                 .ForMember(dest => dest.SelectedPlatformTypes,
@@ -19,7 +20,7 @@ namespace OnlineGameStore.MVC.Mapper
                 .ForMember(dest => dest.PlatformTypes, source => source.Ignore())
                 .ForMember(dest => dest.Publishers, source => source.Ignore());
 
-            CreateMap<EditGameViewModel, Game>()
+            CreateMap<EditGameViewModel, GameModel>()
                 .ForMember(dest => dest.GameGenres, source => source.MapFrom(game =>
                     game.SelectedGenres.Select(selected => new GameGenre
                     {
@@ -39,7 +40,7 @@ namespace OnlineGameStore.MVC.Mapper
                 .ForMember(dest => dest.Publisher, source => source.Ignore())
                 .ForMember(dest => dest.OrderDetails, source => source.Ignore());
 
-            CreateMap<Game, GameViewModel>()
+            CreateMap<GameModel, GameViewModel>()
                 .ForMember(dest => dest.Genres,
                     source => source.MapFrom(game => game.GameGenres.Select(g => g.Genre.Name)))
                 .ForMember(dest => dest.PlatformTypes,

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -8,10 +8,10 @@ namespace OnlineGameStore.MVC.Mapper
     {
         public PlatformTypeMappingProfile()
         {
-            CreateMap<PlatformType, EditPlatformTypeViewModel>()
+            CreateMap<PlatformTypeModel, EditPlatformTypeViewModel>()
                 .ReverseMap();
 
-            CreateMap<PlatformType, PlatformTypeViewModel>();
+            CreateMap<PlatformTypeModel, PlatformTypeViewModel>();
         }
     }
 }

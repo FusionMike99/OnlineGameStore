@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Repositories.Northwind;
@@ -11,7 +12,8 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
     public class NorthwindOrderDetailRepository : NorthwindGenericRepository<NorthwindOrderDetail>,
         INorthwindOrderDetailRepository
     {
-        public NorthwindOrderDetailRepository(IMongoDatabase database) : base(database)
+        public NorthwindOrderDetailRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
+            : base(database, loggerFactory)
         {
         }
 

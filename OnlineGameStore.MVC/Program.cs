@@ -26,7 +26,7 @@ namespace OnlineGameStore.MVC
                 .ConfigureLogging((hostingContext, logging) =>
                 {
                     logging.ClearProviders();
-                    logging.AddGenericLogging(hostingContext);
+                    logging.AddSerilog(hostingContext);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

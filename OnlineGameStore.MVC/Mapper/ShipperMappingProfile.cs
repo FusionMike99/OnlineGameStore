@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -8,7 +8,7 @@ namespace OnlineGameStore.MVC.Mapper
     {
         public ShipperMappingProfile()
         {
-            CreateMap<NorthwindShipper, ShipperViewModel>();
+            CreateMap<ShipperModel, ShipperViewModel>();
         }
     }
 }

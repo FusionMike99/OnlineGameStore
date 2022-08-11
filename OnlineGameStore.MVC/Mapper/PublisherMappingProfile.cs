@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -8,10 +8,10 @@ namespace OnlineGameStore.MVC.Mapper
     {
         public PublisherMappingProfile()
         {
-            CreateMap<Publisher, EditPublisherViewModel>()
+            CreateMap<PublisherModel, EditPublisherViewModel>()
                 .ReverseMap();
 
-            CreateMap<Publisher, PublisherViewModel>();
+            CreateMap<PublisherModel, PublisherViewModel>();
         }
     }
 }

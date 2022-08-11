@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
@@ -10,7 +10,7 @@ namespace OnlineGameStore.MVC.Mapper
     {
         public OrderMappingProfile()
         {
-            CreateMap<Order, OrderViewModel>()
+            CreateMap<OrderModel, OrderViewModel>()
                 .ForMember(dest => dest.Total, source =>
                     source.MapFrom(order => order.OrderDetails.Sum(od => od.Price * od.Quantity * (decimal)(1 - od.Discount))))
                 .ForMember(dest => dest.OrderDetails, source => source.MapFrom(order => order.OrderDetails))
@@ -19,7 +19,7 @@ namespace OnlineGameStore.MVC.Mapper
                 .ForMember(o => o.EnableModification,
                     opts => opts.Ignore());
 
-            CreateMap<OrderDetail, OrderDetailViewModel>()
+            CreateMap<OrderDetailModel, OrderDetailViewModel>()
                 .ForMember(dest => dest.ProductName, source => source.MapFrom(od => od.Product.Name))
                 .ReverseMap()
                 .ForMember(dest => dest.Product, source => source.Ignore());
@@ -27,7 +27,7 @@ namespace OnlineGameStore.MVC.Mapper
             CreateMap<FilterOrderModel, FilterOrderViewModel>()
                 .ReverseMap();
 
-            CreateMap<Order, ShipOrderViewModel>()
+            CreateMap<OrderModel, ShipOrderViewModel>()
                 .ForMember(so => so.Shippers,
                     opts => opts.Ignore())
                 .ReverseMap();

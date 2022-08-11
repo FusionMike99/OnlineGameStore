@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
@@ -17,10 +19,12 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         where TEntity : NorthwindBaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
+        private readonly ILogger<NorthwindGenericRepository<TEntity>> _logger;
 
-        protected NorthwindGenericRepository(IMongoDatabase database)
+        protected NorthwindGenericRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
         {
             _collection = database.GetCollection<TEntity>();
+            _logger = loggerFactory.CreateLogger<NorthwindGenericRepository<TEntity>>();
         }
 
         protected async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
@@ -113,6 +117,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             var update = updateBuilder.Combine(updateDefinitions);
                 
             await _collection.UpdateOneAsync(filter, update);
+            
+            _logger.LogInformation("{Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
+                ActionTypes.Update, typeof(TEntity), existEntity, entity);
 
             return entity;
         }

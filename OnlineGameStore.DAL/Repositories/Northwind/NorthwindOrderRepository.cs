@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
@@ -13,10 +14,11 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
     {
         private readonly INorthwindOrderDetailRepository _orderDetailRepository;
         private readonly INorthwindShipperRepository _shipperRepository;
-        
+
         public NorthwindOrderRepository(IMongoDatabase database,
+            ILoggerFactory loggerFactory,
             INorthwindOrderDetailRepository orderDetailRepository,
-            INorthwindShipperRepository shipperRepository) : base(database)
+            INorthwindShipperRepository shipperRepository) : base(database, loggerFactory)
         {
             _orderDetailRepository = orderDetailRepository;
             _shipperRepository = shipperRepository;
