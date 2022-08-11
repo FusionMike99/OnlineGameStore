@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,17 +17,17 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetPublishers_ReturnsViewResult(
-            IEnumerable<Publisher> publishers,
+        public async Task GetPublishers_ReturnsViewResult(
+            List<PublisherModel> publishers,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
             mockPublisherService.Setup(x => x.GetAllPublishers())
-                .Returns(publishers);
+                .ReturnsAsync(publishers);
 
             // Act
-            var result = sut.GetPublishers();
+            var result = await sut.GetPublishers();
 
             // Assert
             result.Should().BeOfType<ViewResult>()

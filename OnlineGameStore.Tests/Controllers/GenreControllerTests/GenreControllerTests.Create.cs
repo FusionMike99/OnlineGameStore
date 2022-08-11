@@ -1,8 +1,9 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -15,11 +16,11 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Create_Get_ReturnsViewResult(
+        public async Task Create_Get_ReturnsViewResult(
             GenreController sut)
         {
             // Act
-            var result = sut.Create();
+            var result = await sut.Create();
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -28,14 +29,14 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsRedirectToActionResult_WhenGenreIsValid(
-            Genre genre,
+        public async Task Create_Post_ReturnsRedirectToActionResult_WhenGenreIsValid(
+            GenreModel genre,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.CreateGenre(It.IsAny<Genre>()))
-                .Returns(genre);
+            mockGenreService.Setup(x => x.CreateGenre(It.IsAny<GenreModel>()))
+                .ReturnsAsync(genre);
 
             var editGenreViewModel = new EditGenreViewModel
             {
@@ -45,18 +46,18 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Create(editGenreViewModel);
+            var result = await sut.Create(editGenreViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGenres));
 
-            mockGenreService.Verify(x => x.CreateGenre(It.IsAny<Genre>()), Times.Once);
+            mockGenreService.Verify(x => x.CreateGenre(It.IsAny<GenreModel>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsViewResult_WhenGenreIsInvalid(
+        public async Task Create_Post_ReturnsViewResult_WhenGenreIsInvalid(
             EditGenreViewModel editGenreViewModel,
             GenreController sut)
         {
@@ -64,7 +65,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Create(editGenreViewModel);
+            var result = await sut.Create(editGenreViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

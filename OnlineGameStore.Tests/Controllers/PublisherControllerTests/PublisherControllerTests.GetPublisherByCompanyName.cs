@@ -1,8 +1,9 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -15,17 +16,17 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetPublisherByCompanyName_ReturnsViewResult_WhenPublisherCompanyNameHasValue(
-            Publisher publisher,
+        public async Task GetPublisherByCompanyName_ReturnsViewResult_WhenPublisherCompanyNameHasValue(
+            PublisherModel publisher,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
             mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
-                .Returns(publisher);
+                .ReturnsAsync(publisher);
 
             // Act
-            var result = sut.GetPublisherByCompanyName(publisher.CompanyName);
+            var result = await sut.GetPublisherByCompanyName(publisher.CompanyName);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -39,12 +40,12 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void GetPublisherByCompanyName_ReturnsBadRequestResult_WhenPublisherCompanyNameHasNotValue(
+        public async Task GetPublisherByCompanyName_ReturnsBadRequestResult_WhenPublisherCompanyNameHasNotValue(
             string companyName,
             PublisherController sut)
         {
             // Act
-            var result = sut.GetPublisherByCompanyName(companyName);
+            var result = await sut.GetPublisherByCompanyName(companyName);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -52,18 +53,18 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetPublisherByCompanyName_ReturnsNotFoundResult_WhenPublisherIsNotFound(
-            Publisher publisher,
+        public async Task GetPublisherByCompanyName_ReturnsNotFoundResult_WhenPublisherIsNotFound(
+            PublisherModel publisher,
             string companyName,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
             mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
-                .Returns(publisher);
+                .ReturnsAsync(publisher);
 
             // Act
-            var result = sut.GetPublisherByCompanyName(companyName);
+            var result = await sut.GetPublisherByCompanyName(companyName);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -12,7 +12,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
         [Theory]
         [AutoMoqData]
         public void ProcessPayment_ReturnsViewResult(
-            Order order,
+            OrderModel order,
             VisaPaymentMethodStrategy sut)
         {
             // Act

@@ -26,10 +26,6 @@ namespace OnlineGameStore.BLL.Models.General
 
         public string QuantityPerUnit { get; set; }
         
-        public int UnitsOnOrder { get; set; }
-        
-        public int ReorderLevel { get; set; }
-        
         public string PublisherName { get; set; }
 
         public PublisherModel Publisher { get; set; }

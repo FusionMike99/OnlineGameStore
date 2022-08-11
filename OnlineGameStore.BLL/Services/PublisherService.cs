@@ -32,9 +32,6 @@ namespace OnlineGameStore.BLL.Services
         {
             await _publisherRepository.CreateAsync(publisher);
 
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(CreatePublisher)}.
-                    Creating publisher with id {publisher.Id} successfully", publisher);
-
             return publisher;
         }
 
@@ -46,8 +43,9 @@ namespace OnlineGameStore.BLL.Services
             {
                 var exception = new InvalidOperationException("Publisher has not been found");
 
-                _logger.LogError(exception, $@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
-                    Deleting publisher with id {publisherId} unsuccessfully", publisherId);
+                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
+                    Deleting publisher with id {PublisherId} unsuccessfully", nameof(PublisherService),
+                    nameof(DeletePublisher), publisherId);
 
                 throw exception;
             }
@@ -58,9 +56,6 @@ namespace OnlineGameStore.BLL.Services
             }
             
             await _publisherRepository.DeleteAsync(publisher);
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
-                    Deleting publisher with id {publisherId} successfully", publisher);
         }
 
         public async Task<PublisherModel> EditPublisher(PublisherModel publisher)
@@ -71,9 +66,6 @@ namespace OnlineGameStore.BLL.Services
             }
 
             await _publisherRepository.UpdateAsync(publisher);
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(EditPublisher)}.
-                    Editing publisher with id {publisher.Id} successfully", publisher);
 
             return publisher;
         }

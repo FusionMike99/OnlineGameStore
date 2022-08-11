@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,13 +18,13 @@ namespace OnlineGameStore.Tests.Controllers
         [Theory]
         [AutoMoqData]
         public void GetPlatformTypeById_ReturnsViewResult_WhenPlatformTypeIdHasValue(
-            PlatformType platformType,
+            PlatformTypeModel platformType,
             [Frozen] Mock<IPlatformTypeService> mockGenreService,
             PlatformTypeController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetPlatformTypeById(It.IsAny<int>()))
-                .Returns(platformType);
+            mockGenreService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
             var result = sut.GetPlatformTypeById(platformType.Id);
@@ -32,41 +34,28 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<PlatformTypeViewModel>()
                 .Which.Id.Should().Be(platformType.Id);
 
-            mockGenreService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
+            mockGenreService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetPlatformTypeById_ReturnsBadRequestResult_WhenPlatformTypeIdHasNotValue(
-            int? platformTypeId,
-            PlatformTypeController sut)
-        {
-            // Act
-            var result = sut.GetPlatformTypeById(platformTypeId);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void GetPlatformTypeById_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
-            PlatformType platformType,
-            int platformTypeId,
+        public async Task GetPlatformTypeById_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
+            PlatformTypeModel platformType,
+            Guid platformTypeId,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<int>()))
-                .Returns(platformType);
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var result = sut.GetPlatformTypeById(platformTypeId);
+            var result = await sut.GetPlatformTypeById(platformTypeId);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

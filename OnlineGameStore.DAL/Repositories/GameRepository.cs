@@ -127,7 +127,7 @@ namespace OnlineGameStore.DAL.Repositories
                         {
                             new GameGenreModel
                             {
-                                GenreId = genre.Id.ToString(),
+                                GenreId = genre.Id,
                                 Genre = genreModel
                             }
                         };

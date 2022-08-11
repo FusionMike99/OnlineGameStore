@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -16,89 +15,71 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CheckKeyForUniqueness_ReturnsTrue_WhenGameIsNotNullAndIdIsNotSame(
-            Game game,
-            int id,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckKeyForUniqueness_ReturnsTrue_WhenGameIsNotNullAndIdIsNotSame(
+            GameModel game,
+            Guid id,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(game);
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUnique(id, game.Key);
+            var actualResult = await sut.CheckKeyForUnique(id, game.Key);
 
             // Assert
             actualResult.Should().BeTrue();
 
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void CheckKeyForUniqueness_ReturnsFalse_WhenGameIsNull(
-            Game game,
-            int id,
+        public async Task CheckKeyForUniqueness_ReturnsFalse_WhenGameIsNull(
+            GameModel game,
+            Guid id,
             string gameKey,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(game);
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUnique(id, gameKey);
+            var actualResult = await sut.CheckKeyForUnique(id, gameKey);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void CheckKeyForUniqueness_ReturnsFalse_WhenIdIsSame(
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckKeyForUniqueness_ReturnsFalse_WhenIdIsSame(
+            GameModel game,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(game);
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
             // Act
-            var actualResult = sut.CheckKeyForUnique(game.Id, game.Key);
+            var actualResult = await sut.CheckKeyForUnique(game.Id, game.Key);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
         }
     }
 }

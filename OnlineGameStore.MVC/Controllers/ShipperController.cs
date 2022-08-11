@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Contracts;
@@ -19,9 +20,9 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("shippers")]
-        public IActionResult GetShippers()
+        public async Task<IActionResult> GetShippers()
         {
-            var shippers = _shipperService.GetAllShippersAsync();
+            var shippers = await _shipperService.GetAllShippersAsync();
 
             var shippersViewModel = _mapper.Map<IEnumerable<ShipperViewModel>>(shippers);
 

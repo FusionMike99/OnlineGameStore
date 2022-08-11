@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -18,32 +14,23 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PublisherService_GetSuppliersIdsByNames_ReturnsIds(
-            List<NorthwindSupplier> suppliers,
+        public async Task PublisherService_GetSuppliersIdsByNames_ReturnsIds(
+            List<string> suppliers,
             string[] names,
-            [Frozen] Mock<INorthwindUnitOfWork> mockNorthwindUnitOfWork,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
-            mockNorthwindUnitOfWork
-                .Setup(m => m.Suppliers.GetMany(It.IsAny<Expression<Func<NorthwindSupplier, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindSupplier>, IOrderedQueryable<NorthwindSupplier>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()))
-                .Returns(suppliers);
-
-            var expectedIds = suppliers.Select(x => x.SupplierId);
+            publisherRepositoryMock.Setup(x => x.GetSuppliersIdsByNamesAsync(names))
+                .ReturnsAsync(suppliers);
 
             // Act
-            var actualPublishers = sut.GetSuppliersIdsByNames(names);
+            var actualPublishers = await sut.GetSuppliersIdsByNames(names);
 
             // Assert
-            actualPublishers.Should().BeEquivalentTo(expectedIds);
+            actualPublishers.Should().BeEquivalentTo(suppliers);
 
-            mockNorthwindUnitOfWork.Verify(x => x.Suppliers.GetMany(
-                    It.IsAny<Expression<Func<NorthwindSupplier, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindSupplier>, IOrderedQueryable<NorthwindSupplier>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()),
-                Times.Once);
+            publisherRepositoryMock.Verify(x => x.GetSuppliersIdsByNamesAsync(names), Times.Once);
         }
     }
 }

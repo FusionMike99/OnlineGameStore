@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -17,18 +18,18 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetOrders_ReturnsViewResult(
-            List<Order> orders,
+        public async Task GetOrders_ReturnsViewResult(
+            List<OrderModel> orders,
             FilterOrderViewModel filterOrderViewModel,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
             mockOrderService.Setup(x => x.GetOrders(It.IsAny<FilterOrderModel>()))
-                .Returns(orders);
+                .ReturnsAsync(orders);
 
             // Act
-            var result = sut.GetOrders(filterOrderViewModel);
+            var result = await sut.GetOrders(filterOrderViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -23,44 +26,39 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var editGenreViewModel = new EditGenreViewModel();
 
-            ConfigureEditGenreViewModel(editGenreViewModel);
+            await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
         }
 
         [HttpPost("new")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] EditGenreViewModel genre)
+        public async Task<IActionResult> Create([FromForm] EditGenreViewModel genre)
         {
-            VerifyGenre(genre);
+            await VerifyGenre(genre);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGenreViewModel(genre);
+                await ConfigureEditGenreViewModel(genre);
 
                 return View(genre);
             }
 
-            var mappedGenre = _mapper.Map<Genre>(genre);
+            var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            _genreService.CreateGenre(mappedGenre);
+            await _genreService.CreateGenre(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("update/{genreId}")]
-        public IActionResult Update([FromRoute] string genreId)
+        [HttpGet("update/{genreId:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid genreId)
         {
-            if (string.IsNullOrWhiteSpace(genreId))
-            {
-                return BadRequest();
-            }
-
-            var genre = _genreService.GetGenreById(genreId);
+            var genre = await _genreService.GetGenreById(genreId);
 
             if (genre == null)
             {
@@ -69,45 +67,40 @@ namespace OnlineGameStore.MVC.Controllers
 
             var editGenreViewModel = _mapper.Map<EditGenreViewModel>(genre);
 
-            ConfigureEditGenreViewModel(editGenreViewModel);
+            await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
         }
 
-        [HttpPost("update/{genreId}")]
+        [HttpPost("update/{genreId:guid}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(string genreId, [FromForm] EditGenreViewModel genre)
+        public async Task<IActionResult> Update(Guid genreId, [FromForm] EditGenreViewModel genre)
         {
             if (genreId != genre.Id)
             {
                 return NotFound();
             }
             
-            VerifyGenre(genre);
+            await VerifyGenre(genre);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGenreViewModel(genre);
+                await ConfigureEditGenreViewModel(genre);
 
                 return View(genre);
             }
 
-            var mappedGenre = _mapper.Map<Genre>(genre);
+            var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            _genreService.EditGenre(mappedGenre);
+            await _genreService.EditGenre(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("{genreId}")]
-        public IActionResult GetGenreById([FromRoute] string genreId)
+        [HttpGet("{genreId:guid}")]
+        public async Task<IActionResult> GetGenreById([FromRoute] Guid genreId)
         {
-            if (string.IsNullOrWhiteSpace(genreId))
-            {
-                return BadRequest();
-            }
-
-            var genre = _genreService.GetGenreById(genreId);
+            var genre = await _genreService.GetGenreById(genreId);
 
             if (genre == null)
             {
@@ -120,9 +113,9 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGenres()
+        public async Task<IActionResult> GetGenres()
         {
-            var genres = _genreService.GetAllParentGenres();
+            var genres = await _genreService.GetAllParentGenres();
 
             var genresViewModel = _mapper.Map<IEnumerable<GenreViewModel>>(genres);
 
@@ -131,28 +124,23 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] string id)
+        public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-
-            _genreService.DeleteGenre(id);
+            await _genreService.DeleteGenre(id);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        private void ConfigureEditGenreViewModel(EditGenreViewModel model)
+        private async Task ConfigureEditGenreViewModel(EditGenreViewModel model)
         {
-            model.Genres = new SelectList(_genreService.GetAllWithoutGenre(model.Id),
-                nameof(Genre.Id),
-                nameof(Genre.Name));
+            var genres = await _genreService.GetAllWithoutGenre(model.Id);
+            
+            model.Genres = new SelectList(genres, nameof(Genre.Id), nameof(Genre.Name));
         }
 
-        private void VerifyGenre(EditGenreViewModel genre)
+        private async Task VerifyGenre(EditGenreViewModel genre)
         {
-            var checkResult = _genreService.CheckNameForUnique(genre.Id, genre.Name);
+            var checkResult = await _genreService.CheckNameForUnique(genre.Id, genre.Name);
 
             if (checkResult)
             {

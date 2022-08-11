@@ -1,4 +1,6 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -13,35 +15,22 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
-            int id,
+        public async Task Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
+            Guid id,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.DeleteGenre(It.IsAny<int>()));
+            mockGenreService.Setup(x => x.DeleteGenre(It.IsAny<Guid>()));
 
             // Act
-            var result = sut.Remove(id);
+            var result = await sut.Remove(id);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGenres));
 
-            mockGenreService.Verify(x => x.DeleteGenre(It.IsAny<int>()), Times.Once);
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
-            int? id,
-            GenreController sut)
-        {
-            // Act
-            var result = sut.Remove(id);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
+            mockGenreService.Verify(x => x.DeleteGenre(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

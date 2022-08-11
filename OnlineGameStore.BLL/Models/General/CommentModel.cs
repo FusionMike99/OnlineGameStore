@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Models.General
 {
@@ -10,11 +11,11 @@ namespace OnlineGameStore.BLL.Models.General
         
         public bool IsQuoted { get; set; }
 
-        public string GameId { get; set; }
+        public Guid GameId { get; set; }
 
         public GameModel Game { get; set; }
 
-        public string ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
 
         public CommentModel ReplyTo { get; set; }
 

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -18,35 +14,23 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_GetGenresIdsByNames_ReturnsIds(
-            List<Genre> genres,
+        public async Task GenreService_GetGenresIdsByNames_ReturnsIds(
+            List<string> genres,
             string[] names,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetMany(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Genre>,IOrderedQueryable<Genre>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()))
-                .Returns(genres);
-
-            var expectedIds = genres.Select(x => x.Id);
+            genreRepositoryMock.Setup(x => x.GetGenreIdsByNamesAsync(names))
+                .ReturnsAsync(genres);
 
             // Act
-            var actualGenres = sut.GetGenresIdsByNames(names);
+            var actualGenres = await sut.GetGenresIdsByNames(names);
 
             // Assert
-            actualGenres.Should().BeEquivalentTo(expectedIds);
+            actualGenres.Should().BeEquivalentTo(genres);
 
-            mockUnitOfWork.Verify(x => x.Genres.GetMany(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Genre>,IOrderedQueryable<Genre>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetGenreIdsByNamesAsync(names), Times.Once);
         }
     }
 }

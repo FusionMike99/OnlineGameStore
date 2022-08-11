@@ -25,9 +25,6 @@ namespace OnlineGameStore.BLL.Services
         {
             await _genreRepository.CreateAsync(genre);
 
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(CreateGenre)}.
-                    Creating genre with id {genre.Id} successfully", genre);
-
             return genre;
         }
 
@@ -39,24 +36,18 @@ namespace OnlineGameStore.BLL.Services
             {
                 var exception = new InvalidOperationException("Genre has not been found");
 
-                _logger.LogError(exception, $@"Class: {nameof(GenreService)}; Method: {nameof(DeleteGenre)}.
-                    Deleting genre with id {genreId} unsuccessfully", genreId);
+                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
+                    Deleting genre with id {GenreId} unsuccessfully", nameof(GenreService), nameof(DeleteGenre), genreId);
 
                 throw exception;
             }
 
             await _genreRepository.DeleteAsync(genre);
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(DeleteGenre)}.
-                    Deleting genre with id {genreId} successfully", genre);
         }
 
         public async Task<GenreModel> EditGenre(GenreModel genre)
         {
             await _genreRepository.UpdateAsync(genre);
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(EditGenre)}.
-                    Editing genre with id {genre.Id} successfully", genre);
 
             return genre;
         }
@@ -64,9 +55,6 @@ namespace OnlineGameStore.BLL.Services
         public async Task<IEnumerable<GenreModel>> GetAllGenres()
         {
             var genres = await _genreRepository.GetAllAsync();
-
-            _logger.LogDebug($@"Class: {nameof(GenreService)}; Method: {nameof(GetAllGenres)}.
-                    Receiving genres successfully", genres);
 
             return genres;
         }

@@ -25,9 +25,6 @@ namespace OnlineGameStore.BLL.Services
         {
             await _gameRepository.CreateAsync(game);
 
-            _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(CreateGame)}.
-                    Creating game with id {game.Id} successfully", game);
-
             return game;
         }
 
@@ -39,24 +36,18 @@ namespace OnlineGameStore.BLL.Services
             {
                 var exception = new InvalidOperationException("Game has not been found");
 
-                _logger.LogError(exception, $@"Class: {nameof(GameService)}; Method: {nameof(DeleteGame)}.
-                    Deleting game with id {gameKey} unsuccessfully", gameKey);
+                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
+                    Deleting game with id {GameKey} unsuccessfully", nameof(GameService), nameof(DeleteGame), gameKey);
 
                 throw exception;
             }
 
             await _gameRepository.DeleteAsync(game);
-
-            _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(DeleteGame)}.
-                    Deleting game with id {gameKey} successfully", game);
         }
 
         public async Task<GameModel> EditGame(GameModel game)
         {
             await _gameRepository.UpdateAsync(game);
-
-            _logger.LogDebug($@"Class: {nameof(GameService)}; Method: {nameof(EditGame)}.
-                    Editing game with id {game.Id} successfully", game);
 
             return game;
         }

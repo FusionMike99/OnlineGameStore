@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -19,29 +15,22 @@ namespace OnlineGameStore.Tests.Services.ShipperServiceTests
     {
         [Theory]
         [AutoMoqData]
-        public void ShipperService_GetAllShippers_ReturnsShippers(
-            List<NorthwindShipper> shippers,
-            [Frozen] Mock<INorthwindUnitOfWork> mockNorthwindUnitOfWork,
+        public async Task ShipperService_GetAllShippers_ReturnsShippers(
+            List<ShipperModel> shippers,
+            [Frozen] Mock<IShipperRepository> shipperRepositoryMock,
             ShipperService sut)
         {
             // Arrange
-            mockNorthwindUnitOfWork
-                .Setup(m => m.Shippers.GetMany(It.IsAny<Expression<Func<NorthwindShipper, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindShipper>, IOrderedQueryable<NorthwindShipper>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()))
-                .Returns(shippers);
+            shipperRepositoryMock.Setup(x => x.GetAllAsync())
+                .ReturnsAsync(shippers);
 
             // Act
-            var actualShippers = sut.GetAllShippersAsync();
+            var actualShippers = await sut.GetAllShippersAsync();
 
             // Assert
             actualShippers.Should().BeEquivalentTo(shippers);
 
-            mockNorthwindUnitOfWork.Verify(x => x.Shippers.GetMany(
-                    It.IsAny<Expression<Func<NorthwindShipper, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindShipper>, IOrderedQueryable<NorthwindShipper>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()),
-                Times.Once);
+            shipperRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
         }
     }
 }

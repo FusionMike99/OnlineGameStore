@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Moq;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Components;
@@ -16,17 +15,17 @@ namespace OnlineGameStore.Tests.Components
     {
         [Theory]
         [AutoMoqData]
-        public void Invoke_ReturnsViewViewComponentResult(
+        public async Task Invoke_ReturnsViewViewComponentResult(
             int gamesCount,
             [Frozen] Mock<IGameService> mockGameService,
             TotalGamesViewComponent sut)
         {
             // Arrange
             mockGameService.Setup(x => x.GetGamesNumber(It.IsAny<SortFilterGameModel>()))
-                .Returns(gamesCount);
+                .ReturnsAsync(gamesCount);
 
             // Act
-            var result = sut.Invoke();
+            var result = await sut.InvokeAsync();
 
             // Assert
             result.Should().BeOfType<ViewViewComponentResult>()

@@ -1,14 +1,13 @@
 ﻿using System;
-using Microsoft.AspNetCore.Http;
 using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.MVC.Infrastructure
 {
     public class CustomerIdAccessor : ICustomerIdAccessor
     {
-        public string GetCustomerId()
+        public Guid GetCustomerId()
         {
-            return Constants.DefaultCustomerId;
+            return Guid.Parse(Constants.DefaultCustomerId);
         }
     }
 }

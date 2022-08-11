@@ -7,10 +7,10 @@ namespace OnlineGameStore.MVC.Models
     public class ShipOrderViewModel
     {
         [UIHint("HiddenInput")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [UIHint("HiddenInput")]
-        public string CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         [UIHint("HiddenInput")]
         public DateTime OrderDate { get; set; }

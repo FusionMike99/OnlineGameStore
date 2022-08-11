@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.MVC.Infrastructure;
 
 namespace OnlineGameStore.MVC.Models
 {

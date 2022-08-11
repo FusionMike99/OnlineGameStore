@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
 
@@ -23,7 +23,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             _mapper = mapper;
         }
 
-        public IActionResult PaymentProcess(Order order)
+        public IActionResult PaymentProcess(OrderModel order)
         {
             const string viewName = "IBox";
             const int minutes = 2;

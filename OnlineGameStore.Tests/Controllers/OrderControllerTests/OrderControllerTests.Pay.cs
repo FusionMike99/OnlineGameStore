@@ -1,4 +1,6 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -13,24 +15,23 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Pay_ReturnsRedirectToActionResult(
-            int orderId,
+        public async Task Pay_ReturnsRedirectToActionResult(
+            Guid orderId,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.ChangeStatusToClosed(It.IsAny<int>()));
+            mockOrderService.Setup(x => x.ChangeStatusToClosed(It.IsAny<Guid>()));
 
             // Act
-            var result = sut.Pay(orderId);
+            var result = await sut.Pay(orderId);
 
             // Assert
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should().Be(nameof(GameController.GetGames));
             redirectToActionResult.ControllerName.Should().Be("Game");
 
-            mockOrderService.Verify(x => x.ChangeStatusToClosed(It.IsAny<int>()),
-                Times.Once);
+            mockOrderService.Verify(x => x.ChangeStatusToClosed(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

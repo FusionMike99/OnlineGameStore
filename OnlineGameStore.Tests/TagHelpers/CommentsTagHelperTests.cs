@@ -111,7 +111,7 @@ namespace OnlineGameStore.Tests.TagHelpers
         {
             var comment1 = new CommentViewModel
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid(),
                 Name = "Name1",
                 Body = "Body1",
                 ReplyToId = null,
@@ -122,7 +122,7 @@ namespace OnlineGameStore.Tests.TagHelpers
 
             var comment2 = new CommentViewModel
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid(),
                 Name = "Name2",
                 Body = "Body2",
                 ReplyToId = comment1.Id,
@@ -133,7 +133,7 @@ namespace OnlineGameStore.Tests.TagHelpers
             
             var comment3 = new CommentViewModel
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid(),
                 Name = "Name3",
                 Body = "Body3",
                 ReplyToId = comment1.Id,

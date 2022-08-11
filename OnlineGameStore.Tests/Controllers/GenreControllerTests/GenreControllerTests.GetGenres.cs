@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,17 +17,17 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGenres_ReturnsViewResult(
-            List<Genre> genres,
+        public async Task GetGenres_ReturnsViewResult(
+            List<GenreModel> genres,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {
             // Arrange
             mockGenreService.Setup(x => x.GetAllParentGenres())
-                .Returns(genres);
+                .ReturnsAsync(genres);
 
             // Act
-            var result = sut.GetGenres();
+            var result = await sut.GetGenres();
 
             // Assert
             result.Should().BeOfType<ViewResult>()

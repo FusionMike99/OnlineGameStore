@@ -17,9 +17,9 @@ namespace OnlineGameStore.BLL.Services
         {
             var message = $"User {userName} is banned for a {banPeriod}";
             
-            _logger.LogDebug($@"Class: {nameof(UserService)}; Method: {nameof(BanUser)}.
-                    Banning user with user name {userName} with period {banPeriod} successfully",
-                userName, banPeriod);
+            _logger.LogDebug(@"Service: {Service}; Method: {Method}.
+                    Banning user with user name {UserName} with period {BanPeriod} successfully",
+                nameof(UserService), nameof(BanUser), userName, banPeriod);
 
             return message;
         }

@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Models;
 
@@ -23,7 +23,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             _mapper = mapper;
         }
 
-        public IActionResult PaymentProcess(Order order)
+        public IActionResult PaymentProcess(OrderModel order)
         {
             const int minutes = 3;
             

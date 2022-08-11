@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Infrastructure;
@@ -16,8 +18,8 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetBasket_ReturnsViewResult(
-            Order order,
+        public async Task GetBasket_ReturnsViewResult(
+            OrderModel order,
             [Frozen] Mock<ICustomerIdAccessor> mockCustomerIdAccessor,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
@@ -26,11 +28,11 @@ namespace OnlineGameStore.Tests.Controllers
             mockCustomerIdAccessor.Setup(x => x.GetCustomerId())
                 .Returns(order.CustomerId);
 
-            mockOrderService.Setup(x => x.GetOpenOrInProcessOrderAsync(It.IsAny<string>()))
-                .Returns(order);
+            mockOrderService.Setup(x => x.GetOpenOrInProcessOrderAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(order);
 
             // Act
-            var result = sut.GetBasket();
+            var result = await sut.GetBasket();
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -39,7 +41,7 @@ namespace OnlineGameStore.Tests.Controllers
 
             mockCustomerIdAccessor.Verify(x => x.GetCustomerId(), Times.Once);
 
-            mockOrderService.Verify(x => x.GetOpenOrInProcessOrderAsync(It.IsAny<string>()),
+            mockOrderService.Verify(x => x.GetOpenOrInProcessOrderAsync(It.IsAny<Guid>()),
                 Times.Once);
         }
     }

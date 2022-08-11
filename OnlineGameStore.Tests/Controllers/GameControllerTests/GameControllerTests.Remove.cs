@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -13,7 +14,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
+        public async Task Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
             string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
@@ -22,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             mockGameService.Setup(x => x.DeleteGame(It.IsAny<string>()));
 
             // Act
-            var result = sut.Remove(gameKey);
+            var result = await sut.Remove(gameKey);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()

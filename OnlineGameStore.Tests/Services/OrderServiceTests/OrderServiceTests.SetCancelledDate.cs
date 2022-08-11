@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -15,33 +14,20 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void OrderService_SetCancelledDate(
+        public async Task OrderService_SetCancelledDate(
             DateTime cancelledDate,
-            Order order,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            OrderModel order,
+            [Frozen] Mock<IOrderRepository> orderRepositoryMock,
             OrderService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()));
+            orderRepositoryMock.Setup(x => x.SetCancelledDateAsync(order.Id, cancelledDate));
 
             // Act
-            sut.SetCancelledDate(order.Id, cancelledDate);
+            await sut.SetCancelledDate(order.Id, cancelledDate);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            orderRepositoryMock.Verify(x => x.SetCancelledDateAsync(order.Id, cancelledDate), Times.Once);
         }
     }
 }

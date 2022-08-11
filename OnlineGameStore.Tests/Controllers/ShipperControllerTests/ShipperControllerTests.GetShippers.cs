@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,17 +17,17 @@ namespace OnlineGameStore.Tests.Controllers.ShipperControllerTests
     {
         [Theory]
         [AutoMoqData]
-        public void GetShippers_ReturnsViewResult(
-            List<NorthwindShipper> shippers,
+        public async Task GetShippers_ReturnsViewResult(
+            List<ShipperModel> shippers,
             [Frozen] Mock<IShipperService> mockShipperService,
             ShipperController sut)
         {
             // Arrange
             mockShipperService.Setup(x => x.GetAllShippersAsync())
-                .Returns(shippers);
+                .ReturnsAsync(shippers);
 
             // Act
-            var result = sut.GetShippers();
+            var result = await sut.GetShippers();
 
             // Assert
             result.Should().BeOfType<ViewResult>()

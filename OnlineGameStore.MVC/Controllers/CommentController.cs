@@ -116,9 +116,9 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpPost("removeComment/{id:guid}")]
         [ValidateAntiForgeryToken]
         [ActionName("Remove")]
-        public IActionResult RemoveCommentConfirmed([FromRoute] Guid id, [FromRoute] string gameKey)
+        public async Task<IActionResult> RemoveCommentConfirmed([FromRoute] Guid id, [FromRoute] string gameKey)
         {
-            _commentService.DeleteComment(id);
+            await _commentService.DeleteComment(id);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }

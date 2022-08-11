@@ -1,7 +1,9 @@
-﻿namespace OnlineGameStore.MVC.Infrastructure
+﻿using System;
+
+namespace OnlineGameStore.MVC.Infrastructure
 {
     public interface ICustomerIdAccessor
     {
-        string GetCustomerId();
+        Guid GetCustomerId();
     }
 }

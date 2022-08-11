@@ -20,9 +20,9 @@ namespace OnlineGameStore.MVC.Models
         public bool IsQuoted { get; set; }
         
         [UIHint("HiddenInput")]
-        public string GameId { get; set; }
+        public Guid GameId { get; set; }
 
         [UIHint("HiddenInput")]
-        public string ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
     }
 }

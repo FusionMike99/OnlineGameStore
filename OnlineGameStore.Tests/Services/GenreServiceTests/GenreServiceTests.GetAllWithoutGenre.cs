@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -18,37 +16,25 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_GetAllWithoutGenre_ReturnsGenres(
-            int genreId,
-            IEnumerable<Genre> genres,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GenreService_GetAllWithoutGenre_ReturnsGenres(
+            Guid genreId,
+            List<GenreModel> genres,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetMany(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Genre>,IOrderedQueryable<Genre>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
+            genreRepositoryMock.Setup(x => x.GetWithoutGenre(It.IsAny<Guid>(), It.IsAny<bool>(),
                     It.IsAny<string[]>()))
-                .Returns(genres);
+                .ReturnsAsync(genres);
 
             // Act
-            var actualGenres = sut.GetAllWithoutGenre(genreId);
+            var actualGenres = await sut.GetAllWithoutGenre(genreId);
 
             // Assert
             actualGenres.Should().BeEquivalentTo(genres);
 
-            mockUnitOfWork.Verify(x => x.Genres.GetMany(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Genre>,IOrderedQueryable<Genre>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetWithoutGenre(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
         }
     }
 }

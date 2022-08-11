@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -18,28 +18,28 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGames_ReturnsViewResult(
-            List<Game> games,
+        public async Task GetGames_ReturnsViewResult(
+            List<GameModel> games,
             SortFilterGameViewModel sortFilterGameViewModel,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
             var expectedCount = games.Count;
-            mockGameService.Setup(x => x.GetAllGames(out expectedCount,It.IsAny<SortFilterGameModel>(),
+            mockGameService.Setup(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
                     It.IsAny<PageModel>()))
-                .Returns(games);
+                .ReturnsAsync((games, expectedCount));
 
             // Act
-            var result = sut.GetGames(sortFilterGameViewModel);
+            var result = await sut.GetGames(sortFilterGameViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<GameListViewModel>()
                 .Which.Games.Should().HaveSameCount(games);
 
-            mockGameService.Verify(x => x.GetAllGames(out expectedCount, It.IsAny<SortFilterGameModel>(),
-                It.IsAny<PageModel>()),
+            mockGameService.Verify(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
+                    It.IsAny<PageModel>()),
                 Times.Once);
         }
     }

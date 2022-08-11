@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -31,32 +33,32 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("new")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] EditPublisherViewModel publisher)
+        public async Task<IActionResult> Create([FromForm] EditPublisherViewModel publisher)
         {
-            VerifyPublisher(publisher);
+            await VerifyPublisher(publisher);
 
             if (!ModelState.IsValid)
             {
                 return View(publisher);
             }
 
-            var mappedPublisher = _mapper.Map<Publisher>(publisher);
+            var mappedPublisher = _mapper.Map<PublisherModel>(publisher);
 
-            var createdPublisher = _publisherService.CreatePublisher(mappedPublisher);
+            var createdPublisher = await _publisherService.CreatePublisher(mappedPublisher);
 
             return RedirectToAction(nameof(GetPublisherByCompanyName),
                 new { companyName = createdPublisher.CompanyName });
         }
 
         [HttpGet("update/{companyName}")]
-        public IActionResult Update([FromRoute] string companyName)
+        public async Task<IActionResult> Update([FromRoute] string companyName)
         {
             if (string.IsNullOrWhiteSpace(companyName))
             {
                 return BadRequest();
             }
 
-            var publisher = _publisherService.GetPublisherByCompanyName(companyName);
+            var publisher = await _publisherService.GetPublisherByCompanyName(companyName);
 
             if (publisher == null)
             {
@@ -70,32 +72,33 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("update/{companyName}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update([FromRoute]string companyName, [FromForm] EditPublisherViewModel publisher)
+        public async Task<IActionResult> Update([FromRoute]string companyName,
+            [FromForm] EditPublisherViewModel publisher)
         {
-            VerifyPublisher(publisher);
+            await VerifyPublisher(publisher);
 
             if (!ModelState.IsValid)
             {
                 return View(publisher);
             }
 
-            var mappedPublisher = _mapper.Map<Publisher>(publisher);
+            var mappedPublisher = _mapper.Map<PublisherModel>(publisher);
 
-            var editedPublisher = _publisherService.EditPublisher(companyName, mappedPublisher);
+            var editedPublisher = await _publisherService.EditPublisher(mappedPublisher);
 
             return RedirectToAction(nameof(GetPublisherByCompanyName),
                 new { companyName = editedPublisher.CompanyName });
         }
 
         [HttpGet("{companyName}")]
-        public IActionResult GetPublisherByCompanyName([FromRoute] string companyName)
+        public async Task<IActionResult> GetPublisherByCompanyName([FromRoute] string companyName)
         {
             if (string.IsNullOrWhiteSpace(companyName))
             {
                 return BadRequest();
             }
 
-            var publisher = _publisherService.GetPublisherByCompanyName(companyName);
+            var publisher = await _publisherService.GetPublisherByCompanyName(companyName);
 
             if (publisher == null)
             {
@@ -108,9 +111,9 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPublishers()
+        public async Task<IActionResult> GetPublishers()
         {
-            var publishers = _publisherService.GetAllPublishers();
+            var publishers = await _publisherService.GetAllPublishers();
 
             var publishersViewModel = _mapper.Map<IEnumerable<PublisherViewModel>>(publishers);
 
@@ -119,22 +122,16 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] string id)
+        public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-
-            _publisherService.DeletePublisher(id);
+            await _publisherService.DeletePublisher(id);
 
             return RedirectToAction(nameof(GetPublishers));
         }
 
-        private void VerifyPublisher(EditPublisherViewModel publisher)
+        private async Task VerifyPublisher(EditPublisherViewModel publisher)
         {
-            var checkResult = _publisherService.CheckCompanyNameForUnique(publisher.Id, publisher.CompanyName);
-
+            var checkResult = await _publisherService.CheckCompanyNameForUnique(publisher.Id, publisher.CompanyName);
             if (checkResult)
             {
                 ModelState.AddModelError(nameof(PublisherViewModel.CompanyName),

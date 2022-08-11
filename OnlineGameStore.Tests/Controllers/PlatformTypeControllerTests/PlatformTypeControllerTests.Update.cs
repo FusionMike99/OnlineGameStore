@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -15,70 +17,57 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Update_Get_ReturnsViewResult(
-            PlatformType platformType,
+        public async Task Update_Get_ReturnsViewResult(
+            PlatformTypeModel platformType,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<int>()))
-                .Returns(platformType);
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var result = sut.Update(platformType.Id);
+            var result = await sut.Update(platformType.Id);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditPlatformTypeViewModel>()
                 .Which.Id.Should().Be(platformType.Id);
             
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestResult_WhenPlatformTypeIdHasNotValue(
-            int? platformTypeId,
-            PlatformTypeController sut)
-        {
-            // Act
-            var result = sut.Update(platformTypeId);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
-            PlatformType platformType,
-            int? platformTypeId,
+        public async Task Update_Get_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
+            PlatformTypeModel platformType,
+            Guid platformTypeId,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<int>()))
-                .Returns(platformType);
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var result = sut.Update(platformTypeId);
+            var result = await sut.Update(platformTypeId);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<int>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsRedirectToActionResult_WhenPlatformTypeIsValid(
-            PlatformType platformType,
+        public async Task Update_Post_ReturnsRedirectToActionResult_WhenPlatformTypeIsValid(
+            PlatformTypeModel platformType,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.EditPlatformType(It.IsAny<PlatformType>()))
-                .Returns(platformType);
+            mockPlatformTypeService.Setup(x => x.EditPlatformType(It.IsAny<PlatformTypeModel>()))
+                .ReturnsAsync(platformType);
 
             var editPlatformTypeViewModel = new EditPlatformTypeViewModel
             {
@@ -87,26 +76,24 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editPlatformTypeViewModel.Id,editPlatformTypeViewModel);
+            var result = await sut.Update(editPlatformTypeViewModel.Id,editPlatformTypeViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetPlatformTypes));
 
-            mockPlatformTypeService.Verify(x => x.EditPlatformType(It.IsAny<PlatformType>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.EditPlatformType(It.IsAny<PlatformTypeModel>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
+        public async Task Update_Post_ReturnsNotFoundResult_WhenPlatformTypeIsNotFound(
+            Guid id,
             EditPlatformTypeViewModel editPlatformTypeViewModel,
             PlatformTypeController sut)
         {
-            // Arrange
-            var id = editPlatformTypeViewModel.Id - 1;
-
             // Act
-            var result = sut.Update(id, editPlatformTypeViewModel);
+            var result = await sut.Update(id, editPlatformTypeViewModel);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
@@ -114,7 +101,7 @@ namespace OnlineGameStore.Tests.Controllers
         
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsViewResult_WhenPlatformTypeIsInvalid(
+        public async Task Update_Post_ReturnsViewResult_WhenPlatformTypeIsInvalid(
             EditPlatformTypeViewModel editPlatformTypeViewModel,
             PlatformTypeController sut)
         {
@@ -122,7 +109,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Type", "Required");
 
             // Act
-            var result = sut.Update(editPlatformTypeViewModel.Id, editPlatformTypeViewModel);
+            var result = await sut.Update(editPlatformTypeViewModel.Id, editPlatformTypeViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

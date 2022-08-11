@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.MVC.Models
@@ -6,7 +7,7 @@ namespace OnlineGameStore.MVC.Models
     public class PublisherViewModel
     {
         [UIHint("HiddenInput")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "Company name")]
         public string CompanyName { get; set; }

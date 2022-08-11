@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.MVC.Models;
 

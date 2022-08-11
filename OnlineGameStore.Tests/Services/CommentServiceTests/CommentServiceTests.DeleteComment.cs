@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -16,58 +15,49 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CommentService_DeleteComment_DeletesComment(
-            Comment comment,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CommentService_DeleteComment_DeletesComment(
+            CommentModel comment,
+            [Frozen] Mock<ICommentRepository> commentRepositoryMock,
             CommentService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Comments.GetSingle(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(comment);
+            commentRepositoryMock
+                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+                .ReturnsAsync(comment);
 
-            mockUnitOfWork.Setup(x => x.Comments.Delete(It.IsAny<Comment>()));
+            commentRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<CommentModel>()));
 
             // Act
-            sut.DeleteComment(comment.Id);
+            await sut.DeleteComment(comment.Id);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.Comments.GetSingle(It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>()),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Comments.Delete(It.Is<Comment>(c => c.Id == comment.Id)),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.DeleteAsync(
+                    It.Is<CommentModel>(c => c.Id == comment.Id)), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void CommentService_DeleteComment_ThrowsInvalidOperationExceptionWithNullEntity(
-            Comment comment,
-            int commentId,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CommentService_DeleteComment_ThrowsInvalidOperationExceptionWithNullEntity(
+            CommentModel comment,
+            Guid commentId,
+            [Frozen] Mock<ICommentRepository> commentRepositoryMock,
             CommentService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Comments.GetSingle(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(comment);
+            commentRepositoryMock
+                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+                .ReturnsAsync(comment);
 
             // Act
-            Action actual = () => sut.DeleteComment(commentId);
+            Func<Task> actual = async () => await sut.DeleteComment(commentId);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.Comments.GetSingle(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,17 +17,17 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetPlatformTypes_ReturnsViewResult(
-            IEnumerable<PlatformType> platformTypes,
+        public async Task GetPlatformTypes_ReturnsViewResult(
+            List<PlatformTypeModel> platformTypes,
             [Frozen] Mock<IPlatformTypeService> mockPlatformTypeService,
             PlatformTypeController sut)
         {
             // Arrange
             mockPlatformTypeService.Setup(x => x.GetAllPlatformTypes())
-                .Returns(platformTypes);
+                .ReturnsAsync(platformTypes);
 
             // Act
-            var result = sut.GetPlatformTypes();
+            var result = await sut.GetPlatformTypes();
 
             // Assert
             result.Should().BeOfType<ViewResult>()

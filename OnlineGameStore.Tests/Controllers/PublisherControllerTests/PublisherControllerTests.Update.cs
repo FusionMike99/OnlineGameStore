@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -16,17 +17,17 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Update_Get_ReturnsViewResult(
-            Publisher publisher,
+        public async Task Update_Get_ReturnsViewResult(
+            PublisherModel publisher,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
             mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
-                .Returns(publisher);
+                .ReturnsAsync(publisher);
 
             // Act
-            var result = sut.Update(publisher.CompanyName);
+            var result = await sut.Update(publisher.CompanyName);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -40,12 +41,12 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestResult_WhenPublisherCompanyNameHasNotValue(
+        public async Task Update_Get_ReturnsBadRequestResult_WhenPublisherCompanyNameHasNotValue(
             string companyName,
             PublisherController sut)
         {
             // Act
-            var result = sut.Update(companyName);
+            var result = await sut.Update(companyName);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -53,18 +54,18 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundResult_WhenPublisherIsNotFound(
-            Publisher publisher,
+        public async Task Update_Get_ReturnsNotFoundResult_WhenPublisherIsNotFound(
+            PublisherModel publisher,
             string companyName,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
             mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
-                .Returns(publisher);
+                .ReturnsAsync(publisher);
 
             // Act
-            var result = sut.Update(companyName);
+            var result = await sut.Update(companyName);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
@@ -74,15 +75,14 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsRedirectToActionResult_WhenPublisherIsValid(
-            Publisher publisher,
+        public async Task Update_Post_ReturnsRedirectToActionResult_WhenPublisherIsValid(
+            PublisherModel publisher,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.EditPublisher(It.IsAny<string>(),
-                    It.IsAny<Publisher>()))
-                .Returns(publisher);
+            mockPublisherService.Setup(x => x.EditPublisher(It.IsAny<PublisherModel>()))
+                .ReturnsAsync(publisher);
 
             var editPublisherViewModel = new EditPublisherViewModel
             {
@@ -93,7 +93,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
+            var result = await sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
 
             // Assert
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -103,13 +103,12 @@ namespace OnlineGameStore.Tests.Controllers
             redirectToActionResult.RouteValues.Should()
                 .Contain(new KeyValuePair<string, object>("companyName", editPublisherViewModel.CompanyName));
 
-            mockPublisherService.Verify(x => x.EditPublisher(It.IsAny<string>(),
-                It.IsAny<Publisher>()), Times.Once);
+            mockPublisherService.Verify(x => x.EditPublisher(It.IsAny<PublisherModel>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsViewResult_WhenGenreIsInvalid(
+        public async Task Update_Post_ReturnsViewResult_WhenGenreIsInvalid(
             EditPublisherViewModel editPublisherViewModel,
             PublisherController sut)
         {
@@ -117,7 +116,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
+            var result = await sut.Update(editPublisherViewModel.CompanyName, editPublisherViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

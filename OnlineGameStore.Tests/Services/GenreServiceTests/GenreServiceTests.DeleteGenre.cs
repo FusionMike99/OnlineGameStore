@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -17,72 +15,51 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_DeleteGenre_DeletesGenre(
-            Genre genre,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GenreService_DeleteGenre_DeletesGenre(
+            GenreModel genre,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
                     It.IsAny<string[]>()))
-                .Returns(genre);
+                .ReturnsAsync(genre);
 
-            mockUnitOfWork.Setup(x => x.Genres.Delete(It.IsAny<Genre>()));
-
-            mockUnitOfWork.Setup(x => x.Genres.Update(It.IsAny<Genre>(),
-                It.IsAny<Expression<Func<Genre,bool>>>()));
+            genreRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GenreModel>()));
 
             // Act
-            sut.DeleteGenre(genre.Id);
+            await sut.DeleteGenre(genre.Id);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
+            
+            genreRepositoryMock.Verify(x => x.DeleteAsync(
+                    It.Is<GenreModel>(g => g.Name == genre.Name && g.Id == genre.Id)),
                 Times.Once);
-            
-            mockUnitOfWork.Verify(x => x.Genres.Delete(
-                    It.Is<Genre>(g => g.Name == genre.Name && g.Id == genre.Id)),
-                Times.Once);
-            
-            mockUnitOfWork.Verify(x => x.Genres.Update(It.IsAny<Genre>(),
-                    It.IsAny<Expression<Func<Genre,bool>>>()),
-                Times.Exactly(genre.SubGenres.Count));
-            
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GenreService_DeleteGenre_ThrowsInvalidOperationExceptionWithNullEntity(
-            Genre genre,
-            int genreId,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GenreService_DeleteGenre_ThrowsInvalidOperationExceptionWithNullEntity(
+            GenreModel genre,
+            Guid genreId,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
                     It.IsAny<string[]>()))
-                .Returns(genre);
+                .ReturnsAsync(genre);
 
             // Act
-            Action actual = () => sut.DeleteGenre(genreId);
+            Func<Task> actual = async () => await sut.DeleteGenre(genreId);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
         }
     }
 }

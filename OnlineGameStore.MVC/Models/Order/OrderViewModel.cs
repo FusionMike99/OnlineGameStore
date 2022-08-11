@@ -8,10 +8,10 @@ namespace OnlineGameStore.MVC.Models
 {
     public class OrderViewModel
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "Customer")]
-        public string CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         [Display(Name = "Order Date")]
         [DataType(DataType.Date)]

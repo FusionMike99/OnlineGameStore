@@ -15,7 +15,7 @@ namespace OnlineGameStore.MVC.Models
         
         public bool IsQuoted { get; set; }
 
-        public string ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
 
         public CommentViewModel ReplyTo { get; set; }
 

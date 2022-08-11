@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -16,30 +15,24 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_GetGenreById_ReturnsGenre(
-            Genre genre,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GenreService_GetGenreById_ReturnsGenre(
+            GenreModel genre,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
                     It.IsAny<string[]>()))
-                .Returns(genre);
+                .ReturnsAsync(genre);
 
             // Act
-            var actualGenre = sut.GetGenreById(genre.Id);
+            var actualGenre = await sut.GetGenreById(genre.Id);
 
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);
 
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
+                It.IsAny<string[]>()), Times.Once);
         }
     }
 }

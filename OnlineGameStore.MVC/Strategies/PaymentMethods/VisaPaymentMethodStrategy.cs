@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods
@@ -18,7 +18,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             _orderService = orderService;
         }
 
-        public IActionResult PaymentProcess(Order order)
+        public IActionResult PaymentProcess(OrderModel order)
         {
             const string viewName = "Visa";
             const string orderId = "OrderId";

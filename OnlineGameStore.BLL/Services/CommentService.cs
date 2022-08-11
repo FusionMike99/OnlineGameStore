@@ -28,14 +28,11 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<CommentModel> LeaveCommentToGame(string gameKey, CommentModel comment)
         {
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKey(gameKey);
 
-            comment.GameId = game.Id.ToString();
+            comment.GameId = game.Id;
 
             await _commentRepository.CreateAsync(comment);
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(LeaveCommentToGame)}.
-                    Leaving comment with id {comment.Id} successfully", comment);
 
             return comment;
         }
@@ -53,7 +50,7 @@ namespace OnlineGameStore.BLL.Services
             var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey,
                 includeProperties: $"{nameof(Comment.Replies)}");
 
-            var parentComments = comments.Where(c => string.IsNullOrWhiteSpace(c.ReplyToId)).ToList();
+            var parentComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 
             return parentComments;
         }
@@ -61,9 +58,6 @@ namespace OnlineGameStore.BLL.Services
         public async Task<CommentModel> EditComment(CommentModel comment)
         {
             await _commentRepository.UpdateAsync(comment);
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(EditComment)}.
-                    Editing comment with id {comment.Id} successfully", comment);
 
             return comment;
         }
@@ -76,16 +70,14 @@ namespace OnlineGameStore.BLL.Services
             {
                 var exception = new InvalidOperationException("Comment has not been found");
 
-                _logger.LogError(exception, $@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
-                    Deleting comment with id {commentId} unsuccessfully", commentId);
+                _logger.LogError(exception, @"Service: {Service}; Method: {Method}. 
+                    Deleting comment with id {Id} unsuccessfully", nameof(CommentService), nameof(DeleteComment),
+                    commentId);
 
                 throw exception;
             }
 
             await _commentRepository.DeleteAsync(comment);
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
-                    Deleting comment with id {commentId} successfully", comment);
         }
     }
 }

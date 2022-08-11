@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.Tests.Helpers;
@@ -14,8 +16,8 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void AddItem_ReturnsRedirectToActionResult_WhenGameIsFound(
-            Game game,
+        public async Task AddItem_ReturnsRedirectToActionResult_WhenGameIsFound(
+            GameModel game,
             [Frozen] Mock<IGameService> mockGameService,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
@@ -23,14 +25,13 @@ namespace OnlineGameStore.Tests.Controllers
             // Arrange
             mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
-            mockOrderService.Setup(x => x.AddToOpenOrder(It.IsAny<string>(),
-                It.IsAny<Game>(),
-                It.IsAny<short>()));
+            mockOrderService.Setup(x => x.AddToOpenOrder(It.IsAny<Guid>(),
+                It.IsAny<GameModel>(), It.IsAny<short>()));
 
             // Act
-            var result = sut.BuyProduct(game.Key);
+            var result = await sut.BuyProduct(game.Key);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
@@ -40,27 +41,25 @@ namespace OnlineGameStore.Tests.Controllers
                 It.IsAny<bool>()),
                 Times.Once);
 
-            mockOrderService.Verify(x => x.AddToOpenOrder(It.IsAny<string>(),
-                    It.IsAny<Game>(),
-                    It.IsAny<short>()),
+            mockOrderService.Verify(x => x.AddToOpenOrder(It.IsAny<Guid>(),
+                    It.IsAny<GameModel>(), It.IsAny<short>()),
                 Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void AddItem_ReturnsNotFoundResult_WhenGameIsNotFound(
-            Game game,
+        public async Task AddItem_ReturnsNotFoundResult_WhenGameIsNotFound(
+            GameModel game,
             string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             OrderController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
-            It.IsAny<bool>()))
-                .Returns(game);
+            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
             // Act
-            var result = sut.BuyProduct(gameKey);
+            var result = await sut.BuyProduct(gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();

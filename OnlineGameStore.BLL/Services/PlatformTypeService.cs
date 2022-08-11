@@ -38,9 +38,6 @@ namespace OnlineGameStore.BLL.Services
         {
            await _platformTypeRepository.CreateAsync(platformType);
 
-            _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(CreatePlatformType)}.
-                    Creating paltform type with id {platformType.Id} successfully", platformType);
-
             return platformType;
         }
 
@@ -53,24 +50,19 @@ namespace OnlineGameStore.BLL.Services
                 var exception = new InvalidOperationException("Platform type has not been found");
 
                 _logger.LogError(exception,
-                    $@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
-                    Deleting platform type with id {platformTypeId} unsuccessfully", platformTypeId);
+                    @"Service: {PlatformType}; Method: {Method}.
+                    Deleting platform type with id {PlatformTypeId} unsuccessfully", nameof(PlatformTypeService),
+                    nameof(DeletePlatformType), platformTypeId);
 
                 throw exception;
             }
 
             await _platformTypeRepository.DeleteAsync(platformType);
-
-            _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(DeletePlatformType)}.
-                    Deleting platform type with id {platformTypeId} successfully", platformType);
         }
 
         public async Task<PlatformTypeModel> EditPlatformType(PlatformTypeModel platformType)
         {
             await _platformTypeRepository.UpdateAsync(platformType);
-
-            _logger.LogDebug($@"Class: {nameof(PlatformTypeService)}; Method: {nameof(EditPlatformType)}.
-                    Editing platform type with id {platformType.Id} successfully", platformType);
 
             return platformType;
         }

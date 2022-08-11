@@ -1,4 +1,6 @@
-﻿namespace OnlineGameStore.BLL.Models.General
+﻿using System;
+
+namespace OnlineGameStore.BLL.Models.General
 {
     public class OrderDetailModel : BaseModel
     {
@@ -6,7 +8,7 @@
 
         public GameModel Product { get; set; }
 
-        public string OrderId { get; set; }
+        public Guid OrderId { get; set; }
 
         public OrderModel Order { get; set; }
 

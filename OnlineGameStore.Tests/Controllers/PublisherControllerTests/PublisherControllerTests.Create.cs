@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Contracts;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
@@ -29,14 +30,14 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsRedirectToActionResult_WhenPublisherIsValid(
-            Publisher publisher,
+        public async Task Create_Post_ReturnsRedirectToActionResult_WhenPublisherIsValid(
+            PublisherModel publisher,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.CreatePublisher(It.IsAny<Publisher>()))
-                .Returns(publisher);
+            mockPublisherService.Setup(x => x.CreatePublisher(It.IsAny<PublisherModel>()))
+                .ReturnsAsync(publisher);
 
             var editPublisherViewModel = new EditPublisherViewModel
             {
@@ -47,7 +48,7 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Create(editPublisherViewModel);
+            var result = await sut.Create(editPublisherViewModel);
 
             // Assert
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -57,12 +58,12 @@ namespace OnlineGameStore.Tests.Controllers
             redirectToActionResult.RouteValues.Should()
                 .Contain(new KeyValuePair<string, object>("companyName", editPublisherViewModel.CompanyName));
 
-            mockPublisherService.Verify(x => x.CreatePublisher(It.IsAny<Publisher>()), Times.Once);
+            mockPublisherService.Verify(x => x.CreatePublisher(It.IsAny<PublisherModel>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsViewResult_WhenGenreIsInvalid(
+        public async Task Create_Post_ReturnsViewResult_WhenGenreIsInvalid(
             EditPublisherViewModel editPublisherViewModel,
             PublisherController sut)
         {
@@ -70,7 +71,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("CompanyName", "Required");
 
             // Act
-            var result = sut.Create(editPublisherViewModel);
+            var result = await sut.Create(editPublisherViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

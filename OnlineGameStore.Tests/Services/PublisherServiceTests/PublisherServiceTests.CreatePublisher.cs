@@ -1,9 +1,9 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -14,23 +14,21 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PublisherService_CreatePublisher_ReturnsPublisher(
-            Publisher publisher,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PublisherService_CreatePublisher_ReturnsPublisher(
+            PublisherModel publisher,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Publishers.Create(It.IsAny<Publisher>()))
-                .Returns(publisher);
+            publisherRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<PublisherModel>()));
 
             // Act
-            var actualGame = sut.CreatePublisher(publisher);
+            var actualGame = await sut.CreatePublisher(publisher);
 
             // Assert
             actualGame.Should().BeEquivalentTo(publisher);
 
-            mockUnitOfWork.Verify(x => x.Publishers.Create(It.IsAny<Publisher>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            publisherRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<PublisherModel>()), Times.Once);
         }
     }
 }
