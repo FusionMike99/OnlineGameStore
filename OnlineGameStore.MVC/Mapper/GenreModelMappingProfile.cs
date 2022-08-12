@@ -4,9 +4,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class GenreMappingProfile : Profile
+    public class GenreModelMappingProfile : Profile
     {
-        public GenreMappingProfile()
+        public GenreModelMappingProfile()
         {
             CreateMap<GenreModel, EditGenreViewModel>()
                 .ForMember(dest => dest.SelectedParentGenre, source => source.MapFrom(genre => genre.ParentId))

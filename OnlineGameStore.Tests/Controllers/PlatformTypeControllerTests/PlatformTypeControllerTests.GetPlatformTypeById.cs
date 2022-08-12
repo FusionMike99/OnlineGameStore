@@ -17,7 +17,7 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetPlatformTypeById_ReturnsViewResult_WhenPlatformTypeIdHasValue(
+        public async Task GetPlatformTypeById_ReturnsViewResult_WhenPlatformTypeIdHasValue(
             PlatformTypeModel platformType,
             [Frozen] Mock<IPlatformTypeService> mockGenreService,
             PlatformTypeController sut)
@@ -27,7 +27,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .ReturnsAsync(platformType);
 
             // Act
-            var result = sut.GetPlatformTypeById(platformType.Id);
+            var result = await sut.GetPlatformTypeById(platformType.Id);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

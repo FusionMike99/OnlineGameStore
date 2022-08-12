@@ -30,7 +30,5 @@ namespace OnlineGameStore.BLL.Entities
         public string Fax { get; set; }
 
         public ICollection<Game> Games { get; set; }
-        
-        public DatabaseEntity DatabaseEntity { get; set; }
     }
 }

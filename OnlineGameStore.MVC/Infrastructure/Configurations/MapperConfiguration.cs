@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OnlineGameStore.BLL.MappingProfiles;
 using OnlineGameStore.MVC.Mapper;
 
 namespace OnlineGameStore.MVC.Infrastructure.Configurations
@@ -9,13 +10,23 @@ namespace OnlineGameStore.MVC.Infrastructure.Configurations
         {
             var profiles = new[]
             {
-                typeof(CommentMappingProfile),
-                typeof(GameMappingProfile),
-                typeof(GenreMappingProfile),
-                typeof(PlatformTypeMappingProfile),
-                typeof(PublisherMappingProfile),
-                typeof(OrderMappingProfile),
-                typeof(ShipperMappingProfile)
+                typeof(CommentModelMappingProfile),
+                typeof(GameModelMappingProfile),
+                typeof(GenreModelMappingProfile),
+                typeof(PlatformTypeModelMappingProfile),
+                typeof(PublisherModelMappingProfile),
+                typeof(OrderModelMappingProfile),
+                typeof(ShipperModelMappingProfile)
+            };
+            
+            expression.AddMaps(profiles);
+        }
+
+        public static void AddEntitiesProfiles(this IMapperConfigurationExpression expression)
+        {
+            var profiles = new[]
+            {
+                typeof(EntitiesMappingProfiles)
             };
             
             expression.AddMaps(profiles);

@@ -4,9 +4,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class ShipperMappingProfile : Profile
+    public class ShipperModelMappingProfile : Profile
     {
-        public ShipperMappingProfile()
+        public ShipperModelMappingProfile()
         {
             CreateMap<ShipperModel, ShipperViewModel>();
         }

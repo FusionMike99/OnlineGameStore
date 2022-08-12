@@ -37,8 +37,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(g => g.QuantityPerUnit)
                 .HasDefaultValue(string.Empty);
-
-            builder.Ignore(g => g.DatabaseEntity);
             
             builder.Ignore(g => g.Publisher);
             

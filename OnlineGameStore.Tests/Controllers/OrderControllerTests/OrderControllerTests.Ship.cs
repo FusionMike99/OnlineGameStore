@@ -39,7 +39,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Ship_Get_ReturnsNotFoundResult_WhenOrderIsNotFound(
+        public async Task Ship_Get_ReturnsNotFoundResult_WhenOrderIsNotFound(
             OrderModel order,
             Guid orderId,
             [Frozen] Mock<IOrderService> mockOrderService,
@@ -50,7 +50,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .ReturnsAsync(order);
 
             // Act
-            var result = sut.Ship(orderId);
+            var result = await sut.Ship(orderId);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();

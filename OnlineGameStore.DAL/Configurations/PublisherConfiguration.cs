@@ -54,8 +54,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(p => p.Fax)
                 .HasDefaultValue(string.Empty);
-
-            builder.Ignore(p => p.DatabaseEntity);
             
             builder.Ignore(p => p.Games);
 

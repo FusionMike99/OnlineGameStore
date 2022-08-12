@@ -6,9 +6,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class OrderMappingProfile : Profile
+    public class OrderModelMappingProfile : Profile
     {
-        public OrderMappingProfile()
+        public OrderModelMappingProfile()
         {
             CreateMap<OrderModel, OrderViewModel>()
                 .ForMember(dest => dest.Total, source =>

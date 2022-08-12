@@ -4,9 +4,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class PlatformTypeMappingProfile : Profile
+    public class PlatformTypeModelMappingProfile : Profile
     {
-        public PlatformTypeMappingProfile()
+        public PlatformTypeModelMappingProfile()
         {
             CreateMap<PlatformTypeModel, EditPlatformTypeViewModel>()
                 .ReverseMap();

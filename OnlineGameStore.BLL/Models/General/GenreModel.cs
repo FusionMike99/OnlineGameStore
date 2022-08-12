@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Models.General
 {
@@ -8,7 +9,7 @@ namespace OnlineGameStore.BLL.Models.General
         
         public string Description { get; set; }
 
-        public string ParentId { get; set; }
+        public Guid? ParentId { get; set; }
 
         public GenreModel Parent { get; set; }
 

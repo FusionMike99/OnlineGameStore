@@ -5,9 +5,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class CommentMappingProfile : Profile
+    public class CommentModelMappingProfile : Profile
     {
-        public CommentMappingProfile()
+        public CommentModelMappingProfile()
         {
             CreateMap<CommentModel, EditCommentViewModel>()
                 .ReverseMap();

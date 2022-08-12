@@ -34,12 +34,12 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
+        public async Task Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
             string gameKey,
             GameController sut)
         {
             // Act
-            var result = sut.Remove(gameKey);
+            var result = await sut.Remove(gameKey);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();

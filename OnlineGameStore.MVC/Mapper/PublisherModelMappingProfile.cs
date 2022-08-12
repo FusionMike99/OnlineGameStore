@@ -4,9 +4,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class PublisherMappingProfile : Profile
+    public class PublisherModelMappingProfile : Profile
     {
-        public PublisherMappingProfile()
+        public PublisherModelMappingProfile()
         {
             CreateMap<PublisherModel, EditPublisherViewModel>()
                 .ReverseMap();

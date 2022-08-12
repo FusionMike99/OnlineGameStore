@@ -20,7 +20,7 @@ namespace OnlineGameStore.MVC.Models
         public string Description { get; set; }
 
         [Display(Name = "Parent genre")]
-        public string SelectedParentGenre { get; set; }
+        public Guid? SelectedParentGenre { get; set; }
 
         public SelectList Genres { get; set; }
     }

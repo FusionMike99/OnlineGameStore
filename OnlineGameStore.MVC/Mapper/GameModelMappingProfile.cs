@@ -6,9 +6,9 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper
 {
-    public class GameMappingProfile : Profile
+    public class GameModelMappingProfile : Profile
     {
-        public GameMappingProfile()
+        public GameModelMappingProfile()
         {
             CreateMap<GameModel, EditGameViewModel>()
                 .ForMember(dest => dest.SelectedGenres,
@@ -22,13 +22,13 @@ namespace OnlineGameStore.MVC.Mapper
 
             CreateMap<EditGameViewModel, GameModel>()
                 .ForMember(dest => dest.GameGenres, source => source.MapFrom(game =>
-                    game.SelectedGenres.Select(selected => new GameGenre
+                    game.SelectedGenres.Select(selected => new GameGenreModel
                     {
                         GameId = game.Id,
                         GenreId = selected
                     })))
                 .ForMember(dest => dest.GamePlatformTypes, source => source.MapFrom(game =>
-                    game.SelectedPlatformTypes.Select(selected => new GamePlatformType
+                    game.SelectedPlatformTypes.Select(selected => new GamePlatformTypeModel
                     {
                         GameId = game.Id,
                         PlatformId = selected

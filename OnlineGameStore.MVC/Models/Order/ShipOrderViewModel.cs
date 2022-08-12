@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {
@@ -59,6 +60,6 @@ namespace OnlineGameStore.MVC.Models
         public DateTime? ShippedDate { get; } = DateTime.UtcNow.AddDays(3);
         
         [UIHint("HiddenInput")]
-        public int OrderStatusId { get; set; }
+        public OrderState OrderState { get; set; }
     }
 }

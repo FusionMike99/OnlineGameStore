@@ -45,7 +45,11 @@ namespace OnlineGameStore.MVC
 
             services.AddHttpContextAccessor();
 
-            services.AddAutoMapper(configuration => configuration.AddModelsProfiles());
+            services.AddAutoMapper(configuration =>
+            {
+                configuration.AddEntitiesProfiles();
+                configuration.AddModelsProfiles();
+            });
 
             services.AddPaymentMethods();
 
@@ -72,15 +76,6 @@ namespace OnlineGameStore.MVC
             
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
-        }
-
-        private static void ConfigureCancellingOrderTask(IOrderService orderService)
-        {
-            RecurringJob.AddOrUpdate("cancellingOrders",
-                () => orderService.CancelOrdersWithTimeout(),
-                Cron.Minutely);
-
-            BackgroundJob.Enqueue(() => Console.WriteLine());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOrderService orderService)
@@ -130,6 +125,15 @@ namespace OnlineGameStore.MVC
                 endpoints.MapControllers();
                 endpoints.MapHangfireDashboard();
             });
+        }
+
+        private static void ConfigureCancellingOrderTask(IOrderService orderService)
+        {
+            RecurringJob.AddOrUpdate("cancellingOrders",
+                () => orderService.CancelOrdersWithTimeout(),
+                Cron.Minutely);
+
+            BackgroundJob.Enqueue(() => Console.WriteLine());
         }
     }
 }

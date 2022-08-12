@@ -37,7 +37,5 @@ namespace OnlineGameStore.BLL.Entities
         public ICollection<GamePlatformType> GamePlatformTypes { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
-
-        public DatabaseEntity DatabaseEntity { get; set; }
     }
 }

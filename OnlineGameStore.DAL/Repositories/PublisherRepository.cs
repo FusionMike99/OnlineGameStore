@@ -77,24 +77,8 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false)
         {
-            PublisherModel publisherModel = null;
-            
             var publisher = await _publisherRepository.GetById(id, includeDeleted);
-
-            if (publisher != null)
-            {
-                publisherModel = _mapper.Map<PublisherModel>(publisher);
-            }
-            else
-            {
-                var objectId = id.AsObjectId();
-                var supplier = await _supplierRepository.GetById(objectId);
-
-                if (supplier != null)
-                {
-                    publisherModel = _mapper.Map<PublisherModel>(supplier);
-                }
-            }
+            var publisherModel = _mapper.Map<PublisherModel>(publisher);
 
             return publisherModel;
         }
