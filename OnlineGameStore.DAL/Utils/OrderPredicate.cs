@@ -15,7 +15,6 @@ namespace OnlineGameStore.DAL.Utils
             }
             
             Expression<Func<TEntity, bool>> filterExpression = null;
-            
             var orderParameter = Expression.Parameter(typeof(TEntity));
             var orderDateProperty = Expression.Property(orderParameter,
                 typeof(TEntity).GetProperty("OrderDate")!);
@@ -23,7 +22,6 @@ namespace OnlineGameStore.DAL.Utils
             if (model.MinDate.HasValue)
             {
                 model.MinDate = DateTime.SpecifyKind(model.MinDate.Value, DateTimeKind.Utc);
-                
                 var minDateConstant = Expression.Constant(model.MinDate.Value.Date, model.MinDate.GetType());
                 var comparison = Expression.GreaterThanOrEqual(orderDateProperty, minDateConstant);
                 filterExpression = Expression.Lambda<Func<TEntity, bool>>(comparison, orderParameter);
@@ -32,11 +30,9 @@ namespace OnlineGameStore.DAL.Utils
             if (model.MaxDate.HasValue)
             {
                 model.MaxDate = DateTime.SpecifyKind(model.MaxDate.Value, DateTimeKind.Utc);
-                
                 var maxDateConstant = Expression.Constant(model.MaxDate.Value.Date, model.MaxDate.GetType());
                 var comparison = Expression.LessThanOrEqual(orderDateProperty, maxDateConstant);
                 var otherExpression = Expression.Lambda<Func<TEntity, bool>>(comparison, orderParameter);
-                
                 filterExpression = filterExpression != null 
                     ? filterExpression.AndAlso(otherExpression)
                     : otherExpression;

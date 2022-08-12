@@ -27,7 +27,6 @@ namespace OnlineGameStore.DAL.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

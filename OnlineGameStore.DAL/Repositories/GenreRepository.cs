@@ -28,28 +28,23 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task CreateAsync(GenreModel genreModel)
         {
             var genre = _mapper.Map<GenreEntity>(genreModel);
-
             var createdGenre = await _genreRepository.CreateAsync(genre);
-
             genreModel.Id = createdGenre.Id;
         }
 
         public async Task UpdateAsync(GenreModel genreModel)
         {
             var genre = _mapper.Map<GenreEntity>(genreModel);
-
             await _genreRepository.UpdateAsync(genre);
         }
 
         public async Task DeleteAsync(GenreModel genreModel)
         {
             var genre = _mapper.Map<GenreEntity>(genreModel);
-
             await _genreRepository.DeleteAsync(genre);
         }
 
-        public async Task<GenreModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
+        public async Task<GenreModel> GetByIdAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties)
         {
             var genre = await _genreRepository.GetByIdAsync(id, includeDeleted, includeProperties);

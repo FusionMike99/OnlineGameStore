@@ -34,9 +34,7 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task<OrderModel> GetOpenOrInProcessOrderAsync(Guid customerId)
         {
             var order = await _storeOrderRepository.GetOpenOrInProcessOrderAsync(customerId);
-
             var orderModel = _mapper.Map<OrderModel>(order);
-            
             await SetOrderDetailsGames(orderModel.OrderDetails);
 
             return orderModel;
@@ -46,12 +44,10 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var sqlTask = _storeOrderRepository.GetOrdersAsync(filterOrderModel);
             var mongoTask = _northwindOrderRepository.GetOrdersAsync(filterOrderModel);
-
             await Task.WhenAll(sqlTask, mongoTask);
 
             var orders = await sqlTask;
             var northwindOrder = await mongoTask;
-
             var mappedOrders = _mapper.Map<IEnumerable<OrderModel>>(orders);
             var mappedNorthwindOrders = _mapper.Map<IEnumerable<OrderModel>>(northwindOrder);
             var concatOrders = mappedOrders.Concat(mappedNorthwindOrders);
@@ -68,7 +64,6 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task AddProductToOrderAsync(Guid customerId, GameModel product, short quantity)
         {
             var game = _mapper.Map<GameEntity>(product);
-
             await _storeOrderRepository.AddProductToOrderAsync(customerId, game, quantity);
         }
 
@@ -81,7 +76,6 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var order = await _storeOrderRepository.ChangeStatusToInProcessAsync(customerId);
             var orderModel = _mapper.Map<OrderModel>(order);
-
             await DecreaseGamesQuantities(orderModel.OrderDetails);
 
             return orderModel;
@@ -115,9 +109,7 @@ namespace OnlineGameStore.DAL.Repositories
                 }
 
                 await IncreaseGamesQuantities(order.OrderDetails);
-                
                 order.OrderState = OrderState.Cancelled;
-
                 await UpdateAsync(order);
             }
         }

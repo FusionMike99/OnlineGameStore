@@ -19,9 +19,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public override async Task DeleteAsync(GenreEntity genre)
         {
             await base.DeleteAsync(genre);
-            
             genre.SubGenres.ToList().ForEach(g => g.ParentId = g.Parent.ParentId);
-
             await Context.SaveChangesAsync();
         }
 
@@ -39,9 +37,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
             Expression<Func<GenreEntity, bool>> predicate = g => !g.ParentId.HasValue;
 
-            return await GetMany(predicate,
-                includeDeleted: includeDeleted,
-                includeProperties: includeProperties);
+            return await GetMany(predicate, includeDeleted: includeDeleted, includeProperties: includeProperties);
         }
 
         public async Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id,
@@ -50,15 +46,12 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
             Expression<Func<GenreEntity, bool>> predicate = g => g.Id != id && g.ParentId != id;
 
-            return await GetMany(predicate,
-                includeDeleted: includeDeleted,
-                includeProperties: includeProperties);
+            return await GetMany(predicate, includeDeleted: includeDeleted, includeProperties: includeProperties);
         }
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> genresNames)
         {
             var genres = await GetMany(g => genresNames.Contains(g.Name));
-
             var genreIds = genres.Select(g => g.Id.ToString());
 
             return genreIds;

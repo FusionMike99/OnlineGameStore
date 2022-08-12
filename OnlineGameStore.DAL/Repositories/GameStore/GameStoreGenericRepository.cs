@@ -44,12 +44,10 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
             entity.IsDeleted = true;
             entity.DeletedAt = DateTime.UtcNow;
-
             await UpdateAsync(entity);
             
             _logger.LogDebug("Action: {Action}\nEntity Type: {EntityType}\nObject: {@Object}", ActionTypes.Delete,
                 typeof(TEntity), entity);
-
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties)
@@ -71,11 +69,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 }
 
                 var navEntityName = navEntity.Metadata.Name;
-
                 var navExist = Context.Entry(exist).Navigation(navEntityName);
-
                 await navExist.LoadAsync();
-
                 navExist.CurrentValue = navEntity.CurrentValue;
             }
 
@@ -84,7 +79,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             
             _logger.LogInformation("Action: {Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
                 ActionTypes.Update, typeof(TEntity), oldEntity, entity);
-
 
             return entity;
         }

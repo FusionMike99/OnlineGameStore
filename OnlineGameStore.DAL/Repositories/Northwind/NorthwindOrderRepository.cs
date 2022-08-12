@@ -27,10 +27,8 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<IEnumerable<NorthwindOrder>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
             var predicate = OrderPredicate.GetPredicate<NorthwindOrder>(filterOrderModel);
-
             var orders = await GetMany(predicate);
             var orderList = orders.ToList();
-            
             orderList.ForEach(SetOrderDetailAndShipper);
 
             return orderList;

@@ -23,14 +23,14 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             params string[] includeProperties)
         {
             Expression<Func<GameEntity, bool>> predicate = g => g.Key == gameKey;
-
+            
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
         public async Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = GetGameStorePredicate(sortFilterModel);
-
+            
             return await GetMany(predicate, includeDeleted: true);
         }
         
@@ -43,7 +43,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 .Register(new GamesByPriceRangeFilter())
                 .Register(new GamesByDatePublishedFilter())
                 .Register(new GamesByNameFilter());
-
             var predicate = gamesFilterPipeline.Process(model);
 
             return predicate;

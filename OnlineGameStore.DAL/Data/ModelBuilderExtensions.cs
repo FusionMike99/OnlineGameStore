@@ -161,17 +161,11 @@ namespace OnlineGameStore.DAL.Data
         internal static void StoreSeed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GenreEntity>().HasData(Genres);
-
             modelBuilder.Entity<PlatformTypeEntity>().HasData(PlatformTypes);
-
             modelBuilder.Entity<PublisherEntity>().HasData(Publishers);
-
             modelBuilder.Entity<GameEntity>().HasData(Games);
-
             modelBuilder.Entity<GameGenreEntity>().HasData(GameGenres);
-
             modelBuilder.Entity<GamePlatformTypeEntity>().HasData(GamePlatformTypes);
-
             //GenerateFakeData(modelBuilder);
         }
 

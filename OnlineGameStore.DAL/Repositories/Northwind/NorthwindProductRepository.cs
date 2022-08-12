@@ -38,9 +38,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             async void Action(NorthwindProduct product)
             {
                 product.Key ??= product.Name.ToKebabCase();
-
                 await UpdateAsync(product);
-
                 product.DateAdded ??= Constants.AddedAtDefault;
             }
 
@@ -63,9 +61,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
                 .Register(new ProductsBySuppliersFilter())
                 .Register(new ProductsByPriceRangeFilter())
                 .Register(new ProductsByNameFilter());
-
             await SetSuppliersIds(model);
-
             var predicate = productsFilterPipeline.Process(model);
 
             return predicate;

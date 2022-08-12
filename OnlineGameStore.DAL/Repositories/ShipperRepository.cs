@@ -22,7 +22,6 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task<IEnumerable<ShipperModel>> GetAllAsync()
         {
             var shippers = await _shipperRepository.GetAllAsync();
-
             var mappedShippers = _mapper.Map<IEnumerable<ShipperModel>>(shippers);
 
             return mappedShippers;

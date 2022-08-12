@@ -20,7 +20,6 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames)
         {
             var categories = await GetMany(c => categoriesNames.Contains(c.Name));
-
             var genreIds = categories.Select(c => c.Id.ToString());
 
             return genreIds;

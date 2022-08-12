@@ -19,7 +19,6 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public async Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types)
         {
             var platformTypes = await GetMany(s => types.Contains(s.Type));
-
             var platformTypesIds = platformTypes.Select(s => s.Id.ToString());
 
             return platformTypesIds;

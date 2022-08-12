@@ -24,23 +24,19 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task CreateAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-
             var createdPlatformType = await _platformTypeRepository.CreateAsync(platformType);
-
             platformTypeModel.Id = createdPlatformType.Id;
         }
 
         public async Task UpdateAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-
             await _platformTypeRepository.UpdateAsync(platformType);
         }
 
         public async Task DeleteAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-
             await _platformTypeRepository.DeleteAsync(platformType);
         }
 

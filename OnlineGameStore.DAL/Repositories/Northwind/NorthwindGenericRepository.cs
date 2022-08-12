@@ -30,7 +30,6 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         protected async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
         {
             var query = _collection.AsQueryable();
-
             var foundEntity = await query.FirstOrDefaultAsync(predicate);
 
             return foundEntity;
@@ -60,9 +59,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             var filter = Builders<TEntity>.Filter.Eq(m => m.Id, entity.Id);
             var updateBuilder = Builders<TEntity>.Update;
             var updateDefinitions = new List<UpdateDefinition<TEntity>>();
-
             var existEntity = _collection.Find(filter).FirstOrDefault();
-
             var entityType = entity.GetType();
 
             foreach (var propertyInfo in entityType.GetProperties())
@@ -70,7 +67,6 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
                 var isAllow = propertyInfo.GetCustomAttributes(typeof(UpdatableAttribute), true)
                                   .FirstOrDefault() is UpdatableAttribute
                               && propertyInfo.PropertyType != typeof(ObjectId);
-                
                 var existEntityProperty = propertyInfo.GetValue(existEntity);
                 var updatingEntityProperty = propertyInfo.GetValue(entity);
 
@@ -90,7 +86,6 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             }
             
             var update = updateBuilder.Combine(updateDefinitions);
-                
             await _collection.UpdateOneAsync(filter, update);
             
             _logger.LogInformation("Action: {Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",

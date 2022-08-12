@@ -43,9 +43,7 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task CreateAsync(GameModel gameModel)
         {
             var game = _mapper.Map<GameEntity>(gameModel);
-
             var createdGame = await _gameRepository.CreateAsync(game);
-
             gameModel.Id = createdGame.Id;
         }
 
@@ -66,14 +64,12 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task IncreaseGameQuantityAsync(string gameKey, short quantity)
         {
             short Operation(short a, short b) => (short)(a + b);
-
             await UpdateGameQuantity(gameKey, quantity, Operation);
         }
 
         public async Task DecreaseGameQuantityAsync(string gameKey, short quantity)
         {
             short Operation(short a, short b) => (short)(a - b);
-
             await UpdateGameQuantity(gameKey, quantity, Operation);
         }
 
@@ -99,9 +95,13 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleted = false)
         {
             GameModel gameModel = null;
-            var game = await _gameRepository.GetByKeyAsync(gameKey, includeDeleted: includeDeleted,
+            var gameTask = _gameRepository.GetByKeyAsync(gameKey, includeDeleted: includeDeleted,
                 $"{nameof(GameEntity.GameGenres)}.{nameof(GameGenreEntity.Genre)}",
                 $"{nameof(GameEntity.GamePlatformTypes)}.{nameof(GamePlatformTypeEntity.PlatformType)}");
+            var productTask = _productRepository.GetByKeyAsync(gameKey);
+            await Task.WhenAll(gameTask, productTask);
+
+            var game = await gameTask;
             
             if (game != null)
             {
@@ -109,20 +109,18 @@ namespace OnlineGameStore.DAL.Repositories
             }
             else
             {
-                var product = await _productRepository.GetByKeyAsync(gameKey);
+                var product = await productTask;
 
                 if (product != null)
                 {
                     product.Category = await _categoryRepository.GetByCategoryIdAsync(product.CategoryId);
                     product.Supplier = await _supplierRepository.GetBySupplierIdAsync(product.SupplierId);
-                    
                     gameModel = _mapper.Map<GameModel>(product);
 
                     if (product.Category != null)
                     {
                         var genre = await _genreRepository.GetByNameAsync(product.Category.Name);
                         var genreModel = _mapper.Map<GenreModel>(genre);
-
                         gameModel.GameGenres = new List<GameGenreModel>
                         {
                             new GameGenreModel
@@ -148,9 +146,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var games = await GetGameModels(sortFilterModel);
             var gameList = games.ToList();
-            
             var gamesNumber = gameList.Count;
-            
             var pagingGames = PagingGames(gameList, pageModel);
 
             return (pagingGames, gamesNumber);
@@ -159,7 +155,6 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task<int> GetGamesNumberAsync(SortFilterGameModel sortFilterModel = null)
         {
             var games = await GetGameModels(sortFilterModel);
-
             var totalNumbers = games.Count();
 
             return totalNumbers;
@@ -168,7 +163,6 @@ namespace OnlineGameStore.DAL.Repositories
         private async Task UpdateGameQuantity(string gameKey, short quantity, Func<short, short, short> operation)
         {
             var gameModel = await GetByKeyAsync(gameKey);
-
             gameModel.UnitsInStock = operation(gameModel.UnitsInStock, quantity);
 
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
@@ -211,12 +205,19 @@ namespace OnlineGameStore.DAL.Repositories
                 var genreGuid = Guid.Parse(genreIds[i]);
                 var genre = await _genreRepository.GetByIdAsync(genreGuid, includeDeleted: false,
                         includeProperties: $"{nameof(GenreEntity.SubGenres)}");
-
                 var subgenreIds = genre.SubGenres.Select(g => g.Id.ToString()).ToList();
-
                 await AddSubgenresToList(subgenreIds);
                 genreIds.AddRange(subgenreIds);
             }
+        }
+
+        private async Task<IEnumerable<NorthwindProduct>> GetNorthwindProducts(
+            SortFilterGameModel sortFilterModel = null)
+        {
+            var products = await _productRepository.GetAllByFilterAsync(sortFilterModel);
+            products = await _productRepository.SetGameKeyAndDateAddedAsync(products.ToList());
+
+            return products;
         }
 
         private IEnumerable<GameModel> UnionGamesProducts(IEnumerable<GameEntity> games,
@@ -224,7 +225,6 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var mappedGames = _mapper.Map<IEnumerable<GameModel>>(games);
             var mappedProducts = _mapper.Map<IEnumerable<GameModel>>(products);
-
             var result = mappedGames.Concat(mappedProducts).DistinctBy(g => g.Key);
 
             return result;
@@ -248,17 +248,14 @@ namespace OnlineGameStore.DAL.Repositories
         private async Task<IEnumerable<GameModel>> GetGameModels(SortFilterGameModel sortFilterModel = null)
         {
             await AddSubgenresToList(sortFilterModel?.SelectedGenres);
-            
-            var games = await _gameRepository.GetAllByFilterAsync(sortFilterModel);
+            var gamesTask = _gameRepository.GetAllByFilterAsync(sortFilterModel);
+            var productsTask = GetNorthwindProducts(sortFilterModel);
+            await Task.WhenAll(gamesTask, productsTask);
 
-            var products = await _productRepository.GetAllByFilterAsync(sortFilterModel);
-
-            products = await _productRepository.SetGameKeyAndDateAddedAsync(products.ToList());
-
+            var games = await gamesTask;
+            var products = await productsTask;
             var gameModels = UnionGamesProducts(games, products);
-
             var sortedGames = SortGame(gameModels, sortFilterModel?.GameSortState);
-
             var notDeletedGames = sortedGames.Where(g => !g.IsDeleted);
 
             return notDeletedGames;
