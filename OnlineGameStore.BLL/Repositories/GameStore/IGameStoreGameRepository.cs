@@ -5,12 +5,12 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface IGameStoreGameRepository : IGameStoreGenericRepository<Game>
+    public interface IGameStoreGameRepository : IGameStoreGenericRepository<GameEntity>
     {
-        Task<Game> GetByKey(string gameKey,
+        Task<GameEntity> GetByKey(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties);
 
-        Task<IEnumerable<Game>> GetAllByFilter(SortFilterGameModel sortFilterModel);
+        Task<IEnumerable<GameEntity>> GetAllByFilter(SortFilterGameModel sortFilterModel);
     }
 }

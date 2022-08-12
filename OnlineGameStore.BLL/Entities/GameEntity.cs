@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Game : BaseEntity
+    public class GameEntity : BaseEntity
     {
         public string Key { get; set; }
 
@@ -27,13 +27,13 @@ namespace OnlineGameStore.BLL.Entities
         
         public string PublisherName { get; set; }
 
-        public Publisher Publisher { get; set; }
+        public PublisherEntity Publisher { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
+        public ICollection<CommentEntity> Comments { get; set; }
 
-        public ICollection<GameGenre> GameGenres { get; set; }
+        public ICollection<GameGenreEntity> GameGenres { get; set; }
 
-        public ICollection<GamePlatformType> GamePlatformTypes { get; set; }
+        public ICollection<GamePlatformTypeEntity> GamePlatformTypes { get; set; }
 
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }

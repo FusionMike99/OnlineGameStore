@@ -7,11 +7,11 @@ using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.BLL.Pipelines
 {
-    public class GamesFilterPipeline : Pipeline<SortFilterGameModel, Expression<Func<Game, bool>>>
+    public class GamesFilterPipeline : Pipeline<SortFilterGameModel, Expression<Func<GameEntity, bool>>>
     {
-        public override Expression<Func<Game, bool>> Process(SortFilterGameModel input)
+        public override Expression<Func<GameEntity, bool>> Process(SortFilterGameModel input)
         {
-            Expression<Func<Game, bool>> targetExpression = null;
+            Expression<Func<GameEntity, bool>> targetExpression = null;
 
             var filterExpressions = filters.Select(filter => filter.Execute(input))
                 .Where(filterExpression => filterExpression != null);

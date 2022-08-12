@@ -27,7 +27,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task CreateAsync(GenreModel genreModel)
         {
-            var genre = _mapper.Map<Genre>(genreModel);
+            var genre = _mapper.Map<GenreEntity>(genreModel);
 
             var createdGenre = await _genreRepository.Create(genre);
 
@@ -36,14 +36,14 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task UpdateAsync(GenreModel genreModel)
         {
-            var genre = _mapper.Map<Genre>(genreModel);
+            var genre = _mapper.Map<GenreEntity>(genreModel);
 
             await _genreRepository.Update(genre);
         }
 
         public async Task DeleteAsync(GenreModel genreModel)
         {
-            var genre = _mapper.Map<Genre>(genreModel);
+            var genre = _mapper.Map<GenreEntity>(genreModel);
 
             await _genreRepository.Delete(genre);
         }

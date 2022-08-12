@@ -30,7 +30,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task CreateAsync(PublisherModel publisherModel)
         {
-            var publisher = _mapper.Map<Publisher>(publisherModel);
+            var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
             var createdPublisher = await _publisherRepository.Create(publisher);
 
@@ -39,14 +39,14 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task UpdateAsync(PublisherModel publisherModel)
         {
-            var publisher = _mapper.Map<Publisher>(publisherModel);
+            var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
             await _publisherRepository.Update(publisher);
         }
 
         public async Task DeleteAsync(PublisherModel publisherModel)
         {
-            var publisher = _mapper.Map<Publisher>(publisherModel);
+            var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
             await _publisherRepository.Delete(publisher);
         }
@@ -99,7 +99,7 @@ namespace OnlineGameStore.DAL.Repositories
             return unionPublishersSuppliers;
         }
         
-        private IEnumerable<PublisherModel> UnionPublishersSuppliers(IEnumerable<Publisher> publishers,
+        private IEnumerable<PublisherModel> UnionPublishersSuppliers(IEnumerable<PublisherEntity> publishers,
             IEnumerable<NorthwindSupplier> suppliers)
         {
             var mappedPublishers = _mapper.Map<IEnumerable<PublisherModel>>(publishers);

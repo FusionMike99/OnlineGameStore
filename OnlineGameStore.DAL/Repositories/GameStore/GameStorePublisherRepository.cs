@@ -8,17 +8,17 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStorePublisherRepository : GameStoreGenericRepository<Publisher>, IGameStorePublisherRepository
+    public class GameStorePublisherRepository : GameStoreGenericRepository<PublisherEntity>, IGameStorePublisherRepository
     {
         public GameStorePublisherRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
-        public async Task<Publisher> GetByName(string companyName,
+        public async Task<PublisherEntity> GetByName(string companyName,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Publisher, bool>> predicate = p => p.CompanyName == companyName;
+            Expression<Func<PublisherEntity, bool>> predicate = p => p.CompanyName == companyName;
 
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }

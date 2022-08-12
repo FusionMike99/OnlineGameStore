@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Comment : BaseEntity
+    public class CommentEntity : BaseEntity
     {
         public string Name { get; set; }
 
@@ -13,12 +13,12 @@ namespace OnlineGameStore.BLL.Entities
 
         public Guid GameId { get; set; }
 
-        public Game Game { get; set; }
+        public GameEntity Game { get; set; }
 
         public Guid? ReplyToId { get; set; }
 
-        public Comment ReplyTo { get; set; }
+        public CommentEntity ReplyTo { get; set; }
 
-        public ICollection<Comment> Replies { get; set; }
+        public ICollection<CommentEntity> Replies { get; set; }
     }
 }

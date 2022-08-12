@@ -4,9 +4,9 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    public class GamePlatformTypeConfiguration : IEntityTypeConfiguration<GamePlatformType>
+    public class GamePlatformTypeConfiguration : IEntityTypeConfiguration<GamePlatformTypeEntity>
     {
-        public void Configure(EntityTypeBuilder<GamePlatformType> builder)
+        public void Configure(EntityTypeBuilder<GamePlatformTypeEntity> builder)
         {
             builder.HasKey(x => x.Id);
 

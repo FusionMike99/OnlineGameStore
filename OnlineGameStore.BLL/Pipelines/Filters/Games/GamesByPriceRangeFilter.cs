@@ -6,9 +6,9 @@ using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.BLL.Pipelines.Filters.Games
 {
-    public class GamesByPriceRangeFilter : IFilter<SortFilterGameModel, Expression<Func<Game, bool>>>
+    public class GamesByPriceRangeFilter : IFilter<SortFilterGameModel, Expression<Func<GameEntity, bool>>>
     {
-        public Expression<Func<Game, bool>> Execute(SortFilterGameModel input)
+        public Expression<Func<GameEntity, bool>> Execute(SortFilterGameModel input)
         {
             var priceRange = input?.PriceRange;
             
@@ -17,7 +17,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Games
                 return null;
             }
             
-            Expression<Func<Game, bool>> filterExpression = null;
+            Expression<Func<GameEntity, bool>> filterExpression = null;
             
             if (priceRange.Min.HasValue)
             {
@@ -26,7 +26,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Games
 
             if (priceRange.Max.HasValue)
             {
-                Expression<Func<Game, bool>> otherExpression = g => g.Price <= priceRange.Max;
+                Expression<Func<GameEntity, bool>> otherExpression = g => g.Price <= priceRange.Max;
                 
                 filterExpression = filterExpression != null 
                     ? filterExpression.AndAlso(otherExpression)

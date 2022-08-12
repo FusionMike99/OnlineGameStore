@@ -12,29 +12,29 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreGameRepository : GameStoreGenericRepository<Game>, IGameStoreGameRepository
+    public class GameStoreGameRepository : GameStoreGenericRepository<GameEntity>, IGameStoreGameRepository
     {
         public GameStoreGameRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
-        public async Task<Game> GetByKey(string gameKey,
+        public async Task<GameEntity> GetByKey(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Game, bool>> predicate = g => g.Key == gameKey;
+            Expression<Func<GameEntity, bool>> predicate = g => g.Key == gameKey;
 
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
-        public async Task<IEnumerable<Game>> GetAllByFilter(SortFilterGameModel sortFilterModel)
+        public async Task<IEnumerable<GameEntity>> GetAllByFilter(SortFilterGameModel sortFilterModel)
         {
             var predicate = GetGameStorePredicate(sortFilterModel);
 
             return await GetMany(predicate, includeDeleted: true);
         }
         
-        private static Expression<Func<Game, bool>> GetGameStorePredicate(SortFilterGameModel model)
+        private static Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)
         {
             var gamesFilterPipeline = new GamesFilterPipeline()
                 .Register(new GamesByGenresFilter())

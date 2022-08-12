@@ -13,27 +13,27 @@ using OnlineGameStore.DAL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreOrderRepository : GameStoreGenericRepository<Order>, IGameStoreOrderRepository
+    public class GameStoreOrderRepository : GameStoreGenericRepository<OrderEntity>, IGameStoreOrderRepository
     {
         public GameStoreOrderRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
-        public async Task<Order> GetOpenOrInProcessOrderAsync(Guid customerId)
+        public async Task<OrderEntity> GetOpenOrInProcessOrderAsync(Guid customerId)
         {
-            Expression<Func<Order, bool>> predicate = o => o.CustomerId == customerId
+            Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId
                                                            && o.OrderState <= OrderState.InProgress
                                                            && o.CancelledDate == null;
 
             var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(Order.OrderDetails)}");
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
 
             if (order != null)
             {
                 return order;
             }
             
-            var creatingOrder = new Order
+            var creatingOrder = new OrderEntity
             {
                 CustomerId = customerId,
                 OrderState = OrderState.Open,
@@ -46,27 +46,27 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return order;
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
+        public async Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
-            var predicate = OrderPredicate.GetPredicate<Order>(filterOrderModel);
+            var predicate = OrderPredicate.GetPredicate<OrderEntity>(filterOrderModel);
 
             var orders = await GetMany(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(Order.OrderDetails)}");
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
 
             return orders;
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersWithStatus(OrderState orderState)
+        public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatus(OrderState orderState)
         {
-            Expression<Func<Order, bool>> predicate = o => o.OrderState == orderState;
+            Expression<Func<OrderEntity, bool>> predicate = o => o.OrderState == orderState;
 
             var orders = await GetMany(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(Order.OrderDetails)}");
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
 
             return orders;
         }
 
-        public async Task AddProductToOrder(Guid customerId, Game product, short quantity)
+        public async Task AddProductToOrder(Guid customerId, GameEntity product, short quantity)
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
 
@@ -111,7 +111,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             await Update(order);
         }
 
-        public async Task<Order> ChangeStatusToInProcess(Guid customerId)
+        public async Task<OrderEntity> ChangeStatusToInProcess(Guid customerId)
         {
             var order = await GetOrderByCustomerId(customerId);
             CheckOrderExisting(order);
@@ -123,7 +123,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return order;
         }
 
-        public async Task<Order> ChangeStatusToClosed(Guid orderId)
+        public async Task<OrderEntity> ChangeStatusToClosed(Guid orderId)
         {
             var order = await GetOrderById(orderId);
             CheckOrderExisting(order);
@@ -135,12 +135,12 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return order;
         }
 
-        public async Task<Order> GetOrderById(Guid orderId)
+        public async Task<OrderEntity> GetOrderById(Guid orderId)
         {
-            Expression<Func<Order, bool>> predicate = o => o.Id == orderId;
+            Expression<Func<OrderEntity, bool>> predicate = o => o.Id == orderId;
 
             var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(Order.OrderDetails)}");
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
 
             return order;
         }
@@ -155,17 +155,17 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             await Update(order);
         }
         
-        private async Task<Order> GetOrderByCustomerId(Guid customerId, OrderState orderState = OrderState.Open)
+        private async Task<OrderEntity> GetOrderByCustomerId(Guid customerId, OrderState orderState = OrderState.Open)
         {
-            Expression<Func<Order, bool>> predicate = o => o.CustomerId == customerId && o.OrderState == orderState;
+            Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId && o.OrderState == orderState;
 
             var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(Order.OrderDetails)}");
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
 
             return order;
         }
 
-        private static void CheckOrderExisting(Order order)
+        private static void CheckOrderExisting(OrderEntity order)
         {
             if (order != null)
             {

@@ -10,7 +10,7 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStorePlatformTypeRepository : GameStoreGenericRepository<PlatformType>, IGameStorePlatformTypeRepository
+    public class GameStorePlatformTypeRepository : GameStoreGenericRepository<PlatformTypeEntity>, IGameStorePlatformTypeRepository
     {
         public GameStorePlatformTypeRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
@@ -25,9 +25,9 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return platformTypesIds;
         }
 
-        public async Task<PlatformType> GetByType(string type, bool includeDeleted = false, params string[] includeProperties)
+        public async Task<PlatformTypeEntity> GetByType(string type, bool includeDeleted = false, params string[] includeProperties)
         {
-            Expression<Func<PlatformType, bool>> predicate = pt => pt.Type == type;
+            Expression<Func<PlatformTypeEntity, bool>> predicate = pt => pt.Type == type;
 
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }

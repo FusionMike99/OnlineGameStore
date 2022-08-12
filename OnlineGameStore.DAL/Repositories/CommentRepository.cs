@@ -23,7 +23,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task CreateAsync(CommentModel commentModel)
         {
-            var comment = _mapper.Map<Comment>(commentModel);
+            var comment = _mapper.Map<CommentEntity>(commentModel);
 
             var createdComment = await _commentRepository.Create(comment);
 
@@ -32,14 +32,14 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task UpdateAsync(CommentModel commentModel)
         {
-            var comment = _mapper.Map<Comment>(commentModel);
+            var comment = _mapper.Map<CommentEntity>(commentModel);
 
             await _commentRepository.Update(comment);
         }
 
         public async Task DeleteAsync(CommentModel commentModel)
         {
-            var comment = _mapper.Map<Comment>(commentModel);
+            var comment = _mapper.Map<CommentEntity>(commentModel);
 
             await _commentRepository.Delete(comment);
         }

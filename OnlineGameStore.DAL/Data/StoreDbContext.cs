@@ -16,17 +16,17 @@ namespace OnlineGameStore.DAL.Data
             _categoryRepository = categoryRepository;
         }
 
-        public DbSet<Game> Games { get; set; }
+        public DbSet<GameEntity> Games { get; set; }
 
-        public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<PublisherEntity> Publishers { get; set; }
 
-        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentEntity> Comments { get; set; }
 
-        public DbSet<Genre> Genres { get; set; }
+        public DbSet<GenreEntity> Genres { get; set; }
 
-        public DbSet<PlatformType> PlatformTypes { get; set; }
+        public DbSet<PlatformTypeEntity> PlatformTypes { get; set; }
 
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderEntity> Orders { get; set; }
 
         protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -53,8 +53,8 @@ namespace OnlineGameStore.MVC.ModelBuilders
             var genres = (await genreService.GetAllGenres()).ToList();
             
             _model.Genres = new SelectList(genres,
-                nameof(Genre.Name),
-                nameof(Genre.Name));
+                nameof(GenreEntity.Name),
+                nameof(GenreEntity.Name));
 
             var selectedGenresNames = new List<string>();
             
@@ -76,8 +76,8 @@ namespace OnlineGameStore.MVC.ModelBuilders
             var platformTypes = (await platformTypeService.GetAllPlatformTypes()).ToList();
             
             _model.PlatformTypes = new SelectList(platformTypes,
-                nameof(PlatformType.Type),
-                nameof(PlatformType.Type));
+                nameof(PlatformTypeEntity.Type),
+                nameof(PlatformTypeEntity.Type));
             
             var selectedPlatformTypesNames = new List<string>();
             
@@ -98,8 +98,8 @@ namespace OnlineGameStore.MVC.ModelBuilders
             var publishers = (await publisherService.GetAllPublishers()).ToList();
             
             _model.Publishers = new SelectList(publishers,
-                nameof(Publisher.CompanyName),
-                nameof(Publisher.CompanyName));
+                nameof(PublisherEntity.CompanyName),
+                nameof(PublisherEntity.CompanyName));
             
             var selectedPublishersNames = new List<string>();
             

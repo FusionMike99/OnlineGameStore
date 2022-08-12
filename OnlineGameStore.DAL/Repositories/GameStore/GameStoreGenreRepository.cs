@@ -10,13 +10,13 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreGenreRepository : GameStoreGenericRepository<Genre>, IGameStoreGenreRepository
+    public class GameStoreGenreRepository : GameStoreGenericRepository<GenreEntity>, IGameStoreGenreRepository
     {
         public GameStoreGenreRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
-        public override async Task Delete(Genre genre)
+        public override async Task Delete(GenreEntity genre)
         {
             await base.Delete(genre);
             
@@ -25,30 +25,30 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             await Context.SaveChangesAsync();
         }
 
-        public async Task<Genre> GetByName(string name,
+        public async Task<GenreEntity> GetByName(string name,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Genre, bool>> predicate = g => g.Name == name;
+            Expression<Func<GenreEntity, bool>> predicate = g => g.Name == name;
 
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
-        public async Task<IEnumerable<Genre>> GetParentGenres(bool includeDeleted = false,
+        public async Task<IEnumerable<GenreEntity>> GetParentGenres(bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Genre, bool>> predicate = g => !g.ParentId.HasValue;
+            Expression<Func<GenreEntity, bool>> predicate = g => !g.ParentId.HasValue;
 
             return await GetMany(predicate,
                 includeDeleted: includeDeleted,
                 includeProperties: includeProperties);
         }
 
-        public async Task<IEnumerable<Genre>> GetWithoutGenre(Guid id,
+        public async Task<IEnumerable<GenreEntity>> GetWithoutGenre(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Genre, bool>> predicate = g => g.Id != id && g.ParentId != id;
+            Expression<Func<GenreEntity, bool>> predicate = g => g.Id != id && g.ParentId != id;
 
             return await GetMany(predicate,
                 includeDeleted: includeDeleted,

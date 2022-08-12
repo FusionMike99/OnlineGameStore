@@ -5,16 +5,16 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Repositories.GameStore
 {
-    public interface IGameStoreGenreRepository : IGameStoreGenericRepository<Genre>
+    public interface IGameStoreGenreRepository : IGameStoreGenericRepository<GenreEntity>
     {
-        Task<Genre> GetByName(string name,
+        Task<GenreEntity> GetByName(string name,
             bool includeDeleted = false,
             params string[] includeProperties);
 
-        Task<IEnumerable<Genre>> GetParentGenres(bool includeDeleted = false,
+        Task<IEnumerable<GenreEntity>> GetParentGenres(bool includeDeleted = false,
             params string[] includeProperties);
         
-        Task<IEnumerable<Genre>> GetWithoutGenre(Guid id,
+        Task<IEnumerable<GenreEntity>> GetWithoutGenre(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties);
         

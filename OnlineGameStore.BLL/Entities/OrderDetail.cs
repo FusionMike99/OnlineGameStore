@@ -6,11 +6,11 @@ namespace OnlineGameStore.BLL.Entities
     {
         public string GameKey { get; set; }
 
-        public Game Product { get; set; }
+        public GameEntity Product { get; set; }
 
         public Guid OrderId { get; set; }
 
-        public Order Order { get; set; }
+        public OrderEntity Order { get; set; }
 
         public decimal Price { get; set; }
 

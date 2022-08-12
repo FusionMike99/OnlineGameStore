@@ -4,7 +4,7 @@ using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Order : BaseEntity
+    public class OrderEntity : BaseEntity
     {
         public DateTime OrderDate { get; set; }
         

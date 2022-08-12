@@ -6,13 +6,13 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Pipelines.Filters.Games
 {
-    public class GamesByGenresFilter : IFilter<SortFilterGameModel, Expression<Func<Game, bool>>>
+    public class GamesByGenresFilter : IFilter<SortFilterGameModel, Expression<Func<GameEntity, bool>>>
     {
-        public Expression<Func<Game, bool>> Execute(SortFilterGameModel input)
+        public Expression<Func<GameEntity, bool>> Execute(SortFilterGameModel input)
         {
             var selectedGenres = input?.SelectedGenres;
             
-            Expression<Func<Game, bool>> filterExpression = null;
+            Expression<Func<GameEntity, bool>> filterExpression = null;
             
             if (selectedGenres != null)
             {

@@ -42,7 +42,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task CreateAsync(GameModel gameModel)
         {
-            var game = _mapper.Map<Game>(gameModel);
+            var game = _mapper.Map<GameEntity>(gameModel);
 
             var createdGame = await _gameRepository.Create(game);
 
@@ -51,7 +51,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task UpdateAsync(GameModel gameModel)
         {
-            var game = _mapper.Map<Game>(gameModel);
+            var game = _mapper.Map<GameEntity>(gameModel);
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
@@ -79,7 +79,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task DeleteAsync(GameModel gameModel)
         {
-            var game = _mapper.Map<Game>(gameModel);
+            var game = _mapper.Map<GameEntity>(gameModel);
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
@@ -100,8 +100,8 @@ namespace OnlineGameStore.DAL.Repositories
         {
             GameModel gameModel = null;
             var game = await _gameRepository.GetByKey(gameKey, includeDeleted: includeDeleted,
-                $"{nameof(Game.GameGenres)}.{nameof(GameGenre.Genre)}",
-                $"{nameof(Game.GamePlatformTypes)}.{nameof(GamePlatformType.PlatformType)}");
+                $"{nameof(GameEntity.GameGenres)}.{nameof(GameGenreEntity.Genre)}",
+                $"{nameof(GameEntity.GamePlatformTypes)}.{nameof(GamePlatformTypeEntity.PlatformType)}");
             
             if (game != null)
             {
@@ -173,7 +173,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
-                var game = _mapper.Map<Game>(gameModel);
+                var game = _mapper.Map<GameEntity>(gameModel);
                 await _gameRepository.Update(game);
             }
             else
@@ -189,7 +189,7 @@ namespace OnlineGameStore.DAL.Repositories
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
-                var game = _mapper.Map<Game>(gameModel);
+                var game = _mapper.Map<GameEntity>(gameModel);
                 _gameRepository.Update(game);
             }
             else
@@ -210,7 +210,7 @@ namespace OnlineGameStore.DAL.Repositories
             {
                 var genreGuid = Guid.Parse(genreIds[i]);
                 var genre = await _genreRepository.GetById(genreGuid, includeDeleted: false,
-                        includeProperties: $"{nameof(Genre.SubGenres)}");
+                        includeProperties: $"{nameof(GenreEntity.SubGenres)}");
 
                 var subgenreIds = genre.SubGenres.Select(g => g.Id.ToString()).ToList();
 
@@ -219,7 +219,7 @@ namespace OnlineGameStore.DAL.Repositories
             }
         }
 
-        private IEnumerable<GameModel> UnionGamesProducts(IEnumerable<Game> games,
+        private IEnumerable<GameModel> UnionGamesProducts(IEnumerable<GameEntity> games,
             IEnumerable<NorthwindProduct> products)
         {
             var mappedGames = _mapper.Map<IEnumerable<GameModel>>(games);

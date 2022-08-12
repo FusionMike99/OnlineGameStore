@@ -206,16 +206,16 @@ namespace OnlineGameStore.MVC.Controllers
             await Task.WhenAll(genresTask, platformsTask, publishersTask);
             
             model.Genres = new SelectList(await genresTask,
-                nameof(Genre.Id),
-                nameof(Genre.Name));
+                nameof(GenreEntity.Id),
+                nameof(GenreEntity.Name));
 
             model.PlatformTypes = new SelectList(await platformsTask,
-                nameof(PlatformType.Id),
-                nameof(PlatformType.Type));
+                nameof(PlatformTypeEntity.Id),
+                nameof(PlatformTypeEntity.Type));
 
             model.Publishers = new SelectList(await publishersTask,
-                nameof(Publisher.CompanyName),
-                nameof(Publisher.CompanyName));
+                nameof(PublisherEntity.CompanyName),
+                nameof(PublisherEntity.CompanyName));
         }
 
         private async Task VerifyGame(EditGameViewModel game)

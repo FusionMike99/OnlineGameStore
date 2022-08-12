@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Genre : BaseEntity
+    public class GenreEntity : BaseEntity
     {
         public string Name { get; set; }
         
@@ -11,10 +11,10 @@ namespace OnlineGameStore.BLL.Entities
 
         public Guid? ParentId { get; set; }
 
-        public Genre Parent { get; set; }
+        public GenreEntity Parent { get; set; }
 
-        public ICollection<Genre> SubGenres { get; set; }
+        public ICollection<GenreEntity> SubGenres { get; set; }
 
-        public ICollection<GameGenre> GameGenres { get; set; }
+        public ICollection<GameGenreEntity> GameGenres { get; set; }
     }
 }

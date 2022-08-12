@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities
 {
-    public class Publisher : BaseEntity
+    public class PublisherEntity : BaseEntity
     {
         public string CompanyName { get; set; }
 
@@ -28,6 +28,6 @@ namespace OnlineGameStore.BLL.Entities
         
         public string Fax { get; set; }
 
-        public ICollection<Game> Games { get; set; }
+        public ICollection<GameEntity> Games { get; set; }
     }
 }

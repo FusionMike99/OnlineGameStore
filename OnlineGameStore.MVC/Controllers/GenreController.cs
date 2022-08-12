@@ -135,7 +135,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var genres = await _genreService.GetAllWithoutGenre(model.Id);
             
-            model.Genres = new SelectList(genres, nameof(Genre.Id), nameof(Genre.Name));
+            model.Genres = new SelectList(genres, nameof(GenreEntity.Id), nameof(GenreEntity.Name));
         }
 
         private async Task VerifyGenre(EditGenreViewModel genre)

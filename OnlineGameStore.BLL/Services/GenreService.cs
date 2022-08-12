@@ -62,7 +62,7 @@ namespace OnlineGameStore.BLL.Services
         public async Task<IEnumerable<GenreModel>> GetAllParentGenres()
         {
             var genres = await _genreRepository
-                .GetParentGenres(includeProperties: $"{nameof(Genre.SubGenres)}");
+                .GetParentGenres(includeProperties: $"{nameof(GenreEntity.SubGenres)}");
 
             return genres;
         }
@@ -91,7 +91,7 @@ namespace OnlineGameStore.BLL.Services
         public async Task<GenreModel> GetGenreById(Guid genreId)
         {
             var genre = await _genreRepository.GetByIdAsync(genreId,
-                includeProperties: $"{nameof(Genre.SubGenres)}");
+                includeProperties: $"{nameof(GenreEntity.SubGenres)}");
 
             return genre;
         }

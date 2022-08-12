@@ -13,7 +13,7 @@ namespace OnlineGameStore.BLL.MappingProfiles
         {
             #region Comment
             
-            CreateMap<Comment, CommentModel>()
+            CreateMap<CommentEntity, CommentModel>()
                 .ForMember(dest => dest.Game, opts => 
                     opts.MapFrom(source => source.Game))
                 .ReverseMap()
@@ -24,14 +24,14 @@ namespace OnlineGameStore.BLL.MappingProfiles
 
             #region GameGenre
           
-            CreateMap<GameGenre, GameGenreModel>()
+            CreateMap<GameGenreEntity, GameGenreModel>()
                 .ReverseMap();
 
             #endregion
 
             #region Game
 
-            CreateMap<Game, GameModel>()
+            CreateMap<GameEntity, GameModel>()
                 .ForMember(dest => dest.DatabaseEntity, opts => 
                     opts.MapFrom(source => DatabaseEntity.GameStore))
                 .ReverseMap();
@@ -63,14 +63,14 @@ namespace OnlineGameStore.BLL.MappingProfiles
 
             #region GamePlatformType
 
-            CreateMap<GamePlatformType, GamePlatformTypeModel>()
+            CreateMap<GamePlatformTypeEntity, GamePlatformTypeModel>()
                 .ReverseMap();
 
             #endregion
 
             #region Genre
 
-            CreateMap<Genre, GenreModel>()
+            CreateMap<GenreEntity, GenreModel>()
                 .ReverseMap();
             
             CreateMap<NorthwindCategory, GenreModel>()
@@ -116,7 +116,7 @@ namespace OnlineGameStore.BLL.MappingProfiles
 
             #region Order
 
-            CreateMap<Order, OrderModel>()
+            CreateMap<OrderEntity, OrderModel>()
                 .ReverseMap();
             
             CreateMap<NorthwindOrder, OrderModel>()
@@ -137,14 +137,14 @@ namespace OnlineGameStore.BLL.MappingProfiles
 
             #region PlatformType
 
-            CreateMap<PlatformType, PlatformTypeModel>()
+            CreateMap<PlatformTypeEntity, PlatformTypeModel>()
                 .ReverseMap();
 
             #endregion
 
             #region Publisher
 
-            CreateMap<Publisher, PublisherModel>()
+            CreateMap<PublisherEntity, PublisherModel>()
                 .ForMember(dest => dest.DatabaseEntity, opts => 
                     opts.MapFrom(source => DatabaseEntity.GameStore))
                 .ReverseMap();

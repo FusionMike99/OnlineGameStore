@@ -61,13 +61,13 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task UpdateAsync(OrderModel orderModel)
         {
-            var order = _mapper.Map<Order>(orderModel);
+            var order = _mapper.Map<OrderEntity>(orderModel);
             await _storeOrderRepository.Update(order);
         }
 
         public async Task AddProductToOrderAsync(Guid customerId, GameModel product, short quantity)
         {
-            var game = _mapper.Map<Game>(product);
+            var game = _mapper.Map<GameEntity>(product);
 
             await _storeOrderRepository.AddProductToOrder(customerId, game, quantity);
         }

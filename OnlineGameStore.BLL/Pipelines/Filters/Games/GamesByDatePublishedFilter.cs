@@ -6,9 +6,9 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Pipelines.Filters.Games
 {
-    public class GamesByDatePublishedFilter : IFilter<SortFilterGameModel, Expression<Func<Game, bool>>>
+    public class GamesByDatePublishedFilter : IFilter<SortFilterGameModel, Expression<Func<GameEntity, bool>>>
     {
-        public Expression<Func<Game, bool>> Execute(SortFilterGameModel input)
+        public Expression<Func<GameEntity, bool>> Execute(SortFilterGameModel input)
         {
             var datePublishedPeriod = input?.DatePublishedPeriod;
             
@@ -27,7 +27,7 @@ namespace OnlineGameStore.BLL.Pipelines.Filters.Games
                 _ => throw new ArgumentOutOfRangeException(nameof(datePublishedPeriod), datePublishedPeriod, null)
             };
 
-            Expression<Func<Game, bool>> filterExpression = g => g.DatePublished >= minPublishedDate;
+            Expression<Func<GameEntity, bool>> filterExpression = g => g.DatePublished >= minPublishedDate;
 
             return filterExpression;
         }

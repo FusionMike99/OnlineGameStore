@@ -9,17 +9,17 @@ using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreCommentRepository : GameStoreGenericRepository<Comment>, IGameStoreCommentRepository
+    public class GameStoreCommentRepository : GameStoreGenericRepository<CommentEntity>, IGameStoreCommentRepository
     {
         public GameStoreCommentRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
-        public Task<IEnumerable<Comment>> GetAllByGameKey(string gameKey,
+        public Task<IEnumerable<CommentEntity>> GetAllByGameKey(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            Expression<Func<Comment, bool>> predicate = c => c.Game.Key == gameKey;
+            Expression<Func<CommentEntity, bool>> predicate = c => c.Game.Key == gameKey;
 
             return GetMany(predicate: predicate,
                 includeDeleted: includeDeleted,
