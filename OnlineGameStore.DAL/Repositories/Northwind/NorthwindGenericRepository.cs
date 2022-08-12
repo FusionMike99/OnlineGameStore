@@ -36,10 +36,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return foundEntity;
         }
 
-        protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            int? skip = null,
-            int? take = null)
+        protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null)
         {
             var query = _collection.AsQueryable();
             
@@ -47,32 +44,10 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             {
                 query = query.Where(predicate);
             }
-
-            if (orderBy != null)
-            {
-                query = (IOrderedMongoQueryable<TEntity>)orderBy(query);
-            }
-            
-            if (skip.HasValue)
-            {
-                query = query.Skip(skip.Value);
-            }
-
-            if (take.HasValue)
-            {
-                query = query.Take(take.Value);
-            }
             
             var foundList = await query.ToListAsync();
             
             return foundList;
-        }
-
-        public virtual async Task<TEntity> GetById(ObjectId id)
-        {
-            Expression<Func<TEntity, bool>> predicate = m => m.Id == id;
-
-            return await GetFirst(predicate);
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAll()

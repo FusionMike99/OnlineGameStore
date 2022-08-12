@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using OnlineGameStore.BLL.Enums;
 
 namespace OnlineGameStore.BLL.Entities
 {

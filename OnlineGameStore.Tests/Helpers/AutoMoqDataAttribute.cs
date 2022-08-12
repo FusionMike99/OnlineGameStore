@@ -4,7 +4,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Community.AutoMapper;
 using AutoFixture.Xunit2;
 using MongoDB.Bson;
-using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.MVC.Mapper;
 
 namespace OnlineGameStore.Tests.Helpers

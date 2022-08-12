@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using AutoMapper;
-using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.MVC.Models;
 
