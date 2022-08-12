@@ -82,7 +82,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             Context.Entry(exist).CurrentValues.SetValues(entity);
             await Context.SaveChangesAsync();
             
-            _logger.LogInformation("{Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
+            _logger.LogInformation("Action: {Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
                 ActionTypes.Update, typeof(TEntity), oldEntity, entity);
 
 

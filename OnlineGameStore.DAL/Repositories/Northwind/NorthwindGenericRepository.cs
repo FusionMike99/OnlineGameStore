@@ -93,7 +93,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
                 
             await _collection.UpdateOneAsync(filter, update);
             
-            _logger.LogInformation("{Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
+            _logger.LogInformation("Action: {Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",
                 ActionTypes.Update, typeof(TEntity), existEntity, entity);
 
             return entity;
