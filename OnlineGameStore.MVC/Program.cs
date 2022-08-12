@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.MVC.Infrastructure;
 using Serilog;
+using Serilog.Events;
 
 namespace OnlineGameStore.MVC
 {
@@ -10,6 +11,10 @@ namespace OnlineGameStore.MVC
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .CreateBootstrapLogger();
+            
             try
             {
                 CreateHostBuilder(args).Build().Run();
@@ -23,11 +28,7 @@ namespace OnlineGameStore.MVC
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                    logging.ClearProviders();
-                    logging.AddSerilog(hostingContext);
-                })
+                .UseSerilog((hostingContext, logging) => logging.ConfigureSerilog(hostingContext))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

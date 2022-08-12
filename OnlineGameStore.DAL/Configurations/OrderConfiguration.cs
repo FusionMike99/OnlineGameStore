@@ -23,6 +23,7 @@ namespace OnlineGameStore.DAL.Configurations
                 .HasDefaultValue(false);
             
             builder.Property(o => o.Freight)
+                .HasColumnType("money")
                 .HasDefaultValue(0D);
             
             builder.Property(o => o.ShipName)

@@ -11,14 +11,18 @@ using Serilog.Filters;
 
 namespace OnlineGameStore.MVC.Infrastructure
 {
-    public static class LoggingBuilderExtension
+    public static class LoggerConfigurationExtension
     {
         private const string OutputTemplate =
             @"[{Level:u3}]|{Timestamp:yyyy-MM-dd HH:mm:ss.fff}|{CorrelationId}|{SourceContext}|{Message:lj}|{NewLine}{Exception}";
 
-        public static void AddSerilog(this ILoggingBuilder loggingBuilder, HostBuilderContext context)
+        public static LoggerConfiguration ConfigureSerilog(this LoggerConfiguration loggerConfiguration, HostBuilderContext context)
         {
-            var loggerConfiguration = new LoggerConfiguration()
+            loggerConfiguration = loggerConfiguration
+                .WriteTo.Console(outputTemplate: OutputTemplate)
+                .WriteTo.File("Logs/log.log", outputTemplate: OutputTemplate, shared: true, 
+                    rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 1000000,
+                    rollOnFileSizeLimit: true)
                 .WriteTo.Logger(l =>
                 {
                     l.WriteTo.MongoDBBson(cfg =>
@@ -38,20 +42,13 @@ namespace OnlineGameStore.MVC.Infrastructure
                     var isFromGameStore = Matching.FromSource(typeof(GameStoreGenericRepository<>).Namespace);
                     var isFromNorthwind = Matching.FromSource(typeof(NorthwindGenericRepository<>).Namespace);
                     l.Filter.ByIncludingOnly(e => isFromGameStore(e) || isFromNorthwind(e));
-                })
-                .WriteTo.Console(outputTemplate: OutputTemplate)
-                .WriteTo.File("Logs/log.log", outputTemplate: OutputTemplate, shared: true, 
-                    rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 1000000,
-                    rollOnFileSizeLimit: true);
+                });
 
             loggerConfiguration = loggerConfiguration
                 .Enrich.FromLogContext()
                 .Enrich.WithCorrelationId();
 
-            var logger = loggerConfiguration.CreateLogger();
-            Log.Logger = logger;
-
-            loggingBuilder.AddProvider(new SerilogLoggerProvider(logger));
+            return loggerConfiguration;
         }
     }
 }

@@ -10,8 +10,8 @@ using OnlineGameStore.DAL.Data;
 namespace OnlineGameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20220805133259_ChangeIdToGuid")]
-    partial class ChangeIdToGuid
+    [Migration("20220812092411_ChangeGameEntity")]
+    partial class ChangeGameEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace OnlineGameStore.DAL.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Comment", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.CommentEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace OnlineGameStore.DAL.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Game", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,18 +110,8 @@ namespace OnlineGameStore.DAL.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("");
 
-                    b.Property<int>("ReorderLevel")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
                     b.Property<short>("UnitsInStock")
                         .HasColumnType("smallint");
-
-                    b.Property<int>("UnitsOnOrder")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<decimal>("ViewsNumber")
                         .ValueGeneratedOnAdd()
@@ -154,14 +144,12 @@ namespace OnlineGameStore.DAL.Migrations
                             Price = 49.99m,
                             PublisherName = "CD Projekt RED",
                             QuantityPerUnit = "units",
-                            ReorderLevel = 0,
                             UnitsInStock = (short)50,
-                            UnitsOnOrder = 0,
                             ViewsNumber = 0m
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameGenre", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameGenreEntity", b =>
                 {
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
@@ -169,9 +157,21 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Property<Guid>("GenreId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("GameId", "GenreId");
 
                     b.HasIndex("GenreId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.ToTable("GameGenre");
 
@@ -179,24 +179,40 @@ namespace OnlineGameStore.DAL.Migrations
                         new
                         {
                             GameId = new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
-                            GenreId = new Guid("e49f4755-02d6-444a-b25c-9e65c5298cc5")
+                            GenreId = new Guid("e49f4755-02d6-444a-b25c-9e65c5298cc5"),
+                            Id = new Guid("297c1914-86e5-4f50-a6d4-d0a83cce8c7b"),
+                            IsDeleted = false
                         },
                         new
                         {
                             GameId = new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
-                            GenreId = new Guid("2d96d846-dd30-4982-95ea-1bf4aadf38f9")
+                            GenreId = new Guid("2d96d846-dd30-4982-95ea-1bf4aadf38f9"),
+                            Id = new Guid("54716b49-d5e9-44d0-9c11-559d8b17d3dc"),
+                            IsDeleted = false
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GamePlatformType", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GamePlatformTypeEntity", b =>
                 {
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PlatformId")
                         .HasColumnType("uniqueidentifier");
-                    
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("GameId", "PlatformId");
+
+                    b.HasIndex("IsDeleted");
 
                     b.HasIndex("PlatformId");
 
@@ -206,16 +222,20 @@ namespace OnlineGameStore.DAL.Migrations
                         new
                         {
                             GameId = new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
-                            PlatformId = new Guid("9f07b51a-f2cb-4c1b-ada4-b4ebb652ce0b")
+                            PlatformId = new Guid("9f07b51a-f2cb-4c1b-ada4-b4ebb652ce0b"),
+                            Id = new Guid("639847ca-2477-44fd-82c3-31204be47f80"),
+                            IsDeleted = false
                         },
                         new
                         {
                             GameId = new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
-                            PlatformId = new Guid("8dac1629-29ce-4054-89f0-6d5bba95280f")
+                            PlatformId = new Guid("8dac1629-29ce-4054-89f0-6d5bba95280f"),
+                            Id = new Guid("07bcad23-3d65-43ad-b930-be5042bd77be"),
+                            IsDeleted = false
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Genre", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GenreEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -356,66 +376,52 @@ namespace OnlineGameStore.DAL.Migrations
                             Id = new Guid("90649709-a022-415f-9e4b-45f4f9affc78"),
                             IsDeleted = false,
                             Name = "Misc."
-                        },
-                        new
-                        {
-                            Id = new Guid("d41414d6-ce60-435d-809a-4f4350990604"),
-                            Description = "Soft drinks, coffees, teas, beers, and ales",
-                            IsDeleted = false,
-                            Name = "Beverages"
-                        },
-                        new
-                        {
-                            Id = new Guid("ad5d6708-6675-4504-8a90-e2cb60ff4a4c"),
-                            Description = "Sweet and savory sauces, relishes, spreads, and seasonings",
-                            IsDeleted = false,
-                            Name = "Condiments"
-                        },
-                        new
-                        {
-                            Id = new Guid("f5b883d4-1d0b-4dac-9c9e-a9cf69c30162"),
-                            Description = "Desserts, candies, and sweet breads",
-                            IsDeleted = false,
-                            Name = "Confections"
-                        },
-                        new
-                        {
-                            Id = new Guid("a6079e7a-6363-43d1-8004-8c99b5d9b1b9"),
-                            Description = "Cheeses",
-                            IsDeleted = false,
-                            Name = "Dairy Products"
-                        },
-                        new
-                        {
-                            Id = new Guid("5c75e7f8-3ac2-4877-a5c5-6b0e3b02f70a"),
-                            Description = "Breads, crackers, pasta, and cereal",
-                            IsDeleted = false,
-                            Name = "Grains/Cereals"
-                        },
-                        new
-                        {
-                            Id = new Guid("455ef484-ab3d-4bbd-bd8b-41e01fb5f0d6"),
-                            Description = "Prepared meats",
-                            IsDeleted = false,
-                            Name = "Meat/Poultry"
-                        },
-                        new
-                        {
-                            Id = new Guid("6b0663e6-d189-4536-a950-42e53d419175"),
-                            Description = "Dried fruit and bean curd",
-                            IsDeleted = false,
-                            Name = "Produce"
-                        },
-                        new
-                        {
-                            Id = new Guid("06ea7b74-a38d-42fe-8e7f-4edadb8cfa02"),
-                            Description = "Seaweed and fish",
-                            IsDeleted = false,
-                            Name = "Seafood"
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Order", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderDetail", b =>
+                {
+                    b.Property<string>("GameKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("Discount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(0f);
+
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("money")
+                        .HasDefaultValue(0m);
+
+                    b.Property<short>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)1);
+
+                    b.HasKey("GameKey", "OrderId");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderDetail");
+                });
+
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -424,16 +430,15 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Property<DateTime?>("CancelledDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Freight")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("money")
                         .HasDefaultValue(0m);
 
                     b.Property<bool>("IsDeleted")
@@ -490,29 +495,7 @@ namespace OnlineGameStore.DAL.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderDetail", b =>
-                {
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("GameKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<float>("Discount")
-                        .HasColumnType("real");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<short>("Quantity")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("OrderId", "GameKey");
-
-                    b.ToTable("OrderDetail");
-                });
-
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformType", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformTypeEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -566,7 +549,7 @@ namespace OnlineGameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Publisher", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.PublisherEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -673,15 +656,15 @@ namespace OnlineGameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Comment", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.CommentEntity", b =>
                 {
-                    b.HasOne("OnlineGameStore.BLL.Entities.Game", "Game")
+                    b.HasOne("OnlineGameStore.BLL.Entities.GameEntity", "Game")
                         .WithMany("Comments")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineGameStore.BLL.Entities.Comment", "ReplyTo")
+                    b.HasOne("OnlineGameStore.BLL.Entities.CommentEntity", "ReplyTo")
                         .WithMany("Replies")
                         .HasForeignKey("ReplyToId");
 
@@ -690,15 +673,15 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("ReplyTo");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameGenre", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameGenreEntity", b =>
                 {
-                    b.HasOne("OnlineGameStore.BLL.Entities.Game", "Game")
+                    b.HasOne("OnlineGameStore.BLL.Entities.GameEntity", "Game")
                         .WithMany("GameGenres")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineGameStore.BLL.Entities.Genre", "Genre")
+                    b.HasOne("OnlineGameStore.BLL.Entities.GenreEntity", "Genre")
                         .WithMany("GameGenres")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -709,15 +692,15 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GamePlatformType", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GamePlatformTypeEntity", b =>
                 {
-                    b.HasOne("OnlineGameStore.BLL.Entities.Game", "Game")
+                    b.HasOne("OnlineGameStore.BLL.Entities.GameEntity", "Game")
                         .WithMany("GamePlatformTypes")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineGameStore.BLL.Entities.PlatformType", "PlatformType")
+                    b.HasOne("OnlineGameStore.BLL.Entities.PlatformTypeEntity", "PlatformType")
                         .WithMany("GamePlatformTypes")
                         .HasForeignKey("PlatformId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -728,9 +711,9 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("PlatformType");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Genre", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GenreEntity", b =>
                 {
-                    b.HasOne("OnlineGameStore.BLL.Entities.Genre", "Parent")
+                    b.HasOne("OnlineGameStore.BLL.Entities.GenreEntity", "Parent")
                         .WithMany("SubGenres")
                         .HasForeignKey("ParentId");
 
@@ -739,7 +722,7 @@ namespace OnlineGameStore.DAL.Migrations
 
             modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderDetail", b =>
                 {
-                    b.HasOne("OnlineGameStore.BLL.Entities.Order", "Order")
+                    b.HasOne("OnlineGameStore.BLL.Entities.OrderEntity", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -748,12 +731,12 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Comment", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.CommentEntity", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Game", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GameEntity", b =>
                 {
                     b.Navigation("Comments");
 
@@ -762,19 +745,19 @@ namespace OnlineGameStore.DAL.Migrations
                     b.Navigation("GamePlatformTypes");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Genre", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.GenreEntity", b =>
                 {
                     b.Navigation("GameGenres");
 
                     b.Navigation("SubGenres");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.Order", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.OrderEntity", b =>
                 {
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformType", b =>
+            modelBuilder.Entity("OnlineGameStore.BLL.Entities.PlatformTypeEntity", b =>
                 {
                     b.Navigation("GamePlatformTypes");
                 });

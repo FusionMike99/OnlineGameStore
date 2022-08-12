@@ -5,7 +5,7 @@ using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Utils;
 
-namespace OnlineGameStore.BLL.MappingProfiles
+namespace OnlineGameStore.BLL.Mapper
 {
     public class EntitiesMappingProfiles : Profile
     {
@@ -122,6 +122,8 @@ namespace OnlineGameStore.BLL.MappingProfiles
             CreateMap<NorthwindOrder, OrderModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.OrderId.ToGuid()))
+                .ForMember(dest => dest.CustomerId, opts =>
+                    opts.MapFrom(source => source.CustomerId.ToGuid()))
                 .ForMember(dest => dest.CancelledDate, opts => opts.Ignore())
                 .ForMember(dest => dest.OrderState, opts => 
                     opts.MapFrom(source => OrderState.Unknown))
@@ -131,7 +133,9 @@ namespace OnlineGameStore.BLL.MappingProfiles
                 .ForMember(dest => dest.Id, opts =>
                     opts.Ignore())
                 .ForMember(dest => dest.OrderId, opts =>
-                    opts.MapFrom(source => source.Id.ToInt()));
+                    opts.MapFrom(source => source.Id.ToInt()))
+                .ForMember(dest => dest.CustomerId, opts =>
+                    opts.MapFrom(source => source.CustomerId.ToString()));
 
             #endregion
 

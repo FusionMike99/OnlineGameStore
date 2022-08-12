@@ -8,7 +8,11 @@ namespace OnlineGameStore.DAL.Configurations
     {
         public void Configure(EntityTypeBuilder<GameGenreEntity> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.ToTable("GameGenre");
+            builder.HasKey(x => new { x.GameId, x.GenreId});
+            
+            builder.Property(gg => gg.Id)
+                .ValueGeneratedOnAdd();
 
             builder.HasOne(gg => gg.Game)
                 .WithMany(g => g.GameGenres)

@@ -8,12 +8,8 @@ namespace OnlineGameStore.DAL.Data
 {
     public class StoreDbContext : DbContext
     {
-        private readonly INorthwindCategoryRepository _categoryRepository;
-        
-        public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options,
-            INorthwindCategoryRepository categoryRepository) : base(options)
+        public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options) : base(options)
         {
-            _categoryRepository = categoryRepository;
         }
 
         public DbSet<GameEntity> Games { get; set; }
@@ -28,7 +24,7 @@ namespace OnlineGameStore.DAL.Data
 
         public DbSet<OrderEntity> Orders { get; set; }
 
-        protected override async void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -38,7 +34,7 @@ namespace OnlineGameStore.DAL.Data
                 if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
-            await modelBuilder.StoreSeed(_categoryRepository);
+            modelBuilder.StoreSeed();
         }
     }
 }

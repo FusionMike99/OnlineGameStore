@@ -28,19 +28,14 @@ namespace OnlineGameStore.MVC.ModelBuilders
             {
                 _model = new SortFilterGameViewModel()
             };
-            
-            var tasks = new[]
-            {
-                modelBuilder.SetGenres(genreService, sortFilterGameModel.SelectedGenres),
-                modelBuilder.SetPlatformTypes(platformTypeService, sortFilterGameModel.SelectedPlatformTypes),
-                modelBuilder.SetPublishers(publisherService, sortFilterGameModel.SelectedPublishers),
-                Task.Run(() => modelBuilder.SetSorting(sortFilterGameModel.GameSortState)),
-                Task.Run(() => modelBuilder.SetDatePublished(sortFilterGameModel.DatePublishedPeriod)),
-                Task.Run(() => modelBuilder.SetPriceRange(sortFilterGameModel.PriceRange)),
-                Task.Run(() => modelBuilder.SetName(sortFilterGameModel.GameName)),
-            };
 
-            await Task.WhenAll(tasks);
+            await modelBuilder.SetGenres(genreService, sortFilterGameModel.SelectedGenres);
+            await modelBuilder.SetPlatformTypes(platformTypeService, sortFilterGameModel.SelectedPlatformTypes);
+            await modelBuilder.SetPublishers(publisherService, sortFilterGameModel.SelectedPublishers);
+            modelBuilder.SetSorting(sortFilterGameModel.GameSortState);
+            modelBuilder.SetDatePublished(sortFilterGameModel.DatePublishedPeriod);
+            modelBuilder.SetPriceRange(sortFilterGameModel.PriceRange);
+            modelBuilder.SetName(sortFilterGameModel.GameName);
 
             return modelBuilder;
         }

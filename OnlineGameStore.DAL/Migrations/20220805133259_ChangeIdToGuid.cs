@@ -630,16 +630,14 @@ namespace OnlineGameStore.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "GameGenre",
-                columns: new[] { "Id", "GameId", "GenreId" },
+                columns: new[] { "GameId", "GenreId" },
                 values: new object[,]
                 {
                     {
-                        new Guid("297C1914-86E5-4F50-A6D4-D0A83CCE8C7B"),
                         new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
                         new Guid("e49f4755-02d6-444a-b25c-9e65c5298cc5")
                     },
                     {
-                        new Guid("54716B49-D5E9-44D0-9C11-559D8B17D3DC"),
                         new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
                         new Guid("2d96d846-dd30-4982-95ea-1bf4aadf38f9")
                     }
@@ -647,16 +645,14 @@ namespace OnlineGameStore.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "GamePlatformType",
-                columns: new[] { "Id", "GameId", "PlatformId" },
+                columns: new[] { "GameId", "PlatformId" },
                 values: new object[,]
                 {
                     {
-                        new Guid("639847CA-2477-44FD-82C3-31204BE47F80"),
                         new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
                         new Guid("9f07b51a-f2cb-4c1b-ada4-b4ebb652ce0b")
                     },
                     {
-                        new Guid("07BCAD23-3D65-43AD-B930-BE5042BD77BE"),
                         new Guid("94c979fa-20e5-412e-895b-a694b94f5ad4"),
                         new Guid("8dac1629-29ce-4054-89f0-6d5bba95280f")
                     }

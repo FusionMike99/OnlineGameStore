@@ -30,6 +30,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
+            entity.Id = Guid.NewGuid();
             await _entities.AddAsync(entity);
             await Context.SaveChangesAsync();
 

@@ -158,20 +158,9 @@ namespace OnlineGameStore.DAL.Data
             };
         }
 
-        internal static async Task StoreSeed(this ModelBuilder modelBuilder,
-            INorthwindCategoryRepository categoryRepository)
+        internal static void StoreSeed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GenreEntity>().HasData(Genres);
-
-            var genres = (await categoryRepository.GetAllAsync())
-                .Select(category => new GenreEntity 
-                    { 
-                        Id = Guid.NewGuid(),
-                        Name = category.Name,
-                        Description = category.Description
-                    });
-
-            modelBuilder.Entity<GenreEntity>().HasData(genres);
 
             modelBuilder.Entity<PlatformTypeEntity>().HasData(PlatformTypes);
 
@@ -183,7 +172,7 @@ namespace OnlineGameStore.DAL.Data
 
             modelBuilder.Entity<GamePlatformTypeEntity>().HasData(GamePlatformTypes);
 
-            GenerateFakeData(modelBuilder);
+            //GenerateFakeData(modelBuilder);
         }
 
         private static void GenerateFakeData(ModelBuilder modelBuilder)
