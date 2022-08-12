@@ -5,6 +5,6 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindShipperRepository : INorthwindGenericRepository<NorthwindShipper>
     {
-        Task<NorthwindShipper> GetByShipperId(int shipperId);
+        Task<NorthwindShipper> GetByShipperIdAsync(int shipperId);
     }
 }

@@ -21,21 +21,21 @@ namespace OnlineGameStore.BLL.Services
             _publisherRepository = publisherRepository;
         }
 
-        public async Task<bool> CheckCompanyNameForUnique(Guid publisherId, string companyName)
+        public async Task<bool> CheckCompanyNameForUniqueAsync(Guid publisherId, string companyName)
         {
             var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted: true);
 
             return publisher != null && publisher.Id != publisherId;
         }
 
-        public async Task<PublisherModel> CreatePublisher(PublisherModel publisher)
+        public async Task<PublisherModel> CreatePublisherAsync(PublisherModel publisher)
         {
             await _publisherRepository.CreateAsync(publisher);
 
             return publisher;
         }
 
-        public async Task DeletePublisher(Guid publisherId)
+        public async Task DeletePublisherAsync(Guid publisherId)
         {
             var publisher = await _publisherRepository.GetByIdAsync(publisherId);
 
@@ -45,7 +45,7 @@ namespace OnlineGameStore.BLL.Services
 
                 _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
                     Deleting publisher with id {PublisherId} unsuccessfully", nameof(PublisherService),
-                    nameof(DeletePublisher), publisherId);
+                    nameof(DeletePublisherAsync), publisherId);
 
                 throw exception;
             }
@@ -58,7 +58,7 @@ namespace OnlineGameStore.BLL.Services
             await _publisherRepository.DeleteAsync(publisher);
         }
 
-        public async Task<PublisherModel> EditPublisher(PublisherModel publisher)
+        public async Task<PublisherModel> EditPublisherAsync(PublisherModel publisher)
         {
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {
@@ -70,19 +70,19 @@ namespace OnlineGameStore.BLL.Services
             return publisher;
         }
 
-        public async Task<IEnumerable<string>> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
+        public async Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
             return await _publisherRepository.GetSuppliersIdsByNamesAsync(companiesNames);
         }
 
-        public async Task<IEnumerable<PublisherModel>> GetAllPublishers()
+        public async Task<IEnumerable<PublisherModel>> GetAllPublishersAsync()
         {
             var publishers = await _publisherRepository.GetAllAsync();
 
             return publishers;
         }
 
-        public async Task<PublisherModel> GetPublisherByCompanyName(string companyName)
+        public async Task<PublisherModel> GetPublisherByCompanyNameAsync(string companyName)
         {
             var publisher = await _publisherRepository.GetByNameAsync(companyName);
 

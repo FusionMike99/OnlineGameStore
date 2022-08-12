@@ -5,8 +5,7 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
 {
     public interface IGameStorePublisherRepository : IGameStoreGenericRepository<PublisherEntity>
     {
-        Task<PublisherEntity> GetByName(string companyName,
-            bool includeDeleted = false,
+        Task<PublisherEntity> GetByNameAsync(string companyName, bool includeDeleted = false,
             params string[] includeProperties);
     }
 }

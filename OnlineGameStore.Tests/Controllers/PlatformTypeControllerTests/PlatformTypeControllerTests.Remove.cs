@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.DeletePlatformType(It.IsAny<Guid>()));
+            mockPlatformTypeService.Setup(x => x.DeletePlatformTypeAsync(It.IsAny<Guid>()));
 
             // Act
             var result = await sut.Remove(id);
@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetPlatformTypes));
 
-            mockPlatformTypeService.Verify(x => x.DeletePlatformType(It.IsAny<Guid>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.DeletePlatformTypeAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

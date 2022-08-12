@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Services
             orderRepositoryMock.Setup(x => x.AddProductToOrderAsync(order.CustomerId, game, quantity));
 
             // Act
-            await sut.AddToOpenOrder(order.CustomerId, game, quantity);
+            await sut.AddToOpenOrderAsync(order.CustomerId, game, quantity);
 
             // Assert
             orderRepositoryMock.Verify(x => x.AddProductToOrderAsync(order.CustomerId, game, quantity),

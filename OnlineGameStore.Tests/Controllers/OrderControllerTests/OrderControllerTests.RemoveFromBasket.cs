@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.RemoveFromOrder(It.IsAny<Guid>(),
+            mockOrderService.Setup(x => x.RemoveFromOrderAsync(It.IsAny<Guid>(),
                 It.IsAny<string>()));
 
             // Act
@@ -31,7 +31,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetBasket));
 
-            mockOrderService.Verify(x => x.RemoveFromOrder(It.IsAny<Guid>(),
+            mockOrderService.Verify(x => x.RemoveFromOrderAsync(It.IsAny<Guid>(),
                 It.IsAny<string>()),
                 Times.Once);
         }

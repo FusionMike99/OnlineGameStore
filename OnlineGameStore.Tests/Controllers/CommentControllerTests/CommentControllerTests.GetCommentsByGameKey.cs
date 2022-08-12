@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetAllCommentsByGameKey(It.IsAny<string>()))
+            mockCommentService.Setup(x => x.GetAllCommentsByGameKeyAsync(It.IsAny<string>()))
                 .ReturnsAsync(comments);
 
             // Act
@@ -35,7 +35,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<AggregateCommentViewModel>()
                 .Which.Comments.Should().HaveSameCount(comments);
 
-            mockCommentService.Verify(x => x.GetAllCommentsByGameKey(It.IsAny<string>()), Times.Once);
+            mockCommentService.Verify(x => x.GetAllCommentsByGameKeyAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]

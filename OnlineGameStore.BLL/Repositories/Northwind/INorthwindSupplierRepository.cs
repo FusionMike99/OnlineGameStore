@@ -6,10 +6,10 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindSupplierRepository : INorthwindGenericRepository<NorthwindSupplier>
     {
-        Task<NorthwindSupplier> GetByName(string companyName);
+        Task<NorthwindSupplier> GetByNameAsync(string companyName);
         
-        Task<NorthwindSupplier> GetBySupplierId(int supplierId);
+        Task<NorthwindSupplier> GetBySupplierIdAsync(int supplierId);
 
-        Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> companiesNames);
+        Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> companiesNames);
     }
 }

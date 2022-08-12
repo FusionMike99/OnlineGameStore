@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
+            mockPublisherService.Setup(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<EditPublisherViewModel>()
                 .Which.Id.Should().Be(publisher.Id);
             
-            mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
+            mockPublisherService.Verify(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -61,7 +61,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
+            mockPublisherService.Setup(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -70,7 +70,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
+            mockPublisherService.Verify(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -81,7 +81,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.EditPublisher(It.IsAny<PublisherModel>()))
+            mockPublisherService.Setup(x => x.EditPublisherAsync(It.IsAny<PublisherModel>()))
                 .ReturnsAsync(publisher);
 
             var editPublisherViewModel = new EditPublisherViewModel
@@ -103,7 +103,7 @@ namespace OnlineGameStore.Tests.Controllers
             redirectToActionResult.RouteValues.Should()
                 .Contain(new KeyValuePair<string, object>("companyName", editPublisherViewModel.CompanyName));
 
-            mockPublisherService.Verify(x => x.EditPublisher(It.IsAny<PublisherModel>()), Times.Once);
+            mockPublisherService.Verify(x => x.EditPublisherAsync(It.IsAny<PublisherModel>()), Times.Once);
         }
 
         [Theory]

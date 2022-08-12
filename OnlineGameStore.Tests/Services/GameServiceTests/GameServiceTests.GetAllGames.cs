@@ -29,7 +29,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync((games, expectedCount));
 
             // Act
-            var actualGames = await sut.GetAllGames(sortFilterGameModel);
+            var actualGames = await sut.GetAllGamesAsync(sortFilterGameModel);
 
             // Assert
             actualGames.Item1.Should().BeEquivalentTo(games);

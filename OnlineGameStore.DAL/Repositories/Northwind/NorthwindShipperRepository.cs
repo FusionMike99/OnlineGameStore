@@ -15,7 +15,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<NorthwindShipper> GetByShipperId(int shipperId)
+        public async Task<NorthwindShipper> GetByShipperIdAsync(int shipperId)
         {
             Expression<Func<NorthwindShipper, bool>> predicate = s => s.ShipperId == shipperId;
 

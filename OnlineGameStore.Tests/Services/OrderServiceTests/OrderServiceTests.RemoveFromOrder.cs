@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             orderRepositoryMock.Setup(x => x.RemoveProductFromOrderAsync(customerId, gameKey));
 
             // Act
-            await sut.RemoveFromOrder(customerId, gameKey);
+            await sut.RemoveFromOrderAsync(customerId, gameKey);
 
             // Assert
             orderRepositoryMock.Verify(x => x.RemoveProductFromOrderAsync(customerId, gameKey), Times.Once());

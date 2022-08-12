@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             gameRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GameModel>()));
 
             // Act
-            await sut.DeleteGame(game.Key);
+            await sut.DeleteGameAsync(game.Key);
 
             // Assert
             gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
@@ -50,7 +50,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(game);
 
             // Act
-            Func<Task> actual = async () => await sut.DeleteGame(gameKey);
+            Func<Task> actual = async () => await sut.DeleteGameAsync(gameKey);
 
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();

@@ -7,24 +7,24 @@ namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IGenreService
     {
-        Task<GenreModel> CreateGenre(GenreModel genre);
+        Task<GenreModel> CreateGenreAsync(GenreModel genre);
 
-        Task<GenreModel> EditGenre(GenreModel genre);
+        Task<GenreModel> EditGenreAsync(GenreModel genre);
 
-        Task DeleteGenre(Guid genreId);
+        Task DeleteGenreAsync(Guid genreId);
 
-        Task<GenreModel> GetGenreById(Guid genreId);
+        Task<GenreModel> GetGenreByIdAsync(Guid genreId);
 
-        Task<IEnumerable<GenreModel>> GetAllGenres();
+        Task<IEnumerable<GenreModel>> GetAllGenresAsync();
         
-        Task<IEnumerable<GenreModel>> GetAllParentGenres();
+        Task<IEnumerable<GenreModel>> GetAllParentGenresAsync();
 
-        Task<IEnumerable<GenreModel>> GetAllWithoutGenre(Guid genreId);
+        Task<IEnumerable<GenreModel>> GetAllWithoutGenreAsync(Guid genreId);
         
-        Task<IEnumerable<string>> GetGenresIdsByNames(params string[] genresNames);
+        Task<IEnumerable<string>> GetGenresIdsByNamesAsync(params string[] genresNames);
         
-        Task<IEnumerable<string>> GetCategoriesIdsByNames(IEnumerable<string> categoriesNames);
+        Task<IEnumerable<string>> GetCategoriesIdsByNamesAsync(IEnumerable<string> categoriesNames);
 
-        Task<bool> CheckNameForUnique(Guid genreId, string name);
+        Task<bool> CheckNameForUniqueAsync(Guid genreId, string name);
     }
 }

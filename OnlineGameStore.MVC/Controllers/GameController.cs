@@ -63,7 +63,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGame = _mapper.Map<GameModel>(game);
 
-            await _gameService.CreateGame(mappedGame);
+            await _gameService.CreateGameAsync(mappedGame);
 
             return RedirectToAction(nameof(GetGames));
         }
@@ -76,7 +76,7 @@ namespace OnlineGameStore.MVC.Controllers
                 return BadRequest();
             }
 
-            var game = await _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -105,7 +105,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGame = _mapper.Map<GameModel>(game);
 
-            await _gameService.EditGame(mappedGame);
+            await _gameService.EditGameAsync(mappedGame);
 
             return RedirectToAction(nameof(GetGames));
         }
@@ -118,7 +118,7 @@ namespace OnlineGameStore.MVC.Controllers
                 return BadRequest();
             }
 
-            var game = await _gameService.GetGameByKey(gameKey, increaseViews: true);
+            var game = await _gameService.GetGameByKeyAsync(gameKey, increaseViews: true);
 
             if (game == null)
             {
@@ -139,7 +139,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var pageModel = new PageModel(pageNumber, pageSize);
 
-            var (games, gamesNumber) = await _gameService.GetAllGames(sortFilterGameModel, pageModel);
+            var (games, gamesNumber) = await _gameService.GetAllGamesAsync(sortFilterGameModel, pageModel);
 
             var gamesViewModel = _mapper.Map<IEnumerable<GameViewModel>>(games);
 
@@ -165,7 +165,7 @@ namespace OnlineGameStore.MVC.Controllers
                 return BadRequest();
             }
 
-            await _gameService.DeleteGame(gameKey);
+            await _gameService.DeleteGameAsync(gameKey);
 
             return RedirectToAction(nameof(GetGames));
         }
@@ -178,7 +178,7 @@ namespace OnlineGameStore.MVC.Controllers
                 return BadRequest();
             }
 
-            var game = await _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -199,9 +199,9 @@ namespace OnlineGameStore.MVC.Controllers
 
         private async Task ConfigureEditGameViewModel(EditGameViewModel model)
         {
-            var genresTask = _genreService.GetAllGenres();
-            var platformsTask = _platformTypeService.GetAllPlatformTypes();
-            var publishersTask = _publisherService.GetAllPublishers();
+            var genresTask = _genreService.GetAllGenresAsync();
+            var platformsTask = _platformTypeService.GetAllPlatformTypesAsync();
+            var publishersTask = _publisherService.GetAllPublishersAsync();
 
             await Task.WhenAll(genresTask, platformsTask, publishersTask);
             
@@ -220,7 +220,7 @@ namespace OnlineGameStore.MVC.Controllers
 
         private async Task VerifyGame(EditGameViewModel game)
         {
-            var checkResult = await _gameService.CheckKeyForUnique(game.Id, game.Key);
+            var checkResult = await _gameService.CheckKeyForUniqueAsync(game.Id, game.Key);
 
             if (checkResult)
             {

@@ -16,16 +16,16 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public override async Task Delete(GenreEntity genre)
+        public override async Task DeleteAsync(GenreEntity genre)
         {
-            await base.Delete(genre);
+            await base.DeleteAsync(genre);
             
             genre.SubGenres.ToList().ForEach(g => g.ParentId = g.Parent.ParentId);
 
             await Context.SaveChangesAsync();
         }
 
-        public async Task<GenreEntity> GetByName(string name,
+        public async Task<GenreEntity> GetByNameAsync(string name,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
@@ -34,7 +34,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
-        public async Task<IEnumerable<GenreEntity>> GetParentGenres(bool includeDeleted = false,
+        public async Task<IEnumerable<GenreEntity>> GetParentGenresAsync(bool includeDeleted = false,
             params string[] includeProperties)
         {
             Expression<Func<GenreEntity, bool>> predicate = g => !g.ParentId.HasValue;
@@ -44,7 +44,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 includeProperties: includeProperties);
         }
 
-        public async Task<IEnumerable<GenreEntity>> GetWithoutGenre(Guid id,
+        public async Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
@@ -55,7 +55,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 includeProperties: includeProperties);
         }
 
-        public async Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> genresNames)
+        public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> genresNames)
         {
             var genres = await GetMany(g => genresNames.Contains(g.Name));
 

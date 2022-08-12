@@ -13,26 +13,19 @@ namespace OnlineGameStore.BLL.Repositories
 
         Task DeleteAsync(GenreModel genreModel);
         
-        Task<GenreModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GenreModel> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
         
-        Task<GenreModel> GetByNameAsync(string name,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GenreModel> GetByNameAsync(string name, bool includeDeleted = false, params string[] includeProperties);
 
         Task<IEnumerable<string>> GetGenreIdsByNamesAsync(IEnumerable<string> names);
         
         Task<IEnumerable<string>> GetCategoryIdsByNamesAsync(IEnumerable<string> names);
 
-        Task<IEnumerable<GenreModel>> GetAllAsync(bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<IEnumerable<GenreModel>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties);
         
-        Task<IEnumerable<GenreModel>> GetParentGenres(bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<IEnumerable<GenreModel>> GetParentGenresAsync(bool includeDeleted = false, params string[] includeProperties);
         
-        Task<IEnumerable<GenreModel>> GetWithoutGenre(Guid id,
-            bool includeDeleted = false,
+        Task<IEnumerable<GenreModel>> GetWithoutGenreAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties);
     }
 }

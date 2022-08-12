@@ -163,7 +163,7 @@ namespace OnlineGameStore.DAL.Data
         {
             modelBuilder.Entity<GenreEntity>().HasData(Genres);
 
-            var genres = (await categoryRepository.GetAll())
+            var genres = (await categoryRepository.GetAllAsync())
                 .Select(category => new GenreEntity 
                     { 
                         Id = Guid.NewGuid(),

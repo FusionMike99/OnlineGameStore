@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Services
             var expectedComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 
             // Act
-            var actualComments = await sut.GetAllCommentsByGameKey(gameKey);
+            var actualComments = await sut.GetAllCommentsByGameKeyAsync(gameKey);
 
             // Assert
             actualComments.Should().BeEquivalentTo(expectedComments);

@@ -7,17 +7,14 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
 {
     public interface IGameStoreGenreRepository : IGameStoreGenericRepository<GenreEntity>
     {
-        Task<GenreEntity> GetByName(string name,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GenreEntity> GetByNameAsync(string name, bool includeDeleted = false, params string[] includeProperties);
 
-        Task<IEnumerable<GenreEntity>> GetParentGenres(bool includeDeleted = false,
+        Task<IEnumerable<GenreEntity>> GetParentGenresAsync(bool includeDeleted = false,
             params string[] includeProperties);
         
-        Task<IEnumerable<GenreEntity>> GetWithoutGenre(Guid id,
-            bool includeDeleted = false,
+        Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties);
         
-        Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> genresNames);
+        Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> genresNames);
     }
 }

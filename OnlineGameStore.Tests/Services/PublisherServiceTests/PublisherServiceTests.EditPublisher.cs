@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             publisherRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<PublisherModel>()));
 
             // Act
-            var actualPublisher = await sut.EditPublisher(publisher);
+            var actualPublisher = await sut.EditPublisherAsync(publisher);
 
             // Assert
             actualPublisher.Should().BeEquivalentTo(publisher);
@@ -47,7 +47,7 @@ namespace OnlineGameStore.Tests.Services
             publisher.DatabaseEntity = databaseEntity;
 
             // Act
-            Func<Task> actual = async () => await sut.EditPublisher(publisher);
+            Func<Task> actual = async () => await sut.EditPublisherAsync(publisher);
 
             // Assert
             actual.Should().ThrowAsync<InvalidOperationException>();

@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Services
             orderRepositoryMock.Setup(x => x.SetCancelledDateAsync(order.Id, cancelledDate));
 
             // Act
-            await sut.SetCancelledDate(order.Id, cancelledDate);
+            await sut.SetCancelledDateAsync(order.Id, cancelledDate);
 
             // Assert
             orderRepositoryMock.Verify(x => x.SetCancelledDateAsync(order.Id, cancelledDate), Times.Once);

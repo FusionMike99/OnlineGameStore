@@ -26,20 +26,20 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             _supplierRepository = supplierRepository;
         }
 
-        public async Task<NorthwindProduct> GetByKey(string gameKey)
+        public async Task<NorthwindProduct> GetByKeyAsync(string gameKey)
         {
             Expression<Func<NorthwindProduct, bool>> predicate = p => p.Key == gameKey;
 
             return await GetFirst(predicate);
         }
 
-        public Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAdded(List<NorthwindProduct> products)
+        public Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products)
         {
             async void Action(NorthwindProduct product)
             {
                 product.Key ??= product.Name.ToKebabCase();
 
-                await Update(product);
+                await UpdateAsync(product);
 
                 product.DateAdded ??= Constants.AddedAtDefault;
             }
@@ -49,7 +49,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return Task.FromResult<IEnumerable<NorthwindProduct>>(products);
         }
 
-        public async Task<IEnumerable<NorthwindProduct>> GetAllByFilter(SortFilterGameModel sortFilterModel)
+        public async Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = await GetNorthwindPredicate(sortFilterModel);
 
@@ -75,7 +75,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
             if (model != null && model.SelectedPublishers?.Any() == false)
             {
-                var supplierIds = await _supplierRepository.GetIdsByNames(model.SelectedPublishers);
+                var supplierIds = await _supplierRepository.GetIdsByNamesAsync(model.SelectedPublishers);
                 model.SelectedSuppliers = supplierIds.ToList();
             }
         }

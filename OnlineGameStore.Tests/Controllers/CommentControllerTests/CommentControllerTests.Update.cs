@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<Guid>()))
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -36,7 +36,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<EditCommentViewModel>()
                 .Which.Id.Should().Be(comment.Id);
             
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<Guid>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -49,7 +49,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<Guid>()))
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -58,7 +58,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<Guid>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.EditComment(It.IsAny<CommentModel>()))
+            mockCommentService.Setup(x => x.EditCommentAsync(It.IsAny<CommentModel>()))
                 .ReturnsAsync(comment);
 
             mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>()))
@@ -95,7 +95,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<JsonResult>();
 
-            mockCommentService.Verify(x => x.EditComment(It.IsAny<CommentModel>()), Times.Once);
+            mockCommentService.Verify(x => x.EditCommentAsync(It.IsAny<CommentModel>()), Times.Once);
         }
         
         [Theory]

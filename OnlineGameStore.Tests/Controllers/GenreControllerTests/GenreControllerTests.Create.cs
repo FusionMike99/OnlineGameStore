@@ -35,7 +35,7 @@ namespace OnlineGameStore.Tests.Controllers
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.CreateGenre(It.IsAny<GenreModel>()))
+            mockGenreService.Setup(x => x.CreateGenreAsync(It.IsAny<GenreModel>()))
                 .ReturnsAsync(genre);
 
             var editGenreViewModel = new EditGenreViewModel
@@ -52,7 +52,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGenres));
 
-            mockGenreService.Verify(x => x.CreateGenre(It.IsAny<GenreModel>()), Times.Once);
+            mockGenreService.Verify(x => x.CreateGenreAsync(It.IsAny<GenreModel>()), Times.Once);
         }
 
         [Theory]

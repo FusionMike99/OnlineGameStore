@@ -31,7 +31,7 @@ namespace OnlineGameStore.Tests.Services
             publisherRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PublisherModel>()));
 
             // Act
-            await sut.DeletePublisher(publisher.Id);
+            await sut.DeletePublisherAsync(publisher.Id);
 
             // Assert
             publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()),
@@ -52,7 +52,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            Func<Task> actual = async () => await sut.DeletePublisher(publisherId);
+            Func<Task> actual = async () => await sut.DeletePublisherAsync(publisherId);
 
             // Assert
             actual.Should().ThrowAsync<InvalidOperationException>();
@@ -76,7 +76,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            Func<Task> actual = async () => await sut.DeletePublisher(publisher.Id);
+            Func<Task> actual = async () => await sut.DeletePublisherAsync(publisher.Id);
 
             // Assert
             actual.Should().ThrowAsync<InvalidOperationException>();

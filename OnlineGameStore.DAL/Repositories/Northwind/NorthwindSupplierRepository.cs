@@ -18,21 +18,21 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<NorthwindSupplier> GetByName(string companyName)
+        public async Task<NorthwindSupplier> GetByNameAsync(string companyName)
         {
             Expression<Func<NorthwindSupplier, bool>> predicate = s => s.CompanyName == companyName;
 
             return await GetFirst(predicate);
         }
 
-        public async Task<NorthwindSupplier> GetBySupplierId(int supplierId)
+        public async Task<NorthwindSupplier> GetBySupplierIdAsync(int supplierId)
         {
             Expression<Func<NorthwindSupplier, bool>> predicate = c => c.SupplierId == supplierId;
 
             return await GetFirst(predicate);
         }
 
-        public async Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> companiesNames)
+        public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
             var suppliers = await GetMany(s => companiesNames.Contains(s.CompanyName));
 

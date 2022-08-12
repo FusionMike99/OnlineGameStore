@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(platformType);
 
             // Act
-            var actualPlatformType = await sut.GetPlatformTypeById(platformType.Id);
+            var actualPlatformType = await sut.GetPlatformTypeByIdAsync(platformType.Id);
 
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);

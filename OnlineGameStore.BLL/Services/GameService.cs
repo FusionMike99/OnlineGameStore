@@ -21,23 +21,23 @@ namespace OnlineGameStore.BLL.Services
             _gameRepository = gameRepository;
         }
 
-        public async Task<GameModel> CreateGame(GameModel game)
+        public async Task<GameModel> CreateGameAsync(GameModel game)
         {
             await _gameRepository.CreateAsync(game);
 
             return game;
         }
 
-        public async Task DeleteGame(string gameKey)
+        public async Task DeleteGameAsync(string gameKey)
         {
-            var game = await GetGameByKey(gameKey);
+            var game = await GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
                 var exception = new InvalidOperationException("Game has not been found");
 
                 _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
-                    Deleting game with id {GameKey} unsuccessfully", nameof(GameService), nameof(DeleteGame), gameKey);
+                    Deleting game with id {GameKey} unsuccessfully", nameof(GameService), nameof(DeleteGameAsync), gameKey);
 
                 throw exception;
             }
@@ -45,14 +45,14 @@ namespace OnlineGameStore.BLL.Services
             await _gameRepository.DeleteAsync(game);
         }
 
-        public async Task<GameModel> EditGame(GameModel game)
+        public async Task<GameModel> EditGameAsync(GameModel game)
         {
             await _gameRepository.UpdateAsync(game);
 
             return game;
         }
 
-        public async Task<(IEnumerable<GameModel>, int)> GetAllGames(SortFilterGameModel sortFilterModel = null,
+        public async Task<(IEnumerable<GameModel>, int)> GetAllGamesAsync(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null)
         {
             var result = await _gameRepository.GetAllAsync(sortFilterModel, pageModel);
@@ -60,21 +60,21 @@ namespace OnlineGameStore.BLL.Services
             return result;
         }
 
-        public async Task<GameModel> GetGameByKey(string gameKey, bool increaseViews = false)
+        public async Task<GameModel> GetGameByKeyAsync(string gameKey, bool increaseViews = false)
         {
             var game = await _gameRepository.GetByKeyAsync(gameKey, increaseViews);
 
             return game;
         }
 
-        public async Task<int> GetGamesNumber(SortFilterGameModel sortFilterModel = null)
+        public async Task<int> GetGamesNumberAsync(SortFilterGameModel sortFilterModel = null)
         {
             var gamesNumber = await _gameRepository.GetGamesNumberAsync(sortFilterModel);
 
             return gamesNumber;
         }
 
-        public async Task<bool> CheckKeyForUnique(Guid gameId, string gameKey)
+        public async Task<bool> CheckKeyForUniqueAsync(Guid gameId, string gameKey)
         {
             var game = await _gameRepository.GetByKeyAsync(gameKey, increaseViews: false, includeDeleted: true);
 

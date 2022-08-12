@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+            mockGenreService.Setup(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<PlatformTypeViewModel>()
                 .Which.Id.Should().Be(platformType.Id);
 
-            mockGenreService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
+            mockGenreService.Verify(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -55,7 +55,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

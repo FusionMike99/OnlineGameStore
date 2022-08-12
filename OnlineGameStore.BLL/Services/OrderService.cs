@@ -24,57 +24,57 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetOrders(FilterOrderModel filterOrderModel = null)
+        public async Task<IEnumerable<OrderModel>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
             var orders = await _orderRepository.GetOrdersAsync(filterOrderModel);
 
             return orders;
         }
 
-        public async Task<OrderModel> EditOrder(OrderModel order)
+        public async Task<OrderModel> EditOrderAsync(OrderModel order)
         {
             await _orderRepository.UpdateAsync(order);
 
             return order;
         }
 
-        public async Task AddToOpenOrder(Guid customerId, GameModel product, short quantity)
+        public async Task AddToOpenOrderAsync(Guid customerId, GameModel product, short quantity)
         {
             await _orderRepository.AddProductToOrderAsync(customerId, product, quantity);
         }
 
-        public async Task RemoveFromOrder(Guid customerId, string gameKey)
+        public async Task RemoveFromOrderAsync(Guid customerId, string gameKey)
         {
             await _orderRepository.RemoveProductFromOrderAsync(customerId, gameKey);
         }
 
-        public async Task<OrderModel> ChangeStatusToInProcess(Guid customerId)
+        public async Task<OrderModel> ChangeStatusToInProcessAsync(Guid customerId)
         {
             var order = await _orderRepository.ChangeStatusToInProcessAsync(customerId);
 
             return order;
         }
 
-        public async Task<OrderModel> ChangeStatusToClosed(Guid orderId)
+        public async Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId)
         {
             var order = await _orderRepository.ChangeStatusToClosedAsync(orderId);
 
             return order;
         }
 
-        public async Task<OrderModel> GetOrderById(Guid orderId)
+        public async Task<OrderModel> GetOrderByIdAsync(Guid orderId)
         {
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
 
             return order;
         }
 
-        public async Task CancelOrdersWithTimeout()
+        public async Task CancelOrdersWithTimeoutAsync()
         {
             await _orderRepository.CancelOrdersWithTimeoutAsync();
         }
 
-        public async Task SetCancelledDate(Guid orderId, DateTime cancelledDate)
+        public async Task SetCancelledDateAsync(Guid orderId, DateTime cancelledDate)
         {
             await _orderRepository.SetCancelledDateAsync(orderId, cancelledDate);
         }

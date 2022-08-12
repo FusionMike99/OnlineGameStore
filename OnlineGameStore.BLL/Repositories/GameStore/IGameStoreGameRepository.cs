@@ -7,10 +7,8 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
 {
     public interface IGameStoreGameRepository : IGameStoreGenericRepository<GameEntity>
     {
-        Task<GameEntity> GetByKey(string gameKey,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GameEntity> GetByKeyAsync(string gameKey, bool includeDeleted = false, params string[] includeProperties);
 
-        Task<IEnumerable<GameEntity>> GetAllByFilter(SortFilterGameModel sortFilterModel);
+        Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel);
     }
 }

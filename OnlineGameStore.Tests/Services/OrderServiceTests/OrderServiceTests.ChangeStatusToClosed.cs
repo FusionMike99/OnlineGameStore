@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(order);
 
             // Act
-            var actualOrder = await sut.ChangeStatusToClosed(order.Id);
+            var actualOrder = await sut.ChangeStatusToClosedAsync(order.Id);
 
             // Assert
             actualOrder.OrderState.Should().Be(order.OrderState);

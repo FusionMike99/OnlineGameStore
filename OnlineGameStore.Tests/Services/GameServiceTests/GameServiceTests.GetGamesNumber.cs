@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(gamesNumber);
 
             // Act
-            var actualGamesNumber = await sut.GetGamesNumber(sortFilterGameModel);
+            var actualGamesNumber = await sut.GetGamesNumberAsync(sortFilterGameModel);
 
             // Assert
             actualGamesNumber.Should().Be(gamesNumber);

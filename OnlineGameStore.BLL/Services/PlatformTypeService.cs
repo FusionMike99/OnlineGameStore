@@ -20,28 +20,28 @@ namespace OnlineGameStore.BLL.Services
             _platformTypeRepository = platformTypeRepository;
         }
 
-        public async Task<IEnumerable<string>> GetPlatformTypesIdsByNames(IEnumerable<string> types)
+        public async Task<IEnumerable<string>> GetPlatformTypesIdsByNamesAsync(IEnumerable<string> types)
         {
             var platformTypesIds = await _platformTypeRepository.GetIdsByTypesAsync(types);
 
             return platformTypesIds;
         }
 
-        public async Task<bool> CheckTypeForUnique(Guid platformTypeId, string type)
+        public async Task<bool> CheckTypeForUniqueAsync(Guid platformTypeId, string type)
         {
             var platformType = await _platformTypeRepository.GetByTypeAsync(type, includeDeleted: true);
 
             return platformType != null && platformType.Id != platformTypeId;
         }
 
-        public async Task<PlatformTypeModel> CreatePlatformType(PlatformTypeModel platformType)
+        public async Task<PlatformTypeModel> CreatePlatformTypeAsync(PlatformTypeModel platformType)
         {
            await _platformTypeRepository.CreateAsync(platformType);
 
             return platformType;
         }
 
-        public async Task DeletePlatformType(Guid platformTypeId)
+        public async Task DeletePlatformTypeAsync(Guid platformTypeId)
         {
             var platformType = await _platformTypeRepository.GetByIdAsync(platformTypeId);
 
@@ -52,7 +52,7 @@ namespace OnlineGameStore.BLL.Services
                 _logger.LogError(exception,
                     @"Service: {PlatformType}; Method: {Method}.
                     Deleting platform type with id {PlatformTypeId} unsuccessfully", nameof(PlatformTypeService),
-                    nameof(DeletePlatformType), platformTypeId);
+                    nameof(DeletePlatformTypeAsync), platformTypeId);
 
                 throw exception;
             }
@@ -60,21 +60,21 @@ namespace OnlineGameStore.BLL.Services
             await _platformTypeRepository.DeleteAsync(platformType);
         }
 
-        public async Task<PlatformTypeModel> EditPlatformType(PlatformTypeModel platformType)
+        public async Task<PlatformTypeModel> EditPlatformTypeAsync(PlatformTypeModel platformType)
         {
             await _platformTypeRepository.UpdateAsync(platformType);
 
             return platformType;
         }
 
-        public async Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypes()
+        public async Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypesAsync()
         {
             var platformTypes = await _platformTypeRepository.GetAllAsync();
 
             return platformTypes;
         }
 
-        public async Task<PlatformTypeModel> GetPlatformTypeById(Guid platformTypeId)
+        public async Task<PlatformTypeModel> GetPlatformTypeByIdAsync(Guid platformTypeId)
         {
             var platformType = await _platformTypeRepository.GetByIdAsync(platformTypeId);
 

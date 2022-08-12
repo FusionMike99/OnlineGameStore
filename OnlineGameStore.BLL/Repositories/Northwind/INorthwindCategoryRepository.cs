@@ -6,8 +6,8 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindCategoryRepository : INorthwindGenericRepository<NorthwindCategory>
     {
-        Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> categoriesNames);
+        Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames);
         
-        Task<NorthwindCategory> GetByCategoryId(int categoryId);
+        Task<NorthwindCategory> GetByCategoryIdAsync(int categoryId);
     }
 }

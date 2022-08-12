@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<Guid>()))
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -35,7 +35,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<CommentViewModel>()
                 .Which.Id.Should().Be(comment.Id);
             
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<Guid>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -48,7 +48,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<Guid>()))
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -57,7 +57,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<Guid>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
         
         [Theory]
@@ -69,7 +69,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.DeleteComment(It.IsAny<Guid>()));
+            mockCommentService.Setup(x => x.DeleteCommentAsync(It.IsAny<Guid>()));
 
             // Act
             var result = await sut.RemoveCommentConfirmed(id, gameKey);
@@ -78,7 +78,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
-            mockCommentService.Verify(x => x.DeleteComment(It.IsAny<Guid>()), Times.Once);
+            mockCommentService.Verify(x => x.DeleteCommentAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

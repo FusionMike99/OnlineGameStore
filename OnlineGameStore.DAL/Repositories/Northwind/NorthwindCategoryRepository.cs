@@ -17,7 +17,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<IEnumerable<string>> GetIdsByNames(IEnumerable<string> categoriesNames)
+        public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames)
         {
             var categories = await GetMany(c => categoriesNames.Contains(c.Name));
 
@@ -26,7 +26,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return genreIds;
         }
 
-        public async Task<NorthwindCategory> GetByCategoryId(int categoryId)
+        public async Task<NorthwindCategory> GetByCategoryIdAsync(int categoryId)
         {
             Expression<Func<NorthwindCategory, bool>> predicate = c => c.CategoryId == categoryId;
 

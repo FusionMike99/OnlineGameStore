@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Controllers
         {
             // Arrange
             var expectedCount = games.Count;
-            mockGameService.Setup(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
+            mockGameService.Setup(x => x.GetAllGamesAsync(It.IsAny<SortFilterGameModel>(),
                     It.IsAny<PageModel>()))
                 .ReturnsAsync((games, expectedCount));
 
@@ -38,7 +38,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<GameListViewModel>()
                 .Which.Games.Should().HaveSameCount(games);
 
-            mockGameService.Verify(x => x.GetAllGames(It.IsAny<SortFilterGameModel>(),
+            mockGameService.Verify(x => x.GetAllGamesAsync(It.IsAny<SortFilterGameModel>(),
                     It.IsAny<PageModel>()),
                 Times.Once);
         }

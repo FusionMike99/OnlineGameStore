@@ -25,7 +25,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
 
-            var createdPlatformType = await _platformTypeRepository.Create(platformType);
+            var createdPlatformType = await _platformTypeRepository.CreateAsync(platformType);
 
             platformTypeModel.Id = createdPlatformType.Id;
         }
@@ -34,20 +34,20 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
 
-            await _platformTypeRepository.Update(platformType);
+            await _platformTypeRepository.UpdateAsync(platformType);
         }
 
         public async Task DeleteAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
 
-            await _platformTypeRepository.Delete(platformType);
+            await _platformTypeRepository.DeleteAsync(platformType);
         }
 
         public async Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformType = await _platformTypeRepository.GetById(id, includeDeleted, includeProperties);
+            var platformType = await _platformTypeRepository.GetByIdAsync(id, includeDeleted, includeProperties);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
@@ -57,7 +57,7 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformType = await _platformTypeRepository.GetByType(type, includeDeleted, includeProperties);
+            var platformType = await _platformTypeRepository.GetByTypeAsync(type, includeDeleted, includeProperties);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
@@ -65,13 +65,13 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types)
         {
-            return await _platformTypeRepository.GetIdsByTypes(types);
+            return await _platformTypeRepository.GetIdsByTypesAsync(types);
         }
 
         public async Task<IEnumerable<PlatformTypeModel>> GetAllAsync(bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformTypes = await _platformTypeRepository.GetAll(includeDeleted, includeProperties);
+            var platformTypes = await _platformTypeRepository.GetAllAsync(includeDeleted, includeProperties);
             var mappedPlatformTypes = _mapper.Map<IEnumerable<PlatformTypeModel>>(platformTypes);
 
             return mappedPlatformTypes;

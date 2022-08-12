@@ -7,10 +7,10 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindProductRepository : INorthwindGenericRepository<NorthwindProduct>
     {
-        Task<NorthwindProduct> GetByKey(string gameKey);
+        Task<NorthwindProduct> GetByKeyAsync(string gameKey);
 
-        Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAdded(List<NorthwindProduct> products);
+        Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products);
         
-        Task<IEnumerable<NorthwindProduct>> GetAllByFilter(SortFilterGameModel sortFilterModel);
+        Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel);
     }
 }

@@ -23,17 +23,17 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetWithoutGenre(It.IsAny<Guid>(), It.IsAny<bool>(),
+            genreRepositoryMock.Setup(x => x.GetWithoutGenreAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
                     It.IsAny<string[]>()))
                 .ReturnsAsync(genres);
 
             // Act
-            var actualGenres = await sut.GetAllWithoutGenre(genreId);
+            var actualGenres = await sut.GetAllWithoutGenreAsync(genreId);
 
             // Assert
             actualGenres.Should().BeEquivalentTo(genres);
 
-            genreRepositoryMock.Verify(x => x.GetWithoutGenre(It.IsAny<Guid>(), It.IsAny<bool>(),
+            genreRepositoryMock.Verify(x => x.GetWithoutGenreAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
                 It.IsAny<string[]>()), Times.Once);
         }
     }

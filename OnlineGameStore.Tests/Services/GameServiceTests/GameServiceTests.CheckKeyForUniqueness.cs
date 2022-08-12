@@ -27,7 +27,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(game);
 
             // Act
-            var actualResult = await sut.CheckKeyForUnique(id, game.Key);
+            var actualResult = await sut.CheckKeyForUniqueAsync(id, game.Key);
 
             // Assert
             actualResult.Should().BeTrue();
@@ -51,7 +51,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(game);
 
             // Act
-            var actualResult = await sut.CheckKeyForUnique(id, gameKey);
+            var actualResult = await sut.CheckKeyForUniqueAsync(id, gameKey);
 
             // Assert
             actualResult.Should().BeFalse();
@@ -73,7 +73,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(game);
 
             // Act
-            var actualResult = await sut.CheckKeyForUnique(game.Id, game.Key);
+            var actualResult = await sut.CheckKeyForUniqueAsync(game.Id, game.Key);
 
             // Assert
             actualResult.Should().BeFalse();

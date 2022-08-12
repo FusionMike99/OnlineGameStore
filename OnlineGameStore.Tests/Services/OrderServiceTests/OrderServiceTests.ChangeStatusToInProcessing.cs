@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(order);
 
             // Act
-            var actualOrder = await sut.ChangeStatusToInProcess(order.CustomerId);
+            var actualOrder = await sut.ChangeStatusToInProcessAsync(order.CustomerId);
 
             // Assert
             actualOrder.OrderState.Should().Be(order.OrderState);

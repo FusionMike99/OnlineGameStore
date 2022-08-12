@@ -16,7 +16,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public async Task<IEnumerable<string>> GetIdsByTypes(IEnumerable<string> types)
+        public async Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types)
         {
             var platformTypes = await GetMany(s => types.Contains(s.Type));
 
@@ -25,7 +25,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return platformTypesIds;
         }
 
-        public async Task<PlatformTypeEntity> GetByType(string type, bool includeDeleted = false, params string[] includeProperties)
+        public async Task<PlatformTypeEntity> GetByTypeAsync(string type, bool includeDeleted = false, params string[] includeProperties)
         {
             Expression<Func<PlatformTypeEntity, bool>> predicate = pt => pt.Type == type;
 

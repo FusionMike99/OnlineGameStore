@@ -14,7 +14,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public async Task<PublisherEntity> GetByName(string companyName,
+        public async Task<PublisherEntity> GetByNameAsync(string companyName,
             bool includeDeleted = false,
             params string[] includeProperties)
         {

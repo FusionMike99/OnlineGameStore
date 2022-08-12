@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             gameRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<GameModel>()));
 
             // Act
-            var actualGame = await sut.CreateGame(game);
+            var actualGame = await sut.CreateGameAsync(game);
 
             // Assert
             actualGame.Should().BeEquivalentTo(game);

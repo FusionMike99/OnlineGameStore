@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            var actualResult = await sut.CheckCompanyNameForUnique(id, publisher.CompanyName);
+            var actualResult = await sut.CheckCompanyNameForUniqueAsync(id, publisher.CompanyName);
 
             // Assert
             actualResult.Should().BeTrue();
@@ -49,7 +49,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            var actualResult = await sut.CheckCompanyNameForUnique(id, companyName);
+            var actualResult = await sut.CheckCompanyNameForUniqueAsync(id, companyName);
 
             // Assert
             actualResult.Should().BeFalse();
@@ -70,7 +70,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            var actualResult = await sut.CheckCompanyNameForUnique(publisher.Id, publisher.CompanyName);
+            var actualResult = await sut.CheckCompanyNameForUniqueAsync(publisher.Id, publisher.CompanyName);
 
             // Assert
             actualResult.Should().BeFalse();

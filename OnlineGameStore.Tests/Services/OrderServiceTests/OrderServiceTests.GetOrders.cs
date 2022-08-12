@@ -27,7 +27,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(orders);
 
             // Act
-            var actualOrder = await sut.GetOrders(filterOrderModel);
+            var actualOrder = await sut.GetOrdersAsync(filterOrderModel);
 
             // Assert
             actualOrder.Should().BeEquivalentTo(orders);

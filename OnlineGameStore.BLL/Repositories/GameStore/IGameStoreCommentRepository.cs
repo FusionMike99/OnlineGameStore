@@ -6,8 +6,7 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
 {
     public interface IGameStoreCommentRepository : IGameStoreGenericRepository<CommentEntity>
     {
-        Task<IEnumerable<CommentEntity>> GetAllByGameKey(string gameKey,
-            bool includeDeleted = false,
+        Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey, bool includeDeleted = false,
             params string[] includeProperties);
     }
 }

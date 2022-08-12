@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             commentRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<CommentModel>()));
 
             // Act
-            await sut.DeleteComment(comment.Id);
+            await sut.DeleteCommentAsync(comment.Id);
 
             // Assert
             commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
@@ -51,7 +51,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(comment);
 
             // Act
-            Func<Task> actual = async () => await sut.DeleteComment(commentId);
+            Func<Task> actual = async () => await sut.DeleteCommentAsync(commentId);
 
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();

@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             genreRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GenreModel>()));
 
             // Act
-            await sut.DeleteGenre(genre.Id);
+            await sut.DeleteGenreAsync(genre.Id);
 
             // Assert
             genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
@@ -53,7 +53,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(genre);
 
             // Act
-            Func<Task> actual = async () => await sut.DeleteGenre(genreId);
+            Func<Task> actual = async () => await sut.DeleteGenreAsync(genreId);
 
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();

@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetGenreById(It.IsAny<Guid>()))
+            mockGenreService.Setup(x => x.GetGenreByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<GenreViewModel>()
                 .Which.Id.Should().Be(genre.Id);
 
-            mockGenreService.Verify(x => x.GetGenreById(It.IsAny<Guid>()), Times.Once);
+            mockGenreService.Verify(x => x.GetGenreByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace OnlineGameStore.Tests.Controllers
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetGenreById(It.IsAny<Guid>()))
+            mockGenreService.Setup(x => x.GetGenreByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -55,7 +55,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGenreService.Verify(x => x.GetGenreById(It.IsAny<Guid>()), Times.Once);
+            mockGenreService.Verify(x => x.GetGenreByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

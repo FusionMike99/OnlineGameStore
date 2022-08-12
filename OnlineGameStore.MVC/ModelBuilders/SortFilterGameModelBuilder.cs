@@ -52,8 +52,8 @@ namespace OnlineGameStore.MVC.ModelBuilders
             
             if (selectedGenres?.Any() == true)
             {
-                var genresTask = genreService.GetGenresIdsByNames(selectedGenres.ToArray());
-                var categoriesTask = genreService.GetCategoriesIdsByNames(selectedGenres);
+                var genresTask = genreService.GetGenresIdsByNamesAsync(selectedGenres.ToArray());
+                var categoriesTask = genreService.GetCategoriesIdsByNamesAsync(selectedGenres);
 
                 await Task.WhenAll(genresTask, categoriesTask);
 
@@ -72,7 +72,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
             if (selectedPlatformTypes?.Any() == true)
             {
                 selectedPlatformTypesIds = (await platformTypeService
-                    .GetPlatformTypesIdsByNames(selectedPlatformTypes)).ToList();
+                    .GetPlatformTypesIdsByNamesAsync(selectedPlatformTypes)).ToList();
             }
 
             _model.SelectedPlatformTypes = selectedPlatformTypesIds;
@@ -84,7 +84,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
             
             if (selectedPublishers?.Any() == true)
             {
-                selectedSuppliersIds = (await publisherService.GetSuppliersIdsByNames(selectedPublishers)).ToList();
+                selectedSuppliersIds = (await publisherService.GetSuppliersIdsByNamesAsync(selectedPublishers)).ToList();
             }
 
             _model.SelectedPublishers = selectedPublishers;

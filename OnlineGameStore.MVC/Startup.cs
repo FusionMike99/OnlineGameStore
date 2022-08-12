@@ -130,7 +130,7 @@ namespace OnlineGameStore.MVC
         private static void ConfigureCancellingOrderTask(IOrderService orderService)
         {
             RecurringJob.AddOrUpdate("cancellingOrders",
-                () => orderService.CancelOrdersWithTimeout(),
+                () => orderService.CancelOrdersWithTimeoutAsync(),
                 Cron.Minutely);
 
             BackgroundJob.Enqueue(() => Console.WriteLine());

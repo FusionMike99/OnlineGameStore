@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
+            mockPublisherService.Setup(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -33,7 +33,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<PublisherViewModel>()
                 .Which.CompanyName.Should().Be(publisher.CompanyName);
 
-            mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
+            mockPublisherService.Verify(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -60,7 +60,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.GetPublisherByCompanyName(It.IsAny<string>()))
+            mockPublisherService.Setup(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -69,7 +69,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPublisherService.Verify(x => x.GetPublisherByCompanyName(It.IsAny<string>()), Times.Once);
+            mockPublisherService.Verify(x => x.GetPublisherByCompanyNameAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

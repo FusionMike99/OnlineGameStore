@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             commentRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<CommentModel>()));
 
             // Act
-            var actualComment = await sut.EditComment(comment);
+            var actualComment = await sut.EditCommentAsync(comment);
 
             // Assert
             actualComment.Should().BeEquivalentTo(comment);

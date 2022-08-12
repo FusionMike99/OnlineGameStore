@@ -44,7 +44,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             const int quantity = 1;
             
-            var game = await _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -53,7 +53,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            await _orderService.AddToOpenOrder(customerId, game, quantity);
+            await _orderService.AddToOpenOrderAsync(customerId, game, quantity);
 
             return RedirectToAction(nameof(GetBasket));
         }
@@ -81,7 +81,7 @@ namespace OnlineGameStore.MVC.Controllers
             
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            await _orderService.RemoveFromOrder(customerId, gameKey);
+            await _orderService.RemoveFromOrderAsync(customerId, gameKey);
 
             return RedirectToAction(nameof(GetBasket));
         }
@@ -91,7 +91,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
             
-            var orders = await _orderService.GetOrders(filterOrderModel);
+            var orders = await _orderService.GetOrdersAsync(filterOrderModel);
 
             var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
 
@@ -107,7 +107,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("orders/ship/{orderId:guid}")]
         public async Task<IActionResult> Ship(Guid orderId)
         {
-            var order = await _orderService.GetOrderById(orderId);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
 
             if (order == null)
             {
@@ -135,7 +135,7 @@ namespace OnlineGameStore.MVC.Controllers
             order.Id = orderId;
             var mappedOrder = _mapper.Map<OrderModel>(order);
 
-            await _orderService.EditOrder(mappedOrder);
+            await _orderService.EditOrderAsync(mappedOrder);
 
             return RedirectToAction(nameof(Make));
         }
@@ -145,7 +145,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            var order = await _orderService.ChangeStatusToInProcess(customerId);
+            var order = await _orderService.ChangeStatusToInProcessAsync(customerId);
 
             var orderViewModel = PrepareOrderViewModel(order);
 
@@ -157,7 +157,7 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
 
-            var order = await _orderService.GetOrderById(orderId);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
 
             var result = paymentMethodStrategy.PaymentProcess(order);
 
@@ -168,7 +168,7 @@ namespace OnlineGameStore.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Pay([FromRoute] Guid orderId)
         {
-            await _orderService.ChangeStatusToClosed(orderId);
+            await _orderService.ChangeStatusToClosedAsync(orderId);
 
             return RedirectToAction(nameof(GameController.GetGames), "Game");
         }

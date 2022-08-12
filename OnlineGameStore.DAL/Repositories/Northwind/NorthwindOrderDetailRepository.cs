@@ -17,7 +17,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderId(int orderId)
+        public async Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderIdAsync(int orderId)
         {
             Expression<Func<NorthwindOrderDetail, bool>> predicate = od => od.OrderId == orderId;
 

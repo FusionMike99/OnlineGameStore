@@ -32,7 +32,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
-            var createdPublisher = await _publisherRepository.Create(publisher);
+            var createdPublisher = await _publisherRepository.CreateAsync(publisher);
 
             publisherModel.Id = createdPublisher.Id;
         }
@@ -41,20 +41,20 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
-            await _publisherRepository.Update(publisher);
+            await _publisherRepository.UpdateAsync(publisher);
         }
 
         public async Task DeleteAsync(PublisherModel publisherModel)
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
 
-            await _publisherRepository.Delete(publisher);
+            await _publisherRepository.DeleteAsync(publisher);
         }
 
         public async Task<PublisherModel> GetByNameAsync(string companyName, bool includeDeleted = false)
         {
             PublisherModel publisherModel;
-            var publisher = await _publisherRepository.GetByName(companyName, includeDeleted);
+            var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted);
 
             if (publisher != null)
             {
@@ -62,7 +62,7 @@ namespace OnlineGameStore.DAL.Repositories
             }
             else
             {
-                var supplier = await _supplierRepository.GetByName(companyName);
+                var supplier = await _supplierRepository.GetByNameAsync(companyName);
 
                 if (supplier == null)
                 {
@@ -77,7 +77,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false)
         {
-            var publisher = await _publisherRepository.GetById(id, includeDeleted);
+            var publisher = await _publisherRepository.GetByIdAsync(id, includeDeleted);
             var publisherModel = _mapper.Map<PublisherModel>(publisher);
 
             return publisherModel;
@@ -85,14 +85,14 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
-            return await _supplierRepository.GetIdsByNames(companiesNames);
+            return await _supplierRepository.GetIdsByNamesAsync(companiesNames);
         }
 
         public async Task<IEnumerable<PublisherModel>> GetAllAsync()
         {
-            var publishers = await _publisherRepository.GetAll();
+            var publishers = await _publisherRepository.GetAllAsync();
 
-            var suppliers = await _supplierRepository.GetAll();
+            var suppliers = await _supplierRepository.GetAllAsync();
 
             var unionPublishersSuppliers = UnionPublishersSuppliers(publishers, suppliers);
 

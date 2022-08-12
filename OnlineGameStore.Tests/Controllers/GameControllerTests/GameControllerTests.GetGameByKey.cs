@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<GameViewModel>()
                 .Which.Id.Should().Be(game.Id);
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }
@@ -63,7 +63,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
@@ -73,7 +73,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }

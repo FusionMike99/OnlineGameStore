@@ -23,18 +23,18 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
             commentRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<CommentModel>()));
 
             // Act
-            var actualComment = await sut.LeaveCommentToGame(game.Key, comment);
+            var actualComment = await sut.LeaveCommentToGameAsync(game.Key, comment);
 
             // Assert
             actualComment.Should().BeEquivalentTo(comment);
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
             commentRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<CommentModel>()), Times.Once);
         }
     }

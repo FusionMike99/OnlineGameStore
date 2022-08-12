@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
@@ -35,7 +35,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<EditGameViewModel>()
                 .Which.Id.Should().Be(game.Id);
             
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Theory]
@@ -62,7 +62,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
@@ -72,7 +72,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Theory]
@@ -83,7 +83,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.EditGame(It.IsAny<GameModel>()))
+            mockGameService.Setup(x => x.EditGameAsync(It.IsAny<GameModel>()))
                 .ReturnsAsync(game);
 
             var editGameViewModel = new EditGameViewModel
@@ -103,7 +103,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
-            mockGameService.Verify(x => x.EditGame(It.IsAny<GameModel>()), Times.Once);
+            mockGameService.Verify(x => x.EditGameAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
         [Theory]

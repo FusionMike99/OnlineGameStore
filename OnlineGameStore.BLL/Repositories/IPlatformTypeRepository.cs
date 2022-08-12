@@ -13,12 +13,9 @@ namespace OnlineGameStore.BLL.Repositories
 
         Task DeleteAsync(PlatformTypeModel platformTypeModel);
         
-        Task<PlatformTypeModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
         
-        Task<PlatformTypeModel> GetByTypeAsync(string type,
-            bool includeDeleted = false,
+        Task<PlatformTypeModel> GetByTypeAsync(string type, bool includeDeleted = false,
             params string[] includeProperties);
 
         Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types);

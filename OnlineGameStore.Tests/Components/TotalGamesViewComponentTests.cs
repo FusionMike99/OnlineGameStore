@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Components
             TotalGamesViewComponent sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGamesNumber(It.IsAny<SortFilterGameModel>()))
+            mockGameService.Setup(x => x.GetGamesNumberAsync(It.IsAny<SortFilterGameModel>()))
                 .ReturnsAsync(gamesCount);
 
             // Act
@@ -32,7 +32,7 @@ namespace OnlineGameStore.Tests.Components
                 .Which.ViewData.Model.Should().BeAssignableTo<int>()
                 .Which.Should().Be(gamesCount);
 
-            mockGameService.Verify(x => x.GetGamesNumber(It.IsAny<SortFilterGameModel>()),
+            mockGameService.Verify(x => x.GetGamesNumberAsync(It.IsAny<SortFilterGameModel>()),
                 Times.Once);
         }
     }

@@ -13,18 +13,18 @@ namespace OnlineGameStore.BLL.Repositories.GameStore
 
         Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null);
 
-        Task<IEnumerable<OrderEntity>> GetOrdersWithStatus(OrderState orderState);
+        Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState);
 
-        Task AddProductToOrder(Guid customerId, GameEntity product, short quantity);
+        Task AddProductToOrderAsync(Guid customerId, GameEntity product, short quantity);
 
-        Task RemoveProductFromOrder(Guid customerId, string gameKey);
+        Task RemoveProductFromOrderAsync(Guid customerId, string gameKey);
         
-        Task<OrderEntity> ChangeStatusToInProcess(Guid customerId);
+        Task<OrderEntity> ChangeStatusToInProcessAsync(Guid customerId);
 
-        Task<OrderEntity> ChangeStatusToClosed(Guid orderId);
+        Task<OrderEntity> ChangeStatusToClosedAsync(Guid orderId);
 
-        Task<OrderEntity> GetOrderById(Guid orderId);
+        Task<OrderEntity> GetOrderByIdAsync(Guid orderId);
 
-        Task SetCancelledDate(Guid orderId, DateTime cancelledDate);
+        Task SetCancelledDateAsync(Guid orderId, DateTime cancelledDate);
     }
 }

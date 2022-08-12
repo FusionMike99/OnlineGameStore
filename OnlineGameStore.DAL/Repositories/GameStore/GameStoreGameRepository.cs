@@ -18,7 +18,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public async Task<GameEntity> GetByKey(string gameKey,
+        public async Task<GameEntity> GetByKeyAsync(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
@@ -27,7 +27,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return await GetSingle(predicate, includeDeleted, includeProperties);
         }
 
-        public async Task<IEnumerable<GameEntity>> GetAllByFilter(SortFilterGameModel sortFilterModel)
+        public async Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = GetGameStorePredicate(sortFilterModel);
 

@@ -38,8 +38,8 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
 
         private async void SetOrderDetailAndShipper(NorthwindOrder o)
         {
-            o.OrderDetails = await _orderDetailRepository.GetManyByOrderId(o.OrderId);
-            o.Shipper = await _shipperRepository.GetByShipperId(o.ShipVia);
+            o.OrderDetails = await _orderDetailRepository.GetManyByOrderIdAsync(o.OrderId);
+            o.Shipper = await _shipperRepository.GetByShipperIdAsync(o.ShipVia);
         }
     }
 }

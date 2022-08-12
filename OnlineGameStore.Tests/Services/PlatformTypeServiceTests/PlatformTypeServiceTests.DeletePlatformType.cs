@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             platformTypeRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PlatformTypeModel>()));
 
             // Act
-            await sut.DeletePlatformType(platformType.Id);
+            await sut.DeletePlatformTypeAsync(platformType.Id);
 
             // Assert
             platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
@@ -51,7 +51,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(platformType);
 
             // Act
-            Func<Task> actual = async () => await sut.DeletePlatformType(platformTypeId);
+            Func<Task> actual = async () => await sut.DeletePlatformTypeAsync(platformTypeId);
 
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();

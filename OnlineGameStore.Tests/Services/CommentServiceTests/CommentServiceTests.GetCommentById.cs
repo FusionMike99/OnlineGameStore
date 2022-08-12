@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(comment);
 
             // Act
-            var actualComment = await sut.GetCommentById(comment.Id);
+            var actualComment = await sut.GetCommentByIdAsync(comment.Id);
 
             // Assert
             actualComment.Should().BeEquivalentTo(comment);

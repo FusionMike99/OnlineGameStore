@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetAllParentGenres())
+            mockGenreService.Setup(x => x.GetAllParentGenresAsync())
                 .ReturnsAsync(genres);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<IEnumerable<GenreViewModel>>()
                 .Which.Should().HaveSameCount(genres);
 
-            mockGenreService.Verify(x => x.GetAllParentGenres(), Times.Once);
+            mockGenreService.Verify(x => x.GetAllParentGenresAsync(), Times.Once);
         }
     }
 }

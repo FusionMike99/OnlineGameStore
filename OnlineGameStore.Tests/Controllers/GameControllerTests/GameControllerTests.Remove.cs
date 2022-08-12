@@ -20,7 +20,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.DeleteGame(It.IsAny<string>()));
+            mockGameService.Setup(x => x.DeleteGameAsync(It.IsAny<string>()));
 
             // Act
             var result = await sut.Remove(gameKey);
@@ -29,7 +29,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
-            mockGameService.Verify(x => x.DeleteGame(It.IsAny<string>()), Times.Once);
+            mockGameService.Verify(x => x.DeleteGameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]

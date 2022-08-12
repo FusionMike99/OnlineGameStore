@@ -7,8 +7,8 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
     public interface INorthwindGenericRepository<TEntity>
         where TEntity : NorthwindBaseEntity
     {
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
-        Task<TEntity> Update(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
     }
 }

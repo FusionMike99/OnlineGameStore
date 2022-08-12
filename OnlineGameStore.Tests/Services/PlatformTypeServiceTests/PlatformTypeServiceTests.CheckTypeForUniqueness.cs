@@ -27,7 +27,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = await sut.CheckTypeForUnique(id, platformType.Type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(id, platformType.Type);
 
             // Assert
             actualResult.Should().BeTrue();
@@ -51,7 +51,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = await sut.CheckTypeForUnique(id, type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(id, type);
 
             // Assert
             actualResult.Should().BeFalse();
@@ -73,7 +73,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = await sut.CheckTypeForUnique(platformType.Id, platformType.Type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(platformType.Id, platformType.Type);
 
             // Assert
             actualResult.Should().BeFalse();

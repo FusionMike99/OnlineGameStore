@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             genreRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<GenreModel>()));
 
             // Act
-            var actualGenre = await sut.EditGenre(genre);
+            var actualGenre = await sut.EditGenreAsync(genre);
 
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);

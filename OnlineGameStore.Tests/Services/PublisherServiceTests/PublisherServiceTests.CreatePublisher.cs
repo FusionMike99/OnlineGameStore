@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             publisherRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<PublisherModel>()));
 
             // Act
-            var actualGame = await sut.CreatePublisher(publisher);
+            var actualGame = await sut.CreatePublisherAsync(publisher);
 
             // Assert
             actualGame.Should().BeEquivalentTo(publisher);

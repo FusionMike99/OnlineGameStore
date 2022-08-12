@@ -27,7 +27,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(genre);
 
             // Act
-            var actualResult = await sut.CheckNameForUnique(id, genre.Name);
+            var actualResult = await sut.CheckNameForUniqueAsync(id, genre.Name);
 
             // Assert
             actualResult.Should().BeTrue();
@@ -51,7 +51,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(genre);
 
             // Act
-            var actualResult = await sut.CheckNameForUnique(id, name);
+            var actualResult = await sut.CheckNameForUniqueAsync(id, name);
 
             // Assert
             actualResult.Should().BeFalse();
@@ -73,7 +73,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(genre);
 
             // Act
-            var actualResult = await sut.CheckNameForUnique(genre.Id, genre.Name);
+            var actualResult = await sut.CheckNameForUniqueAsync(genre.Id, genre.Name);
 
             // Assert
             actualResult.Should().BeFalse();

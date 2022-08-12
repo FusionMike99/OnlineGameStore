@@ -13,12 +13,9 @@ namespace OnlineGameStore.BLL.Repositories
 
         Task DeleteAsync(CommentModel commentModel);
         
-        Task<CommentModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<CommentModel> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
 
-        Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey,
-            bool includeDeleted = false,
+        Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey, bool includeDeleted = false,
             params string[] includeProperties);
     }
 }

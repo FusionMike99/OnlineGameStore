@@ -62,24 +62,24 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task UpdateAsync(OrderModel orderModel)
         {
             var order = _mapper.Map<OrderEntity>(orderModel);
-            await _storeOrderRepository.Update(order);
+            await _storeOrderRepository.UpdateAsync(order);
         }
 
         public async Task AddProductToOrderAsync(Guid customerId, GameModel product, short quantity)
         {
             var game = _mapper.Map<GameEntity>(product);
 
-            await _storeOrderRepository.AddProductToOrder(customerId, game, quantity);
+            await _storeOrderRepository.AddProductToOrderAsync(customerId, game, quantity);
         }
 
         public async Task RemoveProductFromOrderAsync(Guid customerId, string gameKey)
         {
-            await _storeOrderRepository.RemoveProductFromOrder(customerId, gameKey);
+            await _storeOrderRepository.RemoveProductFromOrderAsync(customerId, gameKey);
         }
 
         public async Task<OrderModel> ChangeStatusToInProcessAsync(Guid customerId)
         {
-            var order = await _storeOrderRepository.ChangeStatusToInProcess(customerId);
+            var order = await _storeOrderRepository.ChangeStatusToInProcessAsync(customerId);
             var orderModel = _mapper.Map<OrderModel>(order);
 
             await DecreaseGamesQuantities(orderModel.OrderDetails);
@@ -89,7 +89,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId)
         {
-            var order = await _storeOrderRepository.ChangeStatusToClosed(orderId);
+            var order = await _storeOrderRepository.ChangeStatusToClosedAsync(orderId);
             var orderModel = _mapper.Map<OrderModel>(order);
 
             return orderModel;
@@ -97,7 +97,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<OrderModel> GetOrderByIdAsync(Guid orderId)
         {
-            var order = await _storeOrderRepository.GetOrderById(orderId);
+            var order = await _storeOrderRepository.GetOrderByIdAsync(orderId);
             var orderModel = _mapper.Map<OrderModel>(order);
 
             return orderModel;
@@ -124,7 +124,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task SetCancelledDateAsync(Guid orderId, DateTime cancelledDate)
         {
-            await _storeOrderRepository.SetCancelledDate(orderId, cancelledDate);
+            await _storeOrderRepository.SetCancelledDateAsync(orderId, cancelledDate);
         }
 
         private async Task IncreaseGamesQuantities(IEnumerable<OrderDetailModel> orderDetails)
@@ -145,7 +145,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         private async Task<IEnumerable<OrderModel>> GetOrdersWithStatus(OrderState orderState)
         {
-            var orders = await _storeOrderRepository.GetOrdersWithStatus(OrderState.InProgress);
+            var orders = await _storeOrderRepository.GetOrdersWithStatusAsync(OrderState.InProgress);
             var orderModels = _mapper.Map<IEnumerable<OrderModel>>(orders);
 
             return orderModels;

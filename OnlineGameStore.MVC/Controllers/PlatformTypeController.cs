@@ -44,7 +44,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
-            await _platformTypeService.CreatePlatformType(mappedPlatformType);
+            await _platformTypeService.CreatePlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
@@ -52,7 +52,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("update/{platformTypeId:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid platformTypeId)
         {
-            var platformType = await _platformTypeService.GetPlatformTypeById(platformTypeId);
+            var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
 
             if (platformType == null)
             {
@@ -82,7 +82,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
-            await _platformTypeService.EditPlatformType(mappedPlatformType);
+            await _platformTypeService.EditPlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
@@ -90,7 +90,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("{platformTypeId:guid}")]
         public async Task<IActionResult> GetPlatformTypeById([FromRoute] Guid platformTypeId)
         {
-            var platformType = await _platformTypeService.GetPlatformTypeById(platformTypeId);
+            var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
 
             if (platformType == null)
             {
@@ -105,7 +105,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPlatformTypes()
         {
-            var platformTypes = await _platformTypeService.GetAllPlatformTypes();
+            var platformTypes = await _platformTypeService.GetAllPlatformTypesAsync();
 
             var platformTypesViewModel = _mapper.Map<IEnumerable<PlatformTypeViewModel>>(platformTypes);
 
@@ -116,14 +116,14 @@ namespace OnlineGameStore.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            await _platformTypeService.DeletePlatformType(id);
+            await _platformTypeService.DeletePlatformTypeAsync(id);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
         private async Task VerifyPlatformType(EditPlatformTypeViewModel platformType)
         {
-            var checkResult = await _platformTypeService.CheckTypeForUnique(platformType.Id, platformType.Type);
+            var checkResult = await _platformTypeService.CheckTypeForUniqueAsync(platformType.Id, platformType.Type);
 
             if (checkResult)
             {

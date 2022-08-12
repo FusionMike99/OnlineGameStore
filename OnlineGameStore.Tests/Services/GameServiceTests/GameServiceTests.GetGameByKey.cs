@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(game);
 
             // Act
-            var actualGame = await sut.GetGameByKey(game.Key, increaseViews: true);
+            var actualGame = await sut.GetGameByKeyAsync(game.Key, increaseViews: true);
 
             // Assert
             actualGame.Should().Be(game);

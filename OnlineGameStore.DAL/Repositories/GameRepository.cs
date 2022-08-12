@@ -44,7 +44,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var game = _mapper.Map<GameEntity>(gameModel);
 
-            var createdGame = await _gameRepository.Create(game);
+            var createdGame = await _gameRepository.CreateAsync(game);
 
             gameModel.Id = createdGame.Id;
         }
@@ -55,11 +55,11 @@ namespace OnlineGameStore.DAL.Repositories
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
-                await _gameRepository.Update(game);
+                await _gameRepository.UpdateAsync(game);
             }
             else
             {
-                await _gameRepository.Create(game);
+                await _gameRepository.CreateAsync(game);
             }
         }
 
@@ -83,14 +83,14 @@ namespace OnlineGameStore.DAL.Repositories
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
-                await _gameRepository.Delete(game);
+                await _gameRepository.DeleteAsync(game);
             }
             else
             {
                 game.IsDeleted = true;
                 game.DeletedAt = DateTime.UtcNow;
 
-                await _gameRepository.Create(game);
+                await _gameRepository.CreateAsync(game);
             }
         }
 
@@ -99,7 +99,7 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleted = false)
         {
             GameModel gameModel = null;
-            var game = await _gameRepository.GetByKey(gameKey, includeDeleted: includeDeleted,
+            var game = await _gameRepository.GetByKeyAsync(gameKey, includeDeleted: includeDeleted,
                 $"{nameof(GameEntity.GameGenres)}.{nameof(GameGenreEntity.Genre)}",
                 $"{nameof(GameEntity.GamePlatformTypes)}.{nameof(GamePlatformTypeEntity.PlatformType)}");
             
@@ -109,18 +109,18 @@ namespace OnlineGameStore.DAL.Repositories
             }
             else
             {
-                var product = await _productRepository.GetByKey(gameKey);
+                var product = await _productRepository.GetByKeyAsync(gameKey);
 
                 if (product != null)
                 {
-                    product.Category = await _categoryRepository.GetByCategoryId(product.CategoryId);
-                    product.Supplier = await _supplierRepository.GetBySupplierId(product.SupplierId);
+                    product.Category = await _categoryRepository.GetByCategoryIdAsync(product.CategoryId);
+                    product.Supplier = await _supplierRepository.GetBySupplierIdAsync(product.SupplierId);
                     
                     gameModel = _mapper.Map<GameModel>(product);
 
                     if (product.Category != null)
                     {
-                        var genre = await _genreRepository.GetByName(product.Category.Name);
+                        var genre = await _genreRepository.GetByNameAsync(product.Category.Name);
                         var genreModel = _mapper.Map<GenreModel>(genre);
 
                         gameModel.GameGenres = new List<GameGenreModel>
@@ -174,12 +174,12 @@ namespace OnlineGameStore.DAL.Repositories
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
                 var game = _mapper.Map<GameEntity>(gameModel);
-                await _gameRepository.Update(game);
+                await _gameRepository.UpdateAsync(game);
             }
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(gameModel);
-                await _productRepository.Update(product);
+                await _productRepository.UpdateAsync(product);
             }
         }
 
@@ -190,12 +190,12 @@ namespace OnlineGameStore.DAL.Repositories
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
                 var game = _mapper.Map<GameEntity>(gameModel);
-                _gameRepository.Update(game);
+                _gameRepository.UpdateAsync(game);
             }
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(gameModel);
-                _productRepository.Update(product);
+                _productRepository.UpdateAsync(product);
             }
         }
         
@@ -209,7 +209,7 @@ namespace OnlineGameStore.DAL.Repositories
             for (var i = 0; i < genreIds.Count; i++)
             {
                 var genreGuid = Guid.Parse(genreIds[i]);
-                var genre = await _genreRepository.GetById(genreGuid, includeDeleted: false,
+                var genre = await _genreRepository.GetByIdAsync(genreGuid, includeDeleted: false,
                         includeProperties: $"{nameof(GenreEntity.SubGenres)}");
 
                 var subgenreIds = genre.SubGenres.Select(g => g.Id.ToString()).ToList();
@@ -249,11 +249,11 @@ namespace OnlineGameStore.DAL.Repositories
         {
             await AddSubgenresToList(sortFilterModel?.SelectedGenres);
             
-            var games = await _gameRepository.GetAllByFilter(sortFilterModel);
+            var games = await _gameRepository.GetAllByFilterAsync(sortFilterModel);
 
-            var products = await _productRepository.GetAllByFilter(sortFilterModel);
+            var products = await _productRepository.GetAllByFilterAsync(sortFilterModel);
 
-            products = await _productRepository.SetGameKeyAndDateAdded(products.ToList());
+            products = await _productRepository.SetGameKeyAndDateAddedAsync(products.ToList());
 
             var gameModels = UnionGamesProducts(games, products);
 

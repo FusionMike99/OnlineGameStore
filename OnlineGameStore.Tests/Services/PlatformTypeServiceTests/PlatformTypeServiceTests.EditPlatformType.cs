@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             platformTypeRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<PlatformTypeModel>()));
 
             // Act
-            var actualPlatformType = await sut.EditPlatformType(platformType);
+            var actualPlatformType = await sut.EditPlatformTypeAsync(platformType);
 
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);

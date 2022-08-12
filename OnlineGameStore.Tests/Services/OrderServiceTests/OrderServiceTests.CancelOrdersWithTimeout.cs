@@ -20,7 +20,7 @@ namespace OnlineGameStore.Tests.Services
             orderRepositoryMock.Setup(x => x.CancelOrdersWithTimeoutAsync());
 
             // Act
-            await sut.CancelOrdersWithTimeout();
+            await sut.CancelOrdersWithTimeoutAsync();
 
             // Assert
             orderRepositoryMock.Verify(x => x.CancelOrdersWithTimeoutAsync(), Times.Once);

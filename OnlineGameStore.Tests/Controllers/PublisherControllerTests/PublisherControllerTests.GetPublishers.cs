@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.GetAllPublishers())
+            mockPublisherService.Setup(x => x.GetAllPublishersAsync())
                 .ReturnsAsync(publishers);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<IEnumerable<PublisherViewModel>>()
                 .Which.Should().HaveSameCount(publishers);
 
-            mockPublisherService.Verify(x => x.GetAllPublishers(), Times.Once);
+            mockPublisherService.Verify(x => x.GetAllPublishersAsync(), Times.Once);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.GetOrders(It.IsAny<FilterOrderModel>()))
+            mockOrderService.Setup(x => x.GetOrdersAsync(It.IsAny<FilterOrderModel>()))
                 .ReturnsAsync(orders);
 
             // Act
@@ -36,7 +36,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<OrderListViewModel>()
                 .Which.Orders.Should().HaveSameCount(orders);
 
-            mockOrderService.Verify(x => x.GetOrders(It.IsAny<FilterOrderModel>()),
+            mockOrderService.Verify(x => x.GetOrdersAsync(It.IsAny<FilterOrderModel>()),
                 Times.Once);
         }
     }

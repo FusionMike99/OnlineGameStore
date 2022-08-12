@@ -36,7 +36,7 @@ namespace OnlineGameStore.Tests.Controllers
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.CreateGame(It.IsAny<GameModel>()))
+            mockGameService.Setup(x => x.CreateGameAsync(It.IsAny<GameModel>()))
                 .ReturnsAsync(game);
 
             var editGameViewModel = new EditGameViewModel
@@ -56,7 +56,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
-            mockGameService.Verify(x => x.CreateGame(It.IsAny<GameModel>()), Times.Once);
+            mockGameService.Verify(x => x.CreateGameAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
         [Theory]

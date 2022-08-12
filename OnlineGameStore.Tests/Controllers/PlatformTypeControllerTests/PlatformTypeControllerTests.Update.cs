@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<EditPlatformTypeViewModel>()
                 .Which.Id.Should().Be(platformType.Id);
             
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetPlatformTypeById(It.IsAny<Guid>()))
+            mockPlatformTypeService.Setup(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -55,7 +55,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockPlatformTypeService.Verify(x => x.GetPlatformTypeById(It.IsAny<Guid>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetPlatformTypeByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -66,7 +66,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.EditPlatformType(It.IsAny<PlatformTypeModel>()))
+            mockPlatformTypeService.Setup(x => x.EditPlatformTypeAsync(It.IsAny<PlatformTypeModel>()))
                 .ReturnsAsync(platformType);
 
             var editPlatformTypeViewModel = new EditPlatformTypeViewModel
@@ -82,7 +82,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetPlatformTypes));
 
-            mockPlatformTypeService.Verify(x => x.EditPlatformType(It.IsAny<PlatformTypeModel>()), Times.Once);
+            mockPlatformTypeService.Verify(x => x.EditPlatformTypeAsync(It.IsAny<PlatformTypeModel>()), Times.Once);
         }
 
         [Theory]

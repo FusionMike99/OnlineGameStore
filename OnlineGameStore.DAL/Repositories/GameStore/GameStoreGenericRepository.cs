@@ -28,7 +28,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             _entities = context.Set<TEntity>();
         }
 
-        public virtual async Task<TEntity> Create(TEntity entity)
+        public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
             await _entities.AddAsync(entity);
             await Context.SaveChangesAsync();
@@ -39,25 +39,25 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return entity;
         }
 
-        public virtual async Task Delete(TEntity entity)
+        public virtual async Task DeleteAsync(TEntity entity)
         {
             entity.IsDeleted = true;
             entity.DeletedAt = DateTime.UtcNow;
 
-            await Update(entity);
+            await UpdateAsync(entity);
             
             _logger.LogDebug("Action: {Action}\nEntity Type: {EntityType}\nObject: {@Object}", ActionTypes.Delete,
                 typeof(TEntity), entity);
 
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAll(bool includeDeleted = false, params string[] includeProperties)
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties)
         {
             return await GetMany(includeDeleted: includeDeleted,
                 includeProperties: includeProperties);
         }
 
-        public virtual async Task<TEntity> Update(TEntity entity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
             var exist = await _entities.FindAsync(entity.Id);
             var oldEntity = exist.DeepClone();
@@ -88,7 +88,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return entity;
         }
 
-        public virtual async Task<TEntity> GetById(Guid id, bool includeDeleted = false, params string[] includeProperties)
+        public virtual async Task<TEntity> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties)
         {
             Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
             

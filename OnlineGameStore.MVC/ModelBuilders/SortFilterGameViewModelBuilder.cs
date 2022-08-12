@@ -50,7 +50,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
 
         private async Task SetGenres(IGenreService genreService, ICollection<string> selectedGenres)
         {
-            var genres = (await genreService.GetAllGenres()).ToList();
+            var genres = (await genreService.GetAllGenresAsync()).ToList();
             
             _model.Genres = new SelectList(genres,
                 nameof(GenreEntity.Name),
@@ -73,7 +73,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
         private async Task SetPlatformTypes(IPlatformTypeService platformTypeService,
             ICollection<string> selectedPlatformTypes)
         {
-            var platformTypes = (await platformTypeService.GetAllPlatformTypes()).ToList();
+            var platformTypes = (await platformTypeService.GetAllPlatformTypesAsync()).ToList();
             
             _model.PlatformTypes = new SelectList(platformTypes,
                 nameof(PlatformTypeEntity.Type),
@@ -95,7 +95,7 @@ namespace OnlineGameStore.MVC.ModelBuilders
         
         private async Task SetPublishers(IPublisherService publisherService, ICollection<string> selectedPublishers)
         {
-            var publishers = (await publisherService.GetAllPublishers()).ToList();
+            var publishers = (await publisherService.GetAllPublishersAsync()).ToList();
             
             _model.Publishers = new SelectList(publishers,
                 nameof(PublisherEntity.CompanyName),

@@ -15,7 +15,7 @@ namespace OnlineGameStore.MVC.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var totalGames = await _gameService.GetGamesNumber();
+            var totalGames = await _gameService.GetGamesNumberAsync();
 
             return View(totalGames);
         }

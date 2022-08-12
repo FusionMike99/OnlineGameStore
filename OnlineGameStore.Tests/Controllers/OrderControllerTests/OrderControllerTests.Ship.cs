@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.GetOrderById(It.IsAny<Guid>()))
+            mockOrderService.Setup(x => x.GetOrderByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(order);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<ShipOrderViewModel>()
                 .Which.Id.Should().Be(order.Id);
             
-            mockOrderService.Verify(x => x.GetOrderById(It.IsAny<Guid>()), Times.Once);
+            mockOrderService.Verify(x => x.GetOrderByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.GetOrderById(It.IsAny<Guid>()))
+            mockOrderService.Setup(x => x.GetOrderByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(order);
 
             // Act
@@ -55,7 +55,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockOrderService.Verify(x => x.GetOrderById(It.IsAny<Guid>()), Times.Once);
+            mockOrderService.Verify(x => x.GetOrderByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
@@ -66,7 +66,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.EditOrder(It.IsAny<OrderModel>()))
+            mockOrderService.Setup(x => x.EditOrderAsync(It.IsAny<OrderModel>()))
                 .ReturnsAsync(order);
 
             var shipOrderViewModel = new ShipOrderViewModel
@@ -83,7 +83,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.Make));
 
-            mockOrderService.Verify(x => x.EditOrder(It.IsAny<OrderModel>()), Times.Once);
+            mockOrderService.Verify(x => x.EditOrderAsync(It.IsAny<OrderModel>()), Times.Once);
         }
         
         [Theory]

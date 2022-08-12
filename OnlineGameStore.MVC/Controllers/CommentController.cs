@@ -42,7 +42,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
-            await _commentService.LeaveCommentToGame(gameKey, mappedComment);
+            await _commentService.LeaveCommentToGameAsync(gameKey, mappedComment);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
@@ -65,7 +65,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("updateComment/{commentId:guid}")]
         public async Task<IActionResult> UpdateComment([FromRoute] Guid commentId, [FromRoute] string gameKey)
         {
-            var comment = await _commentService.GetCommentById(commentId);
+            var comment = await _commentService.GetCommentByIdAsync(commentId);
 
             if (comment == null)
             {
@@ -93,7 +93,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
-            await _commentService.EditComment(mappedComment);
+            await _commentService.EditCommentAsync(mappedComment);
 
             return Json(new { url = Url.Action(nameof(GetCommentsByGameKey), new { gameKey }) });
         }
@@ -101,7 +101,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("removeComment/{id:guid}")]
         public async Task<IActionResult> RemoveComment([FromRoute] Guid id, [FromRoute] string gameKey)
         {
-            var comment = await _commentService.GetCommentById(id);
+            var comment = await _commentService.GetCommentByIdAsync(id);
 
             if (comment == null)
             {
@@ -118,14 +118,14 @@ namespace OnlineGameStore.MVC.Controllers
         [ActionName("Remove")]
         public async Task<IActionResult> RemoveCommentConfirmed([FromRoute] Guid id, [FromRoute] string gameKey)
         {
-            await _commentService.DeleteComment(id);
+            await _commentService.DeleteCommentAsync(id);
 
             return RedirectToAction(nameof(GetCommentsByGameKey), new { gameKey });
         }
 
         private async Task<AggregateCommentViewModel> CreateAggregateCommentViewModel(string gameKey)
         {
-            var comments = await _commentService.GetAllCommentsByGameKey(gameKey);
+            var comments = await _commentService.GetAllCommentsByGameKeyAsync(gameKey);
 
             var commentsViewModel = _mapper.Map<IEnumerable<CommentViewModel>>(comments);
 

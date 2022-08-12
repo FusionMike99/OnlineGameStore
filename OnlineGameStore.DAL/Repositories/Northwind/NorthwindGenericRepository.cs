@@ -50,12 +50,12 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return foundList;
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await GetMany();
         }
 
-        public virtual async Task<TEntity> Update(TEntity entity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
             var filter = Builders<TEntity>.Filter.Eq(m => m.Id, entity.Id);
             var updateBuilder = Builders<TEntity>.Update;

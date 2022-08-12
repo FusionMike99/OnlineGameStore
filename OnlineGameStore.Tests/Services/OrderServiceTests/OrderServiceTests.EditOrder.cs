@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Services
             orderRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<OrderModel>()));
 
             // Act
-            var actualOrder = await sut.EditOrder(order);
+            var actualOrder = await sut.EditOrderAsync(order);
 
             // Assert
             actualOrder.Should().BeEquivalentTo(order);

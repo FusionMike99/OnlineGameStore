@@ -23,11 +23,11 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
-            mockOrderService.Setup(x => x.AddToOpenOrder(It.IsAny<Guid>(),
+            mockOrderService.Setup(x => x.AddToOpenOrderAsync(It.IsAny<Guid>(),
                 It.IsAny<GameModel>(), It.IsAny<short>()));
 
             // Act
@@ -37,11 +37,11 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetBasket));
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
 
-            mockOrderService.Verify(x => x.AddToOpenOrder(It.IsAny<Guid>(),
+            mockOrderService.Verify(x => x.AddToOpenOrderAsync(It.IsAny<Guid>(),
                     It.IsAny<GameModel>(), It.IsAny<short>()),
                 Times.Once);
         }
@@ -55,7 +55,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(), It.IsAny<bool>()))
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
             // Act
@@ -64,7 +64,7 @@ namespace OnlineGameStore.Tests.Controllers
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()), Times.Once);
         }
     }

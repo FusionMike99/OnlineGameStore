@@ -26,9 +26,9 @@ namespace OnlineGameStore.BLL.Services
             _commentRepository = commentRepository;
         }
 
-        public async Task<CommentModel> LeaveCommentToGame(string gameKey, CommentModel comment)
+        public async Task<CommentModel> LeaveCommentToGameAsync(string gameKey, CommentModel comment)
         {
-            var game = await _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             comment.GameId = game.Id;
 
@@ -37,7 +37,7 @@ namespace OnlineGameStore.BLL.Services
             return comment;
         }
 
-        public async Task<CommentModel> GetCommentById(Guid commentId)
+        public async Task<CommentModel> GetCommentByIdAsync(Guid commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId,
                 includeProperties: $"{nameof(CommentEntity.Replies)}");
@@ -45,7 +45,7 @@ namespace OnlineGameStore.BLL.Services
             return comment;
         }
 
-        public async Task<IEnumerable<CommentModel>> GetAllCommentsByGameKey(string gameKey)
+        public async Task<IEnumerable<CommentModel>> GetAllCommentsByGameKeyAsync(string gameKey)
         {
             var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey,
                 includeProperties: $"{nameof(CommentEntity.Replies)}");
@@ -55,14 +55,14 @@ namespace OnlineGameStore.BLL.Services
             return parentComments;
         }
 
-        public async Task<CommentModel> EditComment(CommentModel comment)
+        public async Task<CommentModel> EditCommentAsync(CommentModel comment)
         {
             await _commentRepository.UpdateAsync(comment);
 
             return comment;
         }
 
-        public async Task DeleteComment(Guid commentId)
+        public async Task DeleteCommentAsync(Guid commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId);
 
@@ -71,7 +71,7 @@ namespace OnlineGameStore.BLL.Services
                 var exception = new InvalidOperationException("Comment has not been found");
 
                 _logger.LogError(exception, @"Service: {Service}; Method: {Method}. 
-                    Deleting comment with id {Id} unsuccessfully", nameof(CommentService), nameof(DeleteComment),
+                    Deleting comment with id {Id} unsuccessfully", nameof(CommentService), nameof(DeleteCommentAsync),
                     commentId);
 
                 throw exception;

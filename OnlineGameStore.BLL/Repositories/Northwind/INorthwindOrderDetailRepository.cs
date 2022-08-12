@@ -6,6 +6,6 @@ namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindOrderDetailRepository : INorthwindGenericRepository<NorthwindOrderDetail>
     {
-        Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderId(int orderId);
+        Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderIdAsync(int orderId);
     }
 }

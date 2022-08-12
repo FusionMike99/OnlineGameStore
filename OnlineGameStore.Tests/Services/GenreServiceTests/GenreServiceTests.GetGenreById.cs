@@ -26,7 +26,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(genre);
 
             // Act
-            var actualGenre = await sut.GetGenreById(genre.Id);
+            var actualGenre = await sut.GetGenreByIdAsync(genre.Id);
 
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);

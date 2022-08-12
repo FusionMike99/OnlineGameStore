@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.DeletePublisher(It.IsAny<Guid>()));
+            mockPublisherService.Setup(x => x.DeletePublisherAsync(It.IsAny<Guid>()));
 
             // Act
             var result = await sut.Remove(id);
@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetPublishers));
 
-            mockPublisherService.Verify(x => x.DeletePublisher(It.IsAny<Guid>()), Times.Once);
+            mockPublisherService.Verify(x => x.DeletePublisherAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

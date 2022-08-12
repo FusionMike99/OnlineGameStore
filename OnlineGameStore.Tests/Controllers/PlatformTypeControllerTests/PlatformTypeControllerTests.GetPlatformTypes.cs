@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             PlatformTypeController sut)
         {
             // Arrange
-            mockPlatformTypeService.Setup(x => x.GetAllPlatformTypes())
+            mockPlatformTypeService.Setup(x => x.GetAllPlatformTypesAsync())
                 .ReturnsAsync(platformTypes);
 
             // Act
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .Which.Model.Should().BeAssignableTo<IEnumerable<PlatformTypeViewModel>>()
                 .Which.Should().HaveSameCount(platformTypes);
 
-            mockPlatformTypeService.Verify(x => x.GetAllPlatformTypes(), Times.Once);
+            mockPlatformTypeService.Verify(x => x.GetAllPlatformTypesAsync(), Times.Once);
         }
     }
 }

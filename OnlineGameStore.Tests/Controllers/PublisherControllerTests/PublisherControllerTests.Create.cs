@@ -36,7 +36,7 @@ namespace OnlineGameStore.Tests.Controllers
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.CreatePublisher(It.IsAny<PublisherModel>()))
+            mockPublisherService.Setup(x => x.CreatePublisherAsync(It.IsAny<PublisherModel>()))
                 .ReturnsAsync(publisher);
 
             var editPublisherViewModel = new EditPublisherViewModel
@@ -58,7 +58,7 @@ namespace OnlineGameStore.Tests.Controllers
             redirectToActionResult.RouteValues.Should()
                 .Contain(new KeyValuePair<string, object>("companyName", editPublisherViewModel.CompanyName));
 
-            mockPublisherService.Verify(x => x.CreatePublisher(It.IsAny<PublisherModel>()), Times.Once);
+            mockPublisherService.Verify(x => x.CreatePublisherAsync(It.IsAny<PublisherModel>()), Times.Once);
         }
 
         [Theory]

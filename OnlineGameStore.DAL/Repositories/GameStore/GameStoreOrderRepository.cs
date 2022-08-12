@@ -41,7 +41,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 OrderDetails = new List<OrderDetail>()
             };
 
-            order = await Create(creatingOrder);
+            order = await CreateAsync(creatingOrder);
 
             return order;
         }
@@ -56,7 +56,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return orders;
         }
 
-        public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatus(OrderState orderState)
+        public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState)
         {
             Expression<Func<OrderEntity, bool>> predicate = o => o.OrderState == orderState;
 
@@ -66,7 +66,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return orders;
         }
 
-        public async Task AddProductToOrder(Guid customerId, GameEntity product, short quantity)
+        public async Task AddProductToOrderAsync(Guid customerId, GameEntity product, short quantity)
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
 
@@ -92,10 +92,10 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
                 order.OrderDetails.Add(orderDetail);
             }
 
-            await Update(order);
+            await UpdateAsync(order);
         }
 
-        public async Task RemoveProductFromOrder(Guid customerId, string gameKey)
+        public async Task RemoveProductFromOrderAsync(Guid customerId, string gameKey)
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
 
@@ -108,34 +108,34 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             
             order.OrderDetails.Remove(existOrderDetail);
 
-            await Update(order);
+            await UpdateAsync(order);
         }
 
-        public async Task<OrderEntity> ChangeStatusToInProcess(Guid customerId)
+        public async Task<OrderEntity> ChangeStatusToInProcessAsync(Guid customerId)
         {
             var order = await GetOrderByCustomerId(customerId);
             CheckOrderExisting(order);
 
             order.OrderState = OrderState.InProgress;
 
-            await Update(order);
+            await UpdateAsync(order);
 
             return order;
         }
 
-        public async Task<OrderEntity> ChangeStatusToClosed(Guid orderId)
+        public async Task<OrderEntity> ChangeStatusToClosedAsync(Guid orderId)
         {
-            var order = await GetOrderById(orderId);
+            var order = await GetOrderByIdAsync(orderId);
             CheckOrderExisting(order);
             
             order.OrderState = OrderState.Closed;
 
-            await Update(order);
+            await UpdateAsync(order);
 
             return order;
         }
 
-        public async Task<OrderEntity> GetOrderById(Guid orderId)
+        public async Task<OrderEntity> GetOrderByIdAsync(Guid orderId)
         {
             Expression<Func<OrderEntity, bool>> predicate = o => o.Id == orderId;
 
@@ -145,14 +145,14 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             return order;
         }
 
-        public async Task SetCancelledDate(Guid orderId, DateTime cancelledDate)
+        public async Task SetCancelledDateAsync(Guid orderId, DateTime cancelledDate)
         {
-            var order = await GetOrderById(orderId);
+            var order = await GetOrderByIdAsync(orderId);
             CheckOrderExisting(order);
             
             order.CancelledDate = cancelledDate;
 
-            await Update(order);
+            await UpdateAsync(order);
         }
         
         private async Task<OrderEntity> GetOrderByCustomerId(Guid customerId, OrderState orderState = OrderState.Open)

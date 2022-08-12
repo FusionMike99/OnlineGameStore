@@ -8,19 +8,19 @@ namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IGameService
     {
-        Task<GameModel> CreateGame(GameModel game);
+        Task<GameModel> CreateGameAsync(GameModel game);
 
-        Task<GameModel> EditGame(GameModel game);
+        Task<GameModel> EditGameAsync(GameModel game);
 
-        Task DeleteGame(string gameKey);
+        Task DeleteGameAsync(string gameKey);
 
-        Task<GameModel> GetGameByKey(string gameKey, bool increaseViews = false);
+        Task<GameModel> GetGameByKeyAsync(string gameKey, bool increaseViews = false);
         
-        Task<(IEnumerable<GameModel>, int)> GetAllGames(SortFilterGameModel sortFilterModel = null,
+        Task<(IEnumerable<GameModel>, int)> GetAllGamesAsync(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null);
 
-        Task<int> GetGamesNumber(SortFilterGameModel sortFilterModel = null);
+        Task<int> GetGamesNumberAsync(SortFilterGameModel sortFilterModel = null);
 
-        Task<bool> CheckKeyForUnique(Guid gameId, string gameKey);
+        Task<bool> CheckKeyForUniqueAsync(Guid gameId, string gameKey);
     }
 }

@@ -24,7 +24,7 @@ namespace OnlineGameStore.Tests.Services
                 .ReturnsAsync(publisher);
 
             // Act
-            var actualPublisher = await sut.GetPublisherByCompanyName(publisher.CompanyName);
+            var actualPublisher = await sut.GetPublisherByCompanyNameAsync(publisher.CompanyName);
 
             // Assert
             actualPublisher.Should().BeEquivalentTo(publisher);

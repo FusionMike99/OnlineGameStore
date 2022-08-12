@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Controllers
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.DeleteGenre(It.IsAny<Guid>()));
+            mockGenreService.Setup(x => x.DeleteGenreAsync(It.IsAny<Guid>()));
 
             // Act
             var result = await sut.Remove(id);
@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGenres));
 
-            mockGenreService.Verify(x => x.DeleteGenre(It.IsAny<Guid>()), Times.Once);
+            mockGenreService.Verify(x => x.DeleteGenreAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

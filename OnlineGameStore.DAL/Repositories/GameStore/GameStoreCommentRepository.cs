@@ -15,7 +15,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public Task<IEnumerable<CommentEntity>> GetAllByGameKey(string gameKey,
+        public Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties)
         {

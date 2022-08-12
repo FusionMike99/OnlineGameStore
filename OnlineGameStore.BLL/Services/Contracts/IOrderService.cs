@@ -10,22 +10,22 @@ namespace OnlineGameStore.BLL.Services.Contracts
     {
         Task<OrderModel> GetOpenOrInProcessOrderAsync(Guid customerId);
 
-        Task<OrderModel> GetOrderById(Guid orderId);
+        Task<OrderModel> GetOrderByIdAsync(Guid orderId);
 
-        Task<IEnumerable<OrderModel>> GetOrders(FilterOrderModel filterOrderModel = null);
+        Task<IEnumerable<OrderModel>> GetOrdersAsync(FilterOrderModel filterOrderModel = null);
 
-        Task<OrderModel> EditOrder(OrderModel order);
+        Task<OrderModel> EditOrderAsync(OrderModel order);
 
-        Task AddToOpenOrder(Guid customerId, GameModel product, short quantity);
+        Task AddToOpenOrderAsync(Guid customerId, GameModel product, short quantity);
 
-        Task RemoveFromOrder(Guid customerId, string gameKey);
+        Task RemoveFromOrderAsync(Guid customerId, string gameKey);
 
-        Task<OrderModel> ChangeStatusToInProcess(Guid customerId);
+        Task<OrderModel> ChangeStatusToInProcessAsync(Guid customerId);
 
-        Task<OrderModel> ChangeStatusToClosed(Guid orderId);
+        Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId);
 
-        Task CancelOrdersWithTimeout();
+        Task CancelOrdersWithTimeoutAsync();
 
-        Task SetCancelledDate(Guid orderId, DateTime cancelledDate);
+        Task SetCancelledDateAsync(Guid orderId, DateTime cancelledDate);
     }
 }

@@ -25,7 +25,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
 
-            var createdComment = await _commentRepository.Create(comment);
+            var createdComment = await _commentRepository.CreateAsync(comment);
 
             commentModel.Id = createdComment.Id;
         }
@@ -34,21 +34,21 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
 
-            await _commentRepository.Update(comment);
+            await _commentRepository.UpdateAsync(comment);
         }
 
         public async Task DeleteAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
 
-            await _commentRepository.Delete(comment);
+            await _commentRepository.DeleteAsync(comment);
         }
 
         public async Task<CommentModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var comment = await _commentRepository.GetById(id, includeDeleted, includeProperties);
+            var comment = await _commentRepository.GetByIdAsync(id, includeDeleted, includeProperties);
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
             return mappedComment;
@@ -59,7 +59,7 @@ namespace OnlineGameStore.DAL.Repositories
             params string[] includeProperties)
         {
             var comments = await _commentRepository
-                .GetAllByGameKey(gameKey, includeDeleted, includeProperties);
+                .GetAllByGameKeyAsync(gameKey, includeDeleted, includeProperties);
             var mappedComments = _mapper.Map<IEnumerable<CommentModel>>(comments);
 
             return mappedComments;

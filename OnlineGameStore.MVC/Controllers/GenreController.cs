@@ -50,7 +50,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            await _genreService.CreateGenre(mappedGenre);
+            await _genreService.CreateGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
@@ -58,7 +58,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("update/{genreId:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid genreId)
         {
-            var genre = await _genreService.GetGenreById(genreId);
+            var genre = await _genreService.GetGenreByIdAsync(genreId);
 
             if (genre == null)
             {
@@ -92,7 +92,7 @@ namespace OnlineGameStore.MVC.Controllers
 
             var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            await _genreService.EditGenre(mappedGenre);
+            await _genreService.EditGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
@@ -100,7 +100,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet("{genreId:guid}")]
         public async Task<IActionResult> GetGenreById([FromRoute] Guid genreId)
         {
-            var genre = await _genreService.GetGenreById(genreId);
+            var genre = await _genreService.GetGenreByIdAsync(genreId);
 
             if (genre == null)
             {
@@ -115,7 +115,7 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> GetGenres()
         {
-            var genres = await _genreService.GetAllParentGenres();
+            var genres = await _genreService.GetAllParentGenresAsync();
 
             var genresViewModel = _mapper.Map<IEnumerable<GenreViewModel>>(genres);
 
@@ -126,21 +126,21 @@ namespace OnlineGameStore.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            await _genreService.DeleteGenre(id);
+            await _genreService.DeleteGenreAsync(id);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
         private async Task ConfigureEditGenreViewModel(EditGenreViewModel model)
         {
-            var genres = await _genreService.GetAllWithoutGenre(model.Id);
+            var genres = await _genreService.GetAllWithoutGenreAsync(model.Id);
             
             model.Genres = new SelectList(genres, nameof(GenreEntity.Id), nameof(GenreEntity.Name));
         }
 
         private async Task VerifyGenre(EditGenreViewModel genre)
         {
-            var checkResult = await _genreService.CheckNameForUnique(genre.Id, genre.Name);
+            var checkResult = await _genreService.CheckNameForUniqueAsync(genre.Id, genre.Name);
 
             if (checkResult)
             {

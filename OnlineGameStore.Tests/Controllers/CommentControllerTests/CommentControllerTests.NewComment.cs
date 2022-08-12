@@ -23,7 +23,7 @@ namespace OnlineGameStore.Tests.Controllers
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.LeaveCommentToGame(It.IsAny<string>(),
+            mockCommentService.Setup(x => x.LeaveCommentToGameAsync(It.IsAny<string>(),
                     It.IsAny<CommentModel>()))
                 .ReturnsAsync(comment);
 
@@ -41,7 +41,7 @@ namespace OnlineGameStore.Tests.Controllers
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
-            mockCommentService.Verify(x => x.LeaveCommentToGame(It.IsAny<string>(),
+            mockCommentService.Verify(x => x.LeaveCommentToGameAsync(It.IsAny<string>(),
                     It.IsAny<CommentModel>()),
                 Times.Once);
         }

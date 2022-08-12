@@ -7,18 +7,18 @@ namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IPlatformTypeService
     {
-        Task<PlatformTypeModel> CreatePlatformType(PlatformTypeModel platformType);
+        Task<PlatformTypeModel> CreatePlatformTypeAsync(PlatformTypeModel platformType);
 
-        Task<PlatformTypeModel> EditPlatformType(PlatformTypeModel platformType);
+        Task<PlatformTypeModel> EditPlatformTypeAsync(PlatformTypeModel platformType);
 
-        Task DeletePlatformType(Guid platformTypeId);
+        Task DeletePlatformTypeAsync(Guid platformTypeId);
 
-        Task<PlatformTypeModel> GetPlatformTypeById(Guid platformTypeId);
+        Task<PlatformTypeModel> GetPlatformTypeByIdAsync(Guid platformTypeId);
 
-        Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypes();
+        Task<IEnumerable<PlatformTypeModel>> GetAllPlatformTypesAsync();
         
-        Task<IEnumerable<string>> GetPlatformTypesIdsByNames(IEnumerable<string> types);
+        Task<IEnumerable<string>> GetPlatformTypesIdsByNamesAsync(IEnumerable<string> types);
 
-        Task<bool> CheckTypeForUnique(Guid platformTypeId, string type);
+        Task<bool> CheckTypeForUniqueAsync(Guid platformTypeId, string type);
     }
 }

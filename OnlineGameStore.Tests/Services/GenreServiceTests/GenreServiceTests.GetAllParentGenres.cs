@@ -21,16 +21,16 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetParentGenres(It.IsAny<bool>(), It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetParentGenresAsync(It.IsAny<bool>(), It.IsAny<string[]>()))
                 .ReturnsAsync(genres);
 
             // Act
-            var actualGenres = await sut.GetAllParentGenres();
+            var actualGenres = await sut.GetAllParentGenresAsync();
 
             // Assert
             actualGenres.Should().BeEquivalentTo(genres);
 
-            genreRepositoryMock.Verify(x => x.GetParentGenres(It.IsAny<bool>(), It.IsAny<string[]>()),
+            genreRepositoryMock.Verify(x => x.GetParentGenresAsync(It.IsAny<bool>(), It.IsAny<string[]>()),
                 Times.Once);
         }
     }

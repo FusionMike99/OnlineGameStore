@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Controllers
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.ChangeStatusToClosed(It.IsAny<Guid>()));
+            mockOrderService.Setup(x => x.ChangeStatusToClosedAsync(It.IsAny<Guid>()));
 
             // Act
             var result = await sut.Pay(orderId);
@@ -31,7 +31,7 @@ namespace OnlineGameStore.Tests.Controllers
             redirectToActionResult.ActionName.Should().Be(nameof(GameController.GetGames));
             redirectToActionResult.ControllerName.Should().Be("Game");
 
-            mockOrderService.Verify(x => x.ChangeStatusToClosed(It.IsAny<Guid>()), Times.Once);
+            mockOrderService.Verify(x => x.ChangeStatusToClosedAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

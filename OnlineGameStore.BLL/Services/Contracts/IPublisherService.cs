@@ -7,18 +7,18 @@ namespace OnlineGameStore.BLL.Services.Contracts
 {
     public interface IPublisherService
     {
-        Task<PublisherModel> CreatePublisher(PublisherModel publisher);
+        Task<PublisherModel> CreatePublisherAsync(PublisherModel publisher);
 
-        Task<PublisherModel> EditPublisher(PublisherModel publisher);
+        Task<PublisherModel> EditPublisherAsync(PublisherModel publisher);
 
-        Task DeletePublisher(Guid publisherId);
+        Task DeletePublisherAsync(Guid publisherId);
 
-        Task<PublisherModel> GetPublisherByCompanyName(string companyName);
+        Task<PublisherModel> GetPublisherByCompanyNameAsync(string companyName);
         
-        Task<IEnumerable<string>> GetSuppliersIdsByNames(IEnumerable<string> companiesNames);
+        Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames);
 
-        Task<IEnumerable<PublisherModel>> GetAllPublishers();
+        Task<IEnumerable<PublisherModel>> GetAllPublishersAsync();
 
-        Task<bool> CheckCompanyNameForUnique(Guid publisherId, string companyName);
+        Task<bool> CheckCompanyNameForUniqueAsync(Guid publisherId, string companyName);
     }
 }
