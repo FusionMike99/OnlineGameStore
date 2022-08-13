@@ -199,23 +199,18 @@ namespace OnlineGameStore.MVC.Controllers
 
         private async Task ConfigureEditGameViewModel(EditGameViewModel model)
         {
-            var genresTask = _genreService.GetAllGenresAsync();
-            var platformsTask = _platformTypeService.GetAllPlatformTypesAsync();
-            var publishersTask = _publisherService.GetAllPublishersAsync();
-
-            await Task.WhenAll(genresTask, platformsTask, publishersTask);
+            var genres = await _genreService.GetAllGenresAsync();
+            var platforms = await _platformTypeService.GetAllPlatformTypesAsync();
+            var publishers = await _publisherService.GetAllPublishersAsync();
             
-            model.Genres = new SelectList(await genresTask,
-                nameof(GenreEntity.Id),
-                nameof(GenreEntity.Name));
+            model.Genres = new SelectList(genres,
+                nameof(GenreEntity.Id), nameof(GenreEntity.Name));
 
-            model.PlatformTypes = new SelectList(await platformsTask,
-                nameof(PlatformTypeEntity.Id),
-                nameof(PlatformTypeEntity.Type));
+            model.PlatformTypes = new SelectList(platforms,
+                nameof(PlatformTypeEntity.Id), nameof(PlatformTypeEntity.Type));
 
-            model.Publishers = new SelectList(await publishersTask,
-                nameof(PublisherEntity.CompanyName),
-                nameof(PublisherEntity.CompanyName));
+            model.Publishers = new SelectList(publishers,
+                nameof(PublisherEntity.CompanyName), nameof(PublisherEntity.CompanyName));
         }
 
         private async Task VerifyGame(EditGameViewModel game)

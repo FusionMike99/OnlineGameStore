@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Hangfire;
@@ -132,8 +131,6 @@ namespace OnlineGameStore.MVC
             RecurringJob.AddOrUpdate("cancellingOrders",
                 () => orderService.CancelOrdersWithTimeoutAsync(),
                 Cron.Minutely);
-
-            BackgroundJob.Enqueue(() => Console.WriteLine());
         }
     }
 }
