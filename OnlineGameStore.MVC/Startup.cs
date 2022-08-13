@@ -74,6 +74,7 @@ namespace OnlineGameStore.MVC
             });
             
             services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
         }
 
