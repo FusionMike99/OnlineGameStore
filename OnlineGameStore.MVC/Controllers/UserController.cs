@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.Identity.Interfaces.Services;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers

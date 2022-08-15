@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OnlineGameStore.BLL\OnlineGameStore.BLL.csproj" />
     <ProjectReference Include="..\OnlineGameStore.DAL\OnlineGameStore.DAL.csproj" />
+    <ProjectReference Include="..\OnlineGameStore.Identity\OnlineGameStore.Identity.csproj" />
   </ItemGroup>
 
 </Project>

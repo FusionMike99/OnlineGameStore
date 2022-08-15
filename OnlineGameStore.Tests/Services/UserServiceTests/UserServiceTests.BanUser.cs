@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Services;
+using OnlineGameStore.Identity.Services;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 

@@ -1,12 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories.Northwind;
 
 namespace OnlineGameStore.DAL.Data
 {
-    public class StoreDbContext : DbContext
+    public class StoreDbContext : IdentityDbContext<UserEntity, RoleEntity, Guid>
     {
         public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options) : base(options)
         {

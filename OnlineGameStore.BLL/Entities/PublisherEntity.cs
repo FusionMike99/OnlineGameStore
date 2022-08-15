@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineGameStore.BLL.Entities
 {
@@ -27,6 +28,8 @@ namespace OnlineGameStore.BLL.Entities
         public string Phone { get; set; }
         
         public string Fax { get; set; }
+        
+        public UserEntity User { get; set; }
 
         public ICollection<GameEntity> Games { get; set; }
     }
