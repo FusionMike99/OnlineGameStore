@@ -3,6 +3,7 @@ using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.Identity.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using OnlineGameStore.BLL.Exceptions;
+using OnlineGameStore.Identity.Models;
 
 namespace OnlineGameStore.Identity.Services
 {
@@ -15,9 +16,10 @@ namespace OnlineGameStore.Identity.Services
             _signInManager = signInManager;
         }
 
-        public async Task<bool> LogInAsync(string email, string password, bool isPersistent)
+        public async Task<bool> LogInAsync(LoginModel loginModel)
         {
-            var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent, false);
+            var result = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password,
+                loginModel.RememberMe, lockoutOnFailure: false);
 
             if (result.IsLockedOut)
             {

@@ -10,6 +10,7 @@ using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Exceptions;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.Identity.Interfaces.Services;
+using OnlineGameStore.Identity.Models;
 
 namespace OnlineGameStore.Identity.Services
 {
@@ -26,10 +27,10 @@ namespace OnlineGameStore.Identity.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateUserAsync(UserModel user, string password)
+        public async Task<bool> CreateUserAsync(RegisterModel registerModel)
         {
-            var mappedUser = _mapper.Map<UserEntity>(user);
-            var result = await _userManager.CreateAsync(mappedUser, password);
+            var mappedUser = _mapper.Map<UserEntity>(registerModel);
+            var result = await _userManager.CreateAsync(mappedUser, registerModel.Password);
 
             if (!result.Succeeded)
             {

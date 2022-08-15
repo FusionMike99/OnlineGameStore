@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.Identity.Models;
 
 namespace OnlineGameStore.Identity.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<bool> CreateUserAsync(UserModel user, string password);
+        Task<bool> CreateUserAsync(RegisterModel registerModel);
 
         Task<UserModel> EditUserAsync(UserModel user);
 
