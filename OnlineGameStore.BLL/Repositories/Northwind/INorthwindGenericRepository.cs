@@ -5,7 +5,7 @@ using OnlineGameStore.BLL.Entities.Northwind;
 namespace OnlineGameStore.BLL.Repositories.Northwind
 {
     public interface INorthwindGenericRepository<TEntity>
-        where TEntity : NorthwindBaseEntity
+        where TEntity : MongoBaseEntity
     {
         Task<IEnumerable<TEntity>> GetAllAsync();
 

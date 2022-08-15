@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using OnlineGameStore.BLL.Builders.PipelineBuilders;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Pipelines;
@@ -36,13 +37,7 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         
         private static Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)
         {
-            var gamesFilterPipeline = new GamesFilterPipeline()
-                .Register(new GamesByGenresFilter())
-                .Register(new GamesByPlatformTypesFilter())
-                .Register(new GamesByPublishersFilter())
-                .Register(new GamesByPriceRangeFilter())
-                .Register(new GamesByDatePublishedFilter())
-                .Register(new GamesByNameFilter());
+            var gamesFilterPipeline = GamesPipelineBuilder.CreatePipeline();
             var predicate = gamesFilterPipeline.Process(model);
 
             return predicate;

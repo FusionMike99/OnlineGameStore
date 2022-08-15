@@ -47,7 +47,7 @@ namespace OnlineGameStore.DAL.Repositories
             gameModel.Id = createdGame.Id;
         }
 
-        public async Task UpdateAsync(GameModel gameModel)
+        public async Task UpdateOrCreateAsync(GameModel gameModel)
         {
             var game = _mapper.Map<GameEntity>(gameModel);
             
@@ -73,7 +73,7 @@ namespace OnlineGameStore.DAL.Repositories
             await UpdateGameQuantity(gameKey, quantity, Operation);
         }
 
-        public async Task DeleteAsync(GameModel gameModel)
+        public async Task DeleteOrCreateAsync(GameModel gameModel)
         {
             var game = _mapper.Map<GameEntity>(gameModel);
             

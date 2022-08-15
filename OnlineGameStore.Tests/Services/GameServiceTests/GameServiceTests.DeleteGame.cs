@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
                     It.IsAny<bool>(), It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
-            gameRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GameModel>()));
+            gameRepositoryMock.Setup(x => x.DeleteOrCreateAsync(It.IsAny<GameModel>()));
 
             // Act
             await sut.DeleteGameAsync(game.Key);
@@ -33,7 +33,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
-            gameRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<GameModel>()), Times.Once);
+            gameRepositoryMock.Verify(x => x.DeleteOrCreateAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
         [Theory]

@@ -16,11 +16,11 @@ namespace OnlineGameStore.DAL.Data
                 .MakeGenericMethod(entityData.ClrType);
             var filter = methodToCall.Invoke(null, new object[] { });
             entityData.SetQueryFilter((LambdaExpression)filter);
-            entityData.AddIndex(entityData.FindProperty(nameof(ISoftDelete.IsDeleted)));
+            entityData.AddIndex(entityData.FindProperty(nameof(BaseEntity.IsDeleted)));
         }
 
         private static LambdaExpression GetSoftDeleteFilter<TEntity>()
-            where TEntity : class, ISoftDelete
+            where TEntity : BaseEntity
         {
             Expression<Func<TEntity, bool>> filter = x => !x.IsDeleted;
 

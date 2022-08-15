@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using OnlineGameStore.BLL.Builders.PipelineBuilders;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Pipelines;
@@ -33,18 +34,14 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return await GetFirst(predicate);
         }
 
-        public Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products)
+        public async Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products)
         {
-            async void Action(NorthwindProduct product)
+            foreach (var product in products)
             {
-                product.Key ??= product.Name.ToKebabCase();
-                await UpdateAsync(product);
-                product.DateAdded ??= Constants.AddedAtDefault;
+                await SetGameKeyAndDateAddedPerUnitAsync(product);
             }
 
-            products.ForEach(Action);
-
-            return Task.FromResult<IEnumerable<NorthwindProduct>>(products);
+            return products;
         }
 
         public async Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
@@ -53,14 +50,17 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
 
             return await GetMany(predicate);
         }
+
+        private async Task SetGameKeyAndDateAddedPerUnitAsync(NorthwindProduct product)
+        {
+            product.Key ??= product.Name.ToKebabCase();
+            await UpdateAsync(product);
+            product.DateAdded ??= Constants.AddedAtDefault;
+        }
         
         private async Task<Expression<Func<NorthwindProduct, bool>>> GetNorthwindPredicate(SortFilterGameModel model)
         {
-            var productsFilterPipeline = new ProductsFilterPipeline()
-                .Register(new ProductsByCategoriesFilter())
-                .Register(new ProductsBySuppliersFilter())
-                .Register(new ProductsByPriceRangeFilter())
-                .Register(new ProductsByNameFilter());
+            var productsFilterPipeline = ProductsPipelineBuilder.CreatePipeline();
             await SetSuppliersIds(model);
             var predicate = productsFilterPipeline.Process(model);
 

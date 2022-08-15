@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities.Northwind
 {
-    public class NorthwindShipper : NorthwindBaseEntity
+    public class NorthwindShipper : MongoBaseEntity
     {
         public string CompanyName { get; set; }
         

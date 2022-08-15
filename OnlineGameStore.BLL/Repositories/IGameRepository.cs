@@ -9,13 +9,13 @@ namespace OnlineGameStore.BLL.Repositories
     {
         Task CreateAsync(GameModel gameModel);
 
-        Task UpdateAsync(GameModel gameModel);
+        Task UpdateOrCreateAsync(GameModel gameModel);
 
         Task IncreaseGameQuantityAsync(string gameKey, short quantity);
         
         Task DecreaseGameQuantityAsync(string gameKey, short quantity);
 
-        Task DeleteAsync(GameModel gameModel);
+        Task DeleteOrCreateAsync(GameModel gameModel);
         
         Task<GameModel> GetByKeyAsync(string gameKey, bool increaseViews = false, bool includeDeleted = false);
         

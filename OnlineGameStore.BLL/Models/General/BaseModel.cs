@@ -3,7 +3,7 @@ using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Models.General
 {
-    public abstract class BaseModel : ISoftDelete
+    public abstract class BaseModel
     {
         public Guid Id { get; set; }
         

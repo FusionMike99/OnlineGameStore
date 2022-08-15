@@ -42,12 +42,12 @@ namespace OnlineGameStore.BLL.Services
                 throw exception;
             }
 
-            await _gameRepository.DeleteAsync(game);
+            await _gameRepository.DeleteOrCreateAsync(game);
         }
 
         public async Task<GameModel> EditGameAsync(GameModel game)
         {
-            await _gameRepository.UpdateAsync(game);
+            await _gameRepository.UpdateOrCreateAsync(game);
 
             return game;
         }
