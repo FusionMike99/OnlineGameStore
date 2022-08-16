@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DAL.Builders.PipelineBuilders;
+using OnlineGameStore.DAL.Builders.PipelineBuilders.Interfaces;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
 using OnlineGameStore.DAL.Repositories.MongoDb;
@@ -18,8 +20,9 @@ namespace OnlineGameStore.Infrastructure.Injections
         public static void AddRepositories(this IServiceCollection services,
             IDictionary<string, string> connectionStrings)
         {
-            services.AddGameStoreRepositories(connectionStrings["GameStore"]);
-            services.AddNorthwindRepositories(connectionStrings["Northwind"]);
+            services.AddSqlServerRepositories(connectionStrings["GameStore"]);
+            services.AddPipelineBuilders();
+            services.AddMongoDbRepositories(connectionStrings["Northwind"]);
             services.AddCommonRepositories();
         }
         
@@ -34,7 +37,7 @@ namespace OnlineGameStore.Infrastructure.Injections
             services.AddScoped<IShipperRepository, ShipperRepository>();
         }
 
-        private static void AddGameStoreRepositories(this IServiceCollection services, string connectionString)
+        private static void AddSqlServerRepositories(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
             
@@ -45,8 +48,14 @@ namespace OnlineGameStore.Infrastructure.Injections
             services.AddScoped<IPlatformTypeSqlServerRepository, PlatformTypeSqlServerRepository>();
             services.AddScoped<IPublisherSqlServerRepository, PublisherSqlServerRepository>();
         }
+        
+        private static void AddPipelineBuilders(this IServiceCollection services)
+        {
+            services.AddScoped<IGamesPipelineBuilder, GamesPipelineBuilder>();
+            services.AddScoped<IProductsPipelineBuilder, ProductsPipelineBuilder>();
+        }
 
-        private static void AddNorthwindRepositories(this IServiceCollection services, string connectionString)
+        private static void AddMongoDbRepositories(this IServiceCollection services, string connectionString)
         {
             var connection = new MongoUrlBuilder(connectionString);
                         
@@ -63,7 +72,7 @@ namespace OnlineGameStore.Infrastructure.Injections
                     provider.GetService<IShipperMongoDbRepository>()));
             services.AddScoped<IProductMongoDbRepository>(provider => 
                 new ProductMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>(),
-                    provider.GetService<ISupplierMongoDbRepository>()));
+                    provider.GetService<ISupplierMongoDbRepository>(), provider.GetService<IProductsPipelineBuilder>()));
             services.AddScoped<IShipperMongoDbRepository>(provider => 
                 new ShipperMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
             services.AddScoped<ISupplierMongoDbRepository>(provider => 

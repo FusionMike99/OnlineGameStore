@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using OnlineGameStore.DAL.Builders.PipelineBuilders;
+using OnlineGameStore.DAL.Builders.PipelineBuilders.Interfaces;
 using OnlineGameStore.DAL.Entities.Northwind;
 using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
 using OnlineGameStore.DomainModels;
@@ -19,12 +19,15 @@ namespace OnlineGameStore.DAL.Repositories.MongoDb
         IProductMongoDbRepository
     {
         private readonly ISupplierMongoDbRepository _supplierMongoDbRepository;
+        private readonly IProductsPipelineBuilder _productsPipelineBuilder;
 
         public ProductMongoDbRepository(IMongoDatabase database,
             ILoggerFactory loggerFactory,
-            ISupplierMongoDbRepository supplierMongoDbRepository) : base(database, loggerFactory)
+            ISupplierMongoDbRepository supplierMongoDbRepository,
+            IProductsPipelineBuilder productsPipelineBuilder) : base(database, loggerFactory)
         {
             _supplierMongoDbRepository = supplierMongoDbRepository;
+            _productsPipelineBuilder = productsPipelineBuilder;
         }
 
         public async Task<ProductEntity> GetByKeyAsync(string gameKey)
@@ -61,8 +64,7 @@ namespace OnlineGameStore.DAL.Repositories.MongoDb
         
         private async Task<Expression<Func<ProductEntity, bool>>> GetNorthwindPredicate(SortFilterGameModel model)
         {
-            var productsPipelineBuilder = new ProductsPipelineBuilder();
-            var productsFilterPipeline = productsPipelineBuilder.CreatePipeline();
+            var productsFilterPipeline = _productsPipelineBuilder.CreatePipeline();
             await SetSuppliersIds(model);
             var predicate = productsFilterPipeline.Process(model);
 

@@ -8,7 +8,7 @@ using OnlineGameStore.DomainModels.Models;
 
 namespace OnlineGameStore.DAL.Builders.PipelineBuilders
 {
-    public class GamesPipelineBuilder : IPipelineBuilder<SortFilterGameModel, Expression<Func<GameEntity,bool>>>
+    public class GamesPipelineBuilder : IGamesPipelineBuilder
     {
         public Pipeline<SortFilterGameModel, Expression<Func<GameEntity,bool>>> CreatePipeline()
         {

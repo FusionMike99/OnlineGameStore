@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.DAL.Builders.PipelineBuilders;
+using OnlineGameStore.DAL.Builders.PipelineBuilders.Interfaces;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Entities;
 using OnlineGameStore.DAL.Repositories.SqlServer.Extensions;
@@ -16,8 +16,12 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 {
     public class GameSqlServerRepository : SqlServerRepository<GameEntity>, IGameSqlServerRepository
     {
-        public GameSqlServerRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
+        private readonly IGamesPipelineBuilder _gamesPipelineBuilder;
+        
+        public GameSqlServerRepository(StoreDbContext context, ILoggerFactory logger,
+            IGamesPipelineBuilder gamesPipelineBuilder) : base(context, logger)
         {
+            _gamesPipelineBuilder = gamesPipelineBuilder;
         }
 
         public async Task<GameEntity> GetByKeyAsync(string gameKey)
@@ -42,10 +46,9 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             return games;
         }
         
-        private static Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)
+        private Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)
         {
-            var gamesPipelineBuilder = new GamesPipelineBuilder();
-            var gamesFilterPipeline = gamesPipelineBuilder.CreatePipeline();
+            var gamesFilterPipeline = _gamesPipelineBuilder.CreatePipeline();
             var predicate = gamesFilterPipeline.Process(model);
 
             return predicate;
