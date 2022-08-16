@@ -4,7 +4,7 @@ using System.Linq;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.DAL.Entities;
-using OnlineGameStore.DomainModels.Utils;
+using OnlineGameStore.ExtensionsUtility.Extensions;
 
 namespace OnlineGameStore.DAL.Data
 {

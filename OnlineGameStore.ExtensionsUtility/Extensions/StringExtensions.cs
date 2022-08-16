@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using OnlineGameStore.ExtensionsUtility.Utils;
 
-namespace OnlineGameStore.DomainModels.Utils
+namespace OnlineGameStore.ExtensionsUtility.Extensions
 {
     public static class StringExtensions
     {

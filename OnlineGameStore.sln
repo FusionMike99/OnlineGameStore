@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineGameStore.DomainModel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineGameStore.DAL.Abstractions", "OnlineGameStore.DAL.Abstractions\OnlineGameStore.DAL.Abstractions.csproj", "{5CB43E9C-A7E8-4473-AB0F-202CBBBE53E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineGameStore.ExtensionsUtility", "OnlineGameStore.ExtensionsUtility\OnlineGameStore.ExtensionsUtility.csproj", "{62F25127-453F-4644-9069-577FEBE829D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{5CB43E9C-A7E8-4473-AB0F-202CBBBE53E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CB43E9C-A7E8-4473-AB0F-202CBBBE53E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CB43E9C-A7E8-4473-AB0F-202CBBBE53E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62F25127-453F-4644-9069-577FEBE829D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F25127-453F-4644-9069-577FEBE829D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F25127-453F-4644-9069-577FEBE829D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F25127-453F-4644-9069-577FEBE829D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

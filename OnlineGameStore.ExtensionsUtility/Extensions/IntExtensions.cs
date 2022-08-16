@@ -1,6 +1,7 @@
 ﻿using System;
+using OnlineGameStore.ExtensionsUtility.Utils;
 
-namespace OnlineGameStore.DomainModels.Utils
+namespace OnlineGameStore.ExtensionsUtility.Extensions
 {
     public static class IntExtensions
     {

@@ -4,7 +4,7 @@ using OnlineGameStore.DAL.Entities.Northwind;
 using OnlineGameStore.DomainModels;
 using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.DomainModels.Models.General;
-using OnlineGameStore.DomainModels.Utils;
+using OnlineGameStore.ExtensionsUtility.Extensions;
 
 namespace OnlineGameStore.DAL.Mapper
 {

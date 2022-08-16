@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineGameStore.DomainModels.Utils
+namespace OnlineGameStore.ExtensionsUtility.Utils
 {
     public static class Randomizer
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace OnlineGameStore.DomainModels.Utils
+namespace OnlineGameStore.ExtensionsUtility.Extensions
 {
     public static class ObjectExtensions
     {

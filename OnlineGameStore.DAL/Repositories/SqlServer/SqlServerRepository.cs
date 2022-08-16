@@ -7,7 +7,7 @@ using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Entities;
 using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 using OnlineGameStore.DomainModels.Enums;
-using OnlineGameStore.DomainModels.Utils;
+using OnlineGameStore.ExtensionsUtility.Extensions;
 
 namespace OnlineGameStore.DAL.Repositories.SqlServer
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace OnlineGameStore.DomainModels.Utils
+namespace OnlineGameStore.ExtensionsUtility.Extensions
 {
     public static class GuidExtensions
     {
