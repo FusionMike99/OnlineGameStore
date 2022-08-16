@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace OnlineGameStore.BLL.Entities
+namespace OnlineGameStore.DAL.Entities
 {
     public class UserEntity : IdentityUser<Guid>
     {

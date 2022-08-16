@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.Identity.Models;
 
 namespace OnlineGameStore.Identity.Services.Interfaces

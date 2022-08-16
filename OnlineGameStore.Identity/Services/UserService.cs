@@ -5,10 +5,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Exceptions;
 using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.Identity.Models;
 using OnlineGameStore.Identity.Services.Interfaces;
 
