@@ -44,20 +44,25 @@ namespace OnlineGameStore.DAL.Repositories
             await _genreSqlServerRepository.DeleteAsync(genre);
         }
 
-        public async Task<GenreModel> GetByIdAsync(Guid id, bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<GenreModel> GetByIdAsync(Guid id)
         {
-            var genre = await _genreSqlServerRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var genre = await _genreSqlServerRepository.GetByIdAsync(id);
             var mappedGenre = _mapper.Map<GenreModel>(genre);
 
             return mappedGenre;
         }
 
-        public async Task<GenreModel> GetByNameAsync(string name,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<GenreModel> GetByNameAsync(string name)
         {
-            var genre = await _genreSqlServerRepository.GetByNameAsync(name, includeDeleted, includeProperties);
+            var genre = await _genreSqlServerRepository.GetByNameAsync(name);
+            var mappedGenre = _mapper.Map<GenreModel>(genre);
+
+            return mappedGenre;
+        }
+
+        public async Task<GenreModel> GetByNameIncludeDeletedAsync(string name)
+        {
+            var genre = await _genreSqlServerRepository.GetByNameIncludeDeletedAsync(name);
             var mappedGenre = _mapper.Map<GenreModel>(genre);
 
             return mappedGenre;
@@ -73,29 +78,25 @@ namespace OnlineGameStore.DAL.Repositories
             return await _categoryMongoDbRepository.GetIdsByNamesAsync(names);
         }
 
-        public async Task<IEnumerable<GenreModel>> GetAllAsync(bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<GenreModel>> GetAllAsync()
         {
-            var genres = await _genreSqlServerRepository.GetAllAsync(includeDeleted, includeProperties);
+            var genres = await _genreSqlServerRepository.GetAllAsync();
             var mappedGenres = _mapper.Map<IEnumerable<GenreModel>>(genres);
 
             return mappedGenres;
         }
 
-        public async Task<IEnumerable<GenreModel>> GetParentGenresAsync(bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<GenreModel>> GetParentGenresAsync()
         {
-            var genres = await _genreSqlServerRepository.GetParentGenresAsync(includeDeleted, includeProperties);
+            var genres = await _genreSqlServerRepository.GetParentGenresAsync();
             var mappedGenres = _mapper.Map<IEnumerable<GenreModel>>(genres);
 
             return mappedGenres;
         }
 
-        public async Task<IEnumerable<GenreModel>> GetWithoutGenreAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<GenreModel>> GetWithoutGenreAsync(Guid id)
         {
-            var genres = await _genreSqlServerRepository.GetWithoutGenreAsync(id, includeDeleted, includeProperties);
+            var genres = await _genreSqlServerRepository.GetWithoutGenreAsync(id);
             var mappedGenres = _mapper.Map<IEnumerable<GenreModel>>(genres);
 
             return mappedGenres;

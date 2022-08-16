@@ -48,11 +48,11 @@ namespace OnlineGameStore.DAL.Repositories
             await _publisherSqlServerRepository.DeleteAsync(publisher);
         }
 
-        public async Task<PublisherModel> GetByNameAsync(string companyName, bool includeDeleted = false)
+        public async Task<PublisherModel> GetByNameAsync(string companyName)
         {
             PublisherModel publisherModel;
             
-            var publisherTask = _publisherSqlServerRepository.GetByNameAsync(companyName, includeDeleted);
+            var publisherTask = _publisherSqlServerRepository.GetByNameAsync(companyName);
             var supplierTask = _supplierMongoDbRepository.GetByNameAsync(companyName);
             await Task.WhenAll(publisherTask, supplierTask);
 
@@ -77,9 +77,17 @@ namespace OnlineGameStore.DAL.Repositories
             return publisherModel;
         }
 
-        public async Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false)
+        public async Task<PublisherModel> GetByNameIncludeDeletedAsync(string companyName)
         {
-            var publisher = await _publisherSqlServerRepository.GetByIdAsync(id, includeDeleted);
+            var publisher = await _publisherSqlServerRepository.GetByNameIncludeDeletedAsync(companyName);
+            var mappedPublisher = _mapper.Map<PublisherModel>(publisher);
+
+            return mappedPublisher;
+        }
+
+        public async Task<PublisherModel> GetByIdAsync(Guid id)
+        {
+            var publisher = await _publisherSqlServerRepository.GetByIdAsync(id);
             var publisherModel = _mapper.Map<PublisherModel>(publisher);
 
             return publisherModel;

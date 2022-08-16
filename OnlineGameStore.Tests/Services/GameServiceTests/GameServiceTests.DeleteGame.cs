@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             GameService sut)
         {
             // Arrange
-            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<bool>()))
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
             gameRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GameModel>()));
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             await sut.DeleteGameAsync(game.Key);
 
             // Assert
-            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
             gameRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
@@ -45,8 +43,7 @@ namespace OnlineGameStore.Tests.Services
             GameService sut)
         {
             // Arrange
-            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<bool>()))
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()))
                 .ReturnsAsync(game);
 
             // Act
@@ -55,8 +52,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<bool>()), Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
     }
 }

@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.DAL.Entities;
 
-namespace OnlineGameStore.DAL.Utils
+namespace OnlineGameStore.DAL.Repositories.SqlServer.Extensions
 {
-    internal static class QueryableExtension
+    internal static class SoftDeleteExtensions
     {
         internal static IQueryable<TEntity> IncludeDeleted<TEntity>(this IQueryable<TEntity> query)
             where TEntity : BaseEntity

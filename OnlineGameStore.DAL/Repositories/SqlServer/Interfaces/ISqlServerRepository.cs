@@ -10,10 +10,9 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
     {
         Task<TEntity> CreateAsync(TEntity entity);
 
-        Task<TEntity> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
+        Task<TEntity> GetByIdAsync(Guid id);
 
-        Task<IEnumerable<TEntity>> GetAllAsync(bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<IEnumerable<TEntity>> GetAllAsync();
 
         Task<TEntity> UpdateAsync(TEntity entity);
 

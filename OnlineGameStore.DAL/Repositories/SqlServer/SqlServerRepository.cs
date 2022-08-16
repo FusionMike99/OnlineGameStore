@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,7 +15,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         where TEntity : BaseEntity
     {
         protected readonly StoreDbContext Context;
-        private readonly DbSet<TEntity> _entities;
+        protected readonly DbSet<TEntity> Entities;
         private readonly ILogger<SqlServerRepository<TEntity>> _logger;
 
         protected SqlServerRepository(StoreDbContext context, ILoggerFactory logger)
@@ -25,13 +23,13 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             Context = context;
             _logger = logger.CreateLogger<SqlServerRepository<TEntity>>();
 
-            _entities = context.Set<TEntity>();
+            Entities = context.Set<TEntity>();
         }
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
             entity.Id = Guid.NewGuid();
-            await _entities.AddAsync(entity);
+            await Entities.AddAsync(entity);
             await Context.SaveChangesAsync();
 
             _logger.LogDebug("Action: {Action}\nEntity Type: {EntityType}\nObject: {@Object}", ActionTypes.Create,
@@ -50,16 +48,16 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
                 typeof(TEntity), entity);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties)
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            var foundEntities = await IncludeProperties(includeDeleted, includeProperties).ToListAsync();
+            var foundEntities = await Entities.ToListAsync();
             
             return foundEntities;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var exist = await _entities.FindAsync(entity.Id);
+            var exist = await Entities.FindAsync(entity.Id);
             var oldEntity = exist.DeepClone();
 
             foreach (var navEntity in Context.Entry(entity).Navigations)
@@ -84,34 +82,11 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             return entity;
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties)
+        public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
-            Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
-            var foundEntity = await IncludeProperties(includeDeleted, includeProperties)
-                .SingleOrDefaultAsync(predicate);
+            var foundEntity = await Entities.FirstOrDefaultAsync(m => m.Id == id);
             
             return foundEntity;
-        }
-
-        protected IQueryable<TEntity> IncludeProperties(bool includeDeleted = false,
-            params string[] includeProperties)
-        {
-            var query = Include(includeProperties);
-
-            if (includeDeleted)
-            {
-                query = query.IgnoreQueryFilters();
-            }
-
-            return query;
-        }
-
-        private IQueryable<TEntity> Include(params string[] includeProperties)
-        {
-            var query = _entities.AsQueryable();
-
-            return includeProperties
-                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
     }
 }

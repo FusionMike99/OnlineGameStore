@@ -8,7 +8,8 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
     {
         Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types);
 
-        Task<PlatformTypeEntity> GetByTypeAsync(string type, bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<PlatformTypeEntity> GetByTypeAsync(string type);
+        
+        Task<PlatformTypeEntity> GetByTypeIncludeDeletedAsync(string type);
     }
 }

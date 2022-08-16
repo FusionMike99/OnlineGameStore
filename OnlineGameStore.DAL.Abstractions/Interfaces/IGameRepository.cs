@@ -17,7 +17,9 @@ namespace OnlineGameStore.DAL.Abstractions.Interfaces
 
         Task DeleteAsync(GameModel gameModel);
         
-        Task<GameModel> GetByKeyAsync(string gameKey, bool increaseViews = false, bool includeDeleted = false);
+        Task<GameModel> GetByKeyAsync(string gameKey, bool increaseViews = false);
+        
+        Task<GameModel> GetByKeyIncludeDeletedAsync(string gameKey);
         
         Task<(IEnumerable<GameModel>, int)> GetAllAsync(SortFilterGameModel sortFilterModel = null,
             PageModel pageModel = null);

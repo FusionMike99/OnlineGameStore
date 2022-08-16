@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,12 +15,10 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
         }
 
-        public async Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey)
         {
-            var comments = await IncludeProperties(includeDeleted, includeProperties)
-                .Where(c => c.Game.Key == gameKey).ToListAsync();
+            var comments = await Entities.Where(c => c.Game.Key == gameKey)
+                .Include(c => c.Replies).ToListAsync();
 
             return comments;
         }

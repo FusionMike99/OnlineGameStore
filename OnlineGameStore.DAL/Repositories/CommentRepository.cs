@@ -40,22 +40,18 @@ namespace OnlineGameStore.DAL.Repositories
             await _commentSqlServerRepository.DeleteAsync(comment);
         }
 
-        public async Task<CommentModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<CommentModel> GetByIdAsync(Guid id)
         {
-            var comment = await _commentSqlServerRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var comment = await _commentSqlServerRepository.GetByIdAsync(id);
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
             return mappedComment;
         }
 
-        public async Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey)
         {
             var comments = await _commentSqlServerRepository
-                .GetAllByGameKeyAsync(gameKey, includeDeleted, includeProperties);
+                .GetAllByGameKeyAsync(gameKey);
             var mappedComments = _mapper.Map<IEnumerable<CommentModel>>(comments);
 
             return mappedComments;

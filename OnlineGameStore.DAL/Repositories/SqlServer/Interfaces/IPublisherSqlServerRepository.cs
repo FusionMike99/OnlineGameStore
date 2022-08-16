@@ -5,7 +5,8 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
 {
     public interface IPublisherSqlServerRepository : ISqlServerRepository<PublisherEntity>
     {
-        Task<PublisherEntity> GetByNameAsync(string companyName, bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<PublisherEntity> GetByNameAsync(string companyName);
+        
+        Task<PublisherEntity> GetByNameIncludeDeletedAsync(string companyName);
     }
 }

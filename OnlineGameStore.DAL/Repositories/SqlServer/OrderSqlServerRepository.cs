@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Repositories.SqlServer.Extensions;
 using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 using OnlineGameStore.DAL.Utils;
 using OnlineGameStore.DomainModels.Enums;
@@ -22,11 +22,9 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<OrderEntity> GetOpenOrInProcessOrderAsync(Guid customerId)
         {
-            Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId
-                                                           && o.OrderState <= OrderState.InProgress
-                                                           && o.CancelledDate == null;
-            var order = await IncludeProperties(includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
+            var order = await Entities.IncludeForOrders().FirstOrDefaultAsync(o => o.CustomerId == customerId
+                                                                && o.OrderState <= OrderState.InProgress
+                                                                && o.CancelledDate == null);
 
             if (order != null)
             {
@@ -48,17 +46,15 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         public async Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
             var predicate = OrderPredicate.GetPredicate<OrderEntity>(filterOrderModel);
-            var orders = await IncludeProperties(includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").Where(predicate).ToListAsync();
+            var orders = await Entities.IncludeForOrders().Where(predicate).ToListAsync();
 
             return orders;
         }
 
         public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState)
         {
-            Expression<Func<OrderEntity, bool>> predicate = o => o.OrderState == orderState;
-            var orders = await IncludeProperties(includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").Where(predicate).ToListAsync();
+            var orders = await Entities.IncludeForOrders()
+                .Where(o => o.OrderState == orderState).ToListAsync();
 
             return orders;
         }
@@ -66,7 +62,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         public async Task AddProductToOrderAsync(Guid customerId, GameEntity product, short quantity)
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
-            var existOrderDetail = order.OrderDetails.SingleOrDefault(od => od.GameKey == product.Key);
+            var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == product.Key);
 
             if (existOrderDetail != null)
             {
@@ -92,7 +88,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         public async Task RemoveProductFromOrderAsync(Guid customerId, string gameKey)
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
-            var existOrderDetail = order.OrderDetails.SingleOrDefault(od => od.GameKey == gameKey);
+            var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == gameKey);
 
             if (existOrderDetail == null)
             {
@@ -125,9 +121,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<OrderEntity> GetOrderByIdAsync(Guid orderId)
         {
-            Expression<Func<OrderEntity, bool>> predicate = o => o.Id == orderId;
-            var order = await IncludeProperties(includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
+            var order = await Entities.IncludeForOrders().FirstOrDefaultAsync(o => o.Id == orderId);
 
             return order;
         }
@@ -142,9 +136,8 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         
         private async Task<OrderEntity> GetOrderByCustomerId(Guid customerId, OrderState orderState = OrderState.Open)
         {
-            Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId && o.OrderState == orderState;
-            var order = await IncludeProperties(includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
+            var order = await Entities.IncludeForOrders()
+                .FirstOrDefaultAsync(o => o.CustomerId == customerId && o.OrderState == orderState);
 
             return order;
         }

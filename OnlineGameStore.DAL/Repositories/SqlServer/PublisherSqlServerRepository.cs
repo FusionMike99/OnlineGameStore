@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Repositories.SqlServer.Extensions;
 using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 
 namespace OnlineGameStore.DAL.Repositories.SqlServer
@@ -15,12 +14,16 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
         }
 
-        public async Task<PublisherEntity> GetByNameAsync(string companyName,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<PublisherEntity> GetByNameAsync(string companyName)
         {
-            Expression<Func<PublisherEntity, bool>> predicate = p => p.CompanyName == companyName;
-            var publisher = await IncludeProperties(includeDeleted, includeProperties).SingleOrDefaultAsync(predicate);
+            var publisher = await Entities.FirstOrDefaultAsync(p => p.CompanyName == companyName);
+
+            return publisher;
+        }
+
+        public async Task<PublisherEntity> GetByNameIncludeDeletedAsync(string companyName)
+        {
+            var publisher = await Entities.IncludeDeleted().FirstOrDefaultAsync(p => p.CompanyName == companyName);
 
             return publisher;
         }

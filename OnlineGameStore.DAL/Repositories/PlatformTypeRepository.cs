@@ -40,20 +40,25 @@ namespace OnlineGameStore.DAL.Repositories
             await _platformTypeSqlServerRepository.DeleteAsync(platformType);
         }
 
-        public async Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<PlatformTypeModel> GetByIdAsync(Guid id)
         {
-            var platformType = await _platformTypeSqlServerRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var platformType = await _platformTypeSqlServerRepository.GetByIdAsync(id);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
         }
 
-        public async Task<PlatformTypeModel> GetByTypeAsync(string type,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<PlatformTypeModel> GetByTypeAsync(string type)
         {
-            var platformType = await _platformTypeSqlServerRepository.GetByTypeAsync(type, includeDeleted, includeProperties);
+            var platformType = await _platformTypeSqlServerRepository.GetByTypeAsync(type);
+            var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
+
+            return mappedPlatformType;
+        }
+
+        public async Task<PlatformTypeModel> GetByTypeIncludeDeletedAsync(string type)
+        {
+            var platformType = await _platformTypeSqlServerRepository.GetByTypeIncludeDeletedAsync(type);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
@@ -64,10 +69,9 @@ namespace OnlineGameStore.DAL.Repositories
             return await _platformTypeSqlServerRepository.GetIdsByTypesAsync(types);
         }
 
-        public async Task<IEnumerable<PlatformTypeModel>> GetAllAsync(bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<PlatformTypeModel>> GetAllAsync()
         {
-            var platformTypes = await _platformTypeSqlServerRepository.GetAllAsync(includeDeleted, includeProperties);
+            var platformTypes = await _platformTypeSqlServerRepository.GetAllAsync();
             var mappedPlatformTypes = _mapper.Map<IEnumerable<PlatformTypeModel>>(platformTypes);
 
             return mappedPlatformTypes;

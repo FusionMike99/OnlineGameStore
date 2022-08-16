@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Services
         {
             // Arrange
             commentRepositoryMock
-                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -31,8 +31,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualComment.Should().BeEquivalentTo(comment);
 
-            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace OnlineGameStore.Tests.Services
             PublisherService sut)
         {
             // Arrange
-            publisherRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            publisherRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -29,7 +29,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualPublisher.Should().BeEquivalentTo(publisher);
 
-            publisherRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>(), It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()),
                 Times.Once);
         }
     }

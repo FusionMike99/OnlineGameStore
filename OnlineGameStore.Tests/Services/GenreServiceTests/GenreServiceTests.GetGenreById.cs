@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);
 
-            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

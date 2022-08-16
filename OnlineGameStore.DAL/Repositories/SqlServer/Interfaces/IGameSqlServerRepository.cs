@@ -7,7 +7,9 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
 {
     public interface IGameSqlServerRepository : ISqlServerRepository<GameEntity>
     {
-        Task<GameEntity> GetByKeyAsync(string gameKey, bool includeDeleted = false, params string[] includeProperties);
+        Task<GameEntity> GetByKeyAsync(string gameKey);
+        
+        Task<GameEntity> GetByKeyIncludeDeletedAsync(string gameKey);
 
         Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel);
     }

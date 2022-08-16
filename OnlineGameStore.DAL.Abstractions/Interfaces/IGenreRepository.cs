@@ -13,19 +13,20 @@ namespace OnlineGameStore.DAL.Abstractions.Interfaces
 
         Task DeleteAsync(GenreModel genreModel);
         
-        Task<GenreModel> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
+        Task<GenreModel> GetByIdAsync(Guid id);
         
-        Task<GenreModel> GetByNameAsync(string name, bool includeDeleted = false, params string[] includeProperties);
+        Task<GenreModel> GetByNameAsync(string name);
+        
+        Task<GenreModel> GetByNameIncludeDeletedAsync(string name);
 
         Task<IEnumerable<string>> GetGenreIdsByNamesAsync(IEnumerable<string> names);
         
         Task<IEnumerable<string>> GetCategoryIdsByNamesAsync(IEnumerable<string> names);
 
-        Task<IEnumerable<GenreModel>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties);
+        Task<IEnumerable<GenreModel>> GetAllAsync();
         
-        Task<IEnumerable<GenreModel>> GetParentGenresAsync(bool includeDeleted = false, params string[] includeProperties);
+        Task<IEnumerable<GenreModel>> GetParentGenresAsync();
         
-        Task<IEnumerable<GenreModel>> GetWithoutGenreAsync(Guid id, bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<IEnumerable<GenreModel>> GetWithoutGenreAsync(Guid id);
     }
 }

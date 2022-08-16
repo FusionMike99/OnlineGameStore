@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using OnlineGameStore.DAL.Builders.PipelineBuilders;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Repositories.SqlServer.Extensions;
 using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 using OnlineGameStore.DomainModels.Models;
 
@@ -19,12 +20,16 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
         }
 
-        public async Task<GameEntity> GetByKeyAsync(string gameKey,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<GameEntity> GetByKeyAsync(string gameKey)
         {
-            Expression<Func<GameEntity, bool>> predicate = g => g.Key == gameKey;
-            var game = await IncludeProperties(includeDeleted, includeProperties).SingleOrDefaultAsync(predicate);
+            var game = await Entities.IncludeForGames().FirstOrDefaultAsync(g => g.Key == gameKey);
+            
+            return game;
+        }
+
+        public async Task<GameEntity> GetByKeyIncludeDeletedAsync(string gameKey)
+        {
+            var game = await Entities.IncludeDeleted().FirstOrDefaultAsync(g => g.Key == gameKey);
             
             return game;
         }
@@ -32,7 +37,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         public async Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = GetGameStorePredicate(sortFilterModel);
-            var games = await IncludeProperties(includeDeleted: true).Where(predicate).ToListAsync();
+            var games = await Entities.IncludeDeleted().Where(predicate).ToListAsync();
             
             return games;
         }

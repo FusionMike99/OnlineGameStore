@@ -23,7 +23,7 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<bool> CheckCompanyNameForUniqueAsync(Guid publisherId, string companyName)
         {
-            var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted: true);
+            var publisher = await _publisherRepository.GetByNameIncludeDeletedAsync(companyName);
 
             return publisher != null && publisher.Id != publisherId;
         }
@@ -59,7 +59,7 @@ namespace OnlineGameStore.BLL.Services
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {
                 _logger.LogError("Editing supplier from Northwind is prohibited");
-                throw new InvalidOperationException("You cannot edit Northwind suppliers");;
+                throw new InvalidOperationException("You cannot edit Northwind suppliers");
             }
 
             await _publisherRepository.UpdateAsync(publisher);

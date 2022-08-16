@@ -29,7 +29,7 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<bool> CheckTypeForUniqueAsync(Guid platformTypeId, string type)
         {
-            var platformType = await _platformTypeRepository.GetByTypeAsync(type, includeDeleted: true);
+            var platformType = await _platformTypeRepository.GetByTypeIncludeDeletedAsync(type);
 
             return platformType != null && platformType.Id != platformTypeId;
         }
@@ -48,7 +48,7 @@ namespace OnlineGameStore.BLL.Services
             if (platformType == null)
             {
                 _logger.LogError("Deleting platform type with id {PlatformTypeId} unsuccessfully", platformTypeId);
-                throw new InvalidOperationException("Platform type has not been found");;
+                throw new InvalidOperationException("Platform type has not been found");
             }
 
             await _platformTypeRepository.DeleteAsync(platformType);

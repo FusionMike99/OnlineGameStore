@@ -56,8 +56,7 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<IEnumerable<GenreModel>> GetAllParentGenresAsync()
         {
-            var genres = await _genreRepository
-                .GetParentGenresAsync(includeProperties: $"{nameof(GenreModel.SubGenres)}");
+            var genres = await _genreRepository.GetParentGenresAsync();
 
             return genres;
         }
@@ -85,15 +84,14 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<GenreModel> GetGenreByIdAsync(Guid genreId)
         {
-            var genre = await _genreRepository.GetByIdAsync(genreId,
-                includeProperties: $"{nameof(GenreModel.SubGenres)}");
+            var genre = await _genreRepository.GetByIdAsync(genreId);
 
             return genre;
         }
 
         public async Task<bool> CheckNameForUniqueAsync(Guid genreId, string name)
         {
-            var genre = await _genreRepository.GetByNameAsync(name, includeDeleted: true);
+            var genre = await _genreRepository.GetByNameIncludeDeletedAsync(name);
 
             return genre != null && genre.Id != genreId;
         }

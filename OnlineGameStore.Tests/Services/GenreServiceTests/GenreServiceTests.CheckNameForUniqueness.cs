@@ -22,8 +22,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -32,8 +31,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeTrue();
 
-            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -46,8 +44,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -56,8 +53,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeFalse();
 
-            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -68,8 +64,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>(),
-                    It.IsAny<bool>(), It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -78,8 +73,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeFalse();
 
-            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>(),
-                It.IsAny<bool>(), It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

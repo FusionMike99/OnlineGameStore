@@ -38,16 +38,14 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<CommentModel> GetCommentByIdAsync(Guid commentId)
         {
-            var comment = await _commentRepository.GetByIdAsync(commentId,
-                includeProperties: $"{nameof(CommentModel.Replies)}");
+            var comment = await _commentRepository.GetByIdAsync(commentId);
 
             return comment;
         }
 
         public async Task<IEnumerable<CommentModel>> GetAllCommentsByGameKeyAsync(string gameKey)
         {
-            var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey,
-                includeProperties: $"{nameof(CommentModel.Replies)}");
+            var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey);
 
             var parentComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 

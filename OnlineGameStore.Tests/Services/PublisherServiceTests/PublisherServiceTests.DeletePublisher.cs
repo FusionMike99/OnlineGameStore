@@ -25,7 +25,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             publisher.DatabaseEntity = databaseEntity;
             
-            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()))
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(publisher);
 
             publisherRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PublisherModel>()));
@@ -34,7 +34,7 @@ namespace OnlineGameStore.Tests.Services
             await sut.DeletePublisherAsync(publisher.Id);
 
             // Assert
-            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
             publisherRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<PublisherModel>()), Times.Once);
         }
@@ -48,7 +48,7 @@ namespace OnlineGameStore.Tests.Services
             PublisherService sut)
         {
             // Arrange
-            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()))
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -57,7 +57,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actual.Should().ThrowAsync<InvalidOperationException>();
 
-            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
         }
         
@@ -72,7 +72,7 @@ namespace OnlineGameStore.Tests.Services
             // Arrange
             publisher.DatabaseEntity = databaseEntity;
             
-            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()))
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -81,7 +81,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actual.Should().ThrowAsync<InvalidOperationException>();
 
-            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
         }
     }

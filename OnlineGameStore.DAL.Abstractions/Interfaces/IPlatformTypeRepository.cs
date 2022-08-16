@@ -13,14 +13,14 @@ namespace OnlineGameStore.DAL.Abstractions.Interfaces
 
         Task DeleteAsync(PlatformTypeModel platformTypeModel);
         
-        Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties);
+        Task<PlatformTypeModel> GetByIdAsync(Guid id);
         
-        Task<PlatformTypeModel> GetByTypeAsync(string type, bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<PlatformTypeModel> GetByTypeAsync(string type);
+        
+        Task<PlatformTypeModel> GetByTypeIncludeDeletedAsync(string type);
 
         Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types);
 
-        Task<IEnumerable<PlatformTypeModel>> GetAllAsync(bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<IEnumerable<PlatformTypeModel>> GetAllAsync();
     }
 }

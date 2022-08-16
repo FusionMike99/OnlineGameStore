@@ -7,13 +7,13 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
 {
     public interface IGenreSqlServerRepository : ISqlServerRepository<GenreEntity>
     {
-        Task<GenreEntity> GetByNameAsync(string name, bool includeDeleted = false, params string[] includeProperties);
-
-        Task<IEnumerable<GenreEntity>> GetParentGenresAsync(bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GenreEntity> GetByNameAsync(string name);
         
-        Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id, bool includeDeleted = false,
-            params string[] includeProperties);
+        Task<GenreEntity> GetByNameIncludeDeletedAsync(string name);
+
+        Task<IEnumerable<GenreEntity>> GetParentGenresAsync();
+        
+        Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id);
         
         Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> genresNames);
     }

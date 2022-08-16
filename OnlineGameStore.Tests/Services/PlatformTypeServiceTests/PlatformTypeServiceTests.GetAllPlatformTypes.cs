@@ -21,7 +21,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetAllAsync(It.IsAny<bool>()))
+            platformTypeRepositoryMock.Setup(x => x.GetAllAsync())
                 .ReturnsAsync(platformTypes);
 
             // Act
@@ -30,7 +30,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualPlatformTypes.Should().BeEquivalentTo(platformTypes);
 
-            platformTypeRepositoryMock.Verify(x => x.GetAllAsync(It.IsAny<bool>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
         }
     }
 }

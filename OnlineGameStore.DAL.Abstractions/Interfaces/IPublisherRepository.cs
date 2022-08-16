@@ -13,9 +13,11 @@ namespace OnlineGameStore.DAL.Abstractions.Interfaces
 
         Task DeleteAsync(PublisherModel publisherModel);
         
-        Task<PublisherModel> GetByNameAsync(string companyName, bool includeDeleted = false);
+        Task<PublisherModel> GetByNameAsync(string companyName);
         
-        Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false);
+        Task<PublisherModel> GetByNameIncludeDeletedAsync(string companyName);
+        
+        Task<PublisherModel> GetByIdAsync(Guid id);
 
         Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames);
 

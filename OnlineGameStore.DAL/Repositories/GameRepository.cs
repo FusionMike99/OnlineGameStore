@@ -95,14 +95,10 @@ namespace OnlineGameStore.DAL.Repositories
             }
         }
 
-        public async Task<GameModel> GetByKeyAsync(string gameKey,
-            bool increaseViews = false,
-            bool includeDeleted = false)
+        public async Task<GameModel> GetByKeyAsync(string gameKey, bool increaseViews = false)
         {
             GameModel gameModel = null;
-            var gameTask = _gameRepository.GetByKeyAsync(gameKey, includeDeleted: includeDeleted,
-                $"{nameof(GameEntity.GameGenres)}.{nameof(GameGenreEntity.Genre)}",
-                $"{nameof(GameEntity.GamePlatformTypes)}.{nameof(GamePlatformTypeEntity.PlatformType)}");
+            var gameTask = _gameRepository.GetByKeyAsync(gameKey);
             var productTask = _productMongoDbRepository.GetByKeyAsync(gameKey);
             await Task.WhenAll(gameTask, productTask);
 
@@ -144,6 +140,14 @@ namespace OnlineGameStore.DAL.Repositories
             }
 
             return gameModel;
+        }
+
+        public async Task<GameModel> GetByKeyIncludeDeletedAsync(string gameKey)
+        {
+            var game = await _gameRepository.GetByKeyIncludeDeletedAsync(gameKey);
+            var mappedGame = _mapper.Map<GameModel>(game);
+
+            return mappedGame;
         }
 
         public async Task<(IEnumerable<GameModel>, int)> GetAllAsync(SortFilterGameModel sortFilterModel = null,
@@ -208,8 +212,7 @@ namespace OnlineGameStore.DAL.Repositories
             for (var i = 0; i < genreIds.Count; i++)
             {
                 var genreGuid = Guid.Parse(genreIds[i]);
-                var genre = await _genreSqlServerRepository.GetByIdAsync(genreGuid, includeDeleted: false,
-                        includeProperties: $"{nameof(GenreEntity.SubGenres)}");
+                var genre = await _genreSqlServerRepository.GetByIdAsync(genreGuid);
                 var subgenreIds = genre.SubGenres.Select(g => g.Id.ToString()).ToList();
                 await AddSubgenresToList(subgenreIds);
                 genreIds.AddRange(subgenreIds);
