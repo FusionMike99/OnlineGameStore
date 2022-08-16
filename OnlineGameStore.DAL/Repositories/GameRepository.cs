@@ -9,33 +9,33 @@ using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class GameRepository : IGameRepository
     {
-        private readonly IGameStoreGameRepository _gameRepository;
-        private readonly INorthwindProductRepository _productRepository;
-        private readonly INorthwindCategoryRepository _categoryRepository;
-        private readonly INorthwindSupplierRepository _supplierRepository;
-        private readonly IGameStoreGenreRepository _genreRepository;
+        private readonly IGameSqlServerRepository _gameRepository;
+        private readonly IProductMongoDbRepository _productMongoDbRepository;
+        private readonly ICategoryMongoDbRepository _categoryMongoDbRepository;
+        private readonly ISupplierMongoDbRepository _supplierMongoDbRepository;
+        private readonly IGenreSqlServerRepository _genreSqlServerRepository;
         private readonly IMapper _mapper;
 
-        public GameRepository(IGameStoreGameRepository gameRepository,
-            INorthwindProductRepository productRepository,
-            INorthwindCategoryRepository categoryRepository,
-            INorthwindSupplierRepository supplierRepository,
-            IGameStoreGenreRepository genreRepository,
+        public GameRepository(IGameSqlServerRepository gameRepository,
+            IProductMongoDbRepository productMongoDbRepository,
+            ICategoryMongoDbRepository categoryMongoDbRepository,
+            ISupplierMongoDbRepository supplierMongoDbRepository,
+            IGenreSqlServerRepository genreSqlServerRepository,
             IMapper mapper)
         {
             _gameRepository = gameRepository;
-            _productRepository = productRepository;
-            _categoryRepository = categoryRepository;
-            _supplierRepository = supplierRepository;
-            _genreRepository = genreRepository;
+            _productMongoDbRepository = productMongoDbRepository;
+            _categoryMongoDbRepository = categoryMongoDbRepository;
+            _supplierMongoDbRepository = supplierMongoDbRepository;
+            _genreSqlServerRepository = genreSqlServerRepository;
             _mapper = mapper;
         }
 
@@ -98,7 +98,7 @@ namespace OnlineGameStore.DAL.Repositories
             var gameTask = _gameRepository.GetByKeyAsync(gameKey, includeDeleted: includeDeleted,
                 $"{nameof(GameEntity.GameGenres)}.{nameof(GameGenreEntity.Genre)}",
                 $"{nameof(GameEntity.GamePlatformTypes)}.{nameof(GamePlatformTypeEntity.PlatformType)}");
-            var productTask = _productRepository.GetByKeyAsync(gameKey);
+            var productTask = _productMongoDbRepository.GetByKeyAsync(gameKey);
             await Task.WhenAll(gameTask, productTask);
 
             var game = await gameTask;
@@ -113,13 +113,13 @@ namespace OnlineGameStore.DAL.Repositories
 
                 if (product != null)
                 {
-                    product.Category = await _categoryRepository.GetByCategoryIdAsync(product.CategoryId);
-                    product.Supplier = await _supplierRepository.GetBySupplierIdAsync(product.SupplierId);
+                    product.Category = await _categoryMongoDbRepository.GetByCategoryIdAsync(product.CategoryId);
+                    product.Supplier = await _supplierMongoDbRepository.GetBySupplierIdAsync(product.SupplierId);
                     gameModel = _mapper.Map<GameModel>(product);
 
                     if (product.Category != null)
                     {
-                        var genre = await _genreRepository.GetByNameAsync(product.Category.Name);
+                        var genre = await _genreSqlServerRepository.GetByNameAsync(product.Category.Name);
                         var genreModel = _mapper.Map<GenreModel>(genre);
                         gameModel.GameGenres = new List<GameGenreModel>
                         {
@@ -173,7 +173,7 @@ namespace OnlineGameStore.DAL.Repositories
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(gameModel);
-                await _productRepository.UpdateAsync(product);
+                await _productMongoDbRepository.UpdateAsync(product);
             }
         }
 
@@ -189,7 +189,7 @@ namespace OnlineGameStore.DAL.Repositories
             else
             {
                 var product = _mapper.Map<NorthwindProduct>(gameModel);
-                _productRepository.UpdateAsync(product);
+                _productMongoDbRepository.UpdateAsync(product);
             }
         }
         
@@ -203,7 +203,7 @@ namespace OnlineGameStore.DAL.Repositories
             for (var i = 0; i < genreIds.Count; i++)
             {
                 var genreGuid = Guid.Parse(genreIds[i]);
-                var genre = await _genreRepository.GetByIdAsync(genreGuid, includeDeleted: false,
+                var genre = await _genreSqlServerRepository.GetByIdAsync(genreGuid, includeDeleted: false,
                         includeProperties: $"{nameof(GenreEntity.SubGenres)}");
                 var subgenreIds = genre.SubGenres.Select(g => g.Id.ToString()).ToList();
                 await AddSubgenresToList(subgenreIds);
@@ -214,8 +214,8 @@ namespace OnlineGameStore.DAL.Repositories
         private async Task<IEnumerable<NorthwindProduct>> GetNorthwindProducts(
             SortFilterGameModel sortFilterModel = null)
         {
-            var products = await _productRepository.GetAllByFilterAsync(sortFilterModel);
-            products = await _productRepository.SetGameKeyAndDateAddedAsync(products.ToList());
+            var products = await _productMongoDbRepository.GetAllByFilterAsync(sortFilterModel);
+            products = await _productMongoDbRepository.SetGameKeyAndDateAddedAsync(products.ToList());
 
             return products;
         }

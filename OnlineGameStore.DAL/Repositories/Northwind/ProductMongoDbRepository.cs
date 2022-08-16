@@ -9,21 +9,21 @@ using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Builders.PipelineBuilders;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
 using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class NorthwindProductRepository : NorthwindGenericRepository<NorthwindProduct>,
-        INorthwindProductRepository
+    public class ProductMongoDbRepository : MongoDbRepository<NorthwindProduct>,
+        IProductMongoDbRepository
     {
-        private readonly INorthwindSupplierRepository _supplierRepository;
+        private readonly ISupplierMongoDbRepository _supplierMongoDbRepository;
 
-        public NorthwindProductRepository(IMongoDatabase database,
+        public ProductMongoDbRepository(IMongoDatabase database,
             ILoggerFactory loggerFactory,
-            INorthwindSupplierRepository supplierRepository) : base(database, loggerFactory)
+            ISupplierMongoDbRepository supplierMongoDbRepository) : base(database, loggerFactory)
         {
-            _supplierRepository = supplierRepository;
+            _supplierMongoDbRepository = supplierMongoDbRepository;
         }
 
         public async Task<NorthwindProduct> GetByKeyAsync(string gameKey)
@@ -72,7 +72,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
             if (model != null && model.SelectedPublishers?.Any() == false)
             {
-                var supplierIds = await _supplierRepository.GetIdsByNamesAsync(model.SelectedPublishers);
+                var supplierIds = await _supplierMongoDbRepository.GetIdsByNamesAsync(model.SelectedPublishers);
                 model.SelectedSuppliers = supplierIds.ToList();
             }
         }

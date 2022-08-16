@@ -7,14 +7,14 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class NorthwindCategoryRepository : NorthwindGenericRepository<NorthwindCategory>,
-        INorthwindCategoryRepository
+    public class CategoryMongoDbRepository : MongoDbRepository<NorthwindCategory>,
+        ICategoryMongoDbRepository
     {
-        public NorthwindCategoryRepository(IMongoDatabase database, ILoggerFactory loggerFactory) : base(database, loggerFactory)
+        public CategoryMongoDbRepository(IMongoDatabase database, ILoggerFactory loggerFactory) : base(database, loggerFactory)
         {
         }
 

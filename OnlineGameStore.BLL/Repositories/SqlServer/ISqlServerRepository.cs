@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities;
 
-namespace OnlineGameStore.BLL.Repositories.GameStore
+namespace OnlineGameStore.BLL.Repositories.SqlServer
 {
-    public interface IGameStoreGenericRepository<TEntity>
+    public interface ISqlServerRepository<TEntity>
         where TEntity : BaseEntity
     {
         Task<TEntity> CreateAsync(TEntity entity);

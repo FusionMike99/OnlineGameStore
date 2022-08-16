@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities.Northwind;
 
-namespace OnlineGameStore.BLL.Repositories.Northwind
+namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface INorthwindOrderDetailRepository : INorthwindGenericRepository<NorthwindOrderDetail>
+    public interface IOrderDetailMongoDbRepository : IMongoDbRepository<NorthwindOrderDetail>
     {
         Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderIdAsync(int orderId);
     }

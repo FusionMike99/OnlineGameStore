@@ -7,31 +7,31 @@ using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class PublisherRepository : IPublisherRepository
     {
-        private readonly IGameStorePublisherRepository _publisherRepository;
-        private readonly INorthwindSupplierRepository _supplierRepository;
+        private readonly IPublisherSqlServerRepository _publisherSqlServerRepository;
+        private readonly ISupplierMongoDbRepository _supplierMongoDbRepository;
         private readonly IMapper _mapper;
 
-        public PublisherRepository(IGameStorePublisherRepository publisherRepository,
-            INorthwindSupplierRepository supplierRepository,
+        public PublisherRepository(IPublisherSqlServerRepository publisherSqlServerRepository,
+            ISupplierMongoDbRepository supplierMongoDbRepository,
             IMapper mapper)
         {
-            _publisherRepository = publisherRepository;
-            _supplierRepository = supplierRepository;
+            _publisherSqlServerRepository = publisherSqlServerRepository;
+            _supplierMongoDbRepository = supplierMongoDbRepository;
             _mapper = mapper;
         }
 
         public async Task CreateAsync(PublisherModel publisherModel)
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
-            var createdPublisher = await _publisherRepository.CreateAsync(publisher);
+            var createdPublisher = await _publisherSqlServerRepository.CreateAsync(publisher);
 
             publisherModel.Id = createdPublisher.Id;
         }
@@ -39,21 +39,21 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task UpdateAsync(PublisherModel publisherModel)
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
-            await _publisherRepository.UpdateAsync(publisher);
+            await _publisherSqlServerRepository.UpdateAsync(publisher);
         }
 
         public async Task DeleteAsync(PublisherModel publisherModel)
         {
             var publisher = _mapper.Map<PublisherEntity>(publisherModel);
-            await _publisherRepository.DeleteAsync(publisher);
+            await _publisherSqlServerRepository.DeleteAsync(publisher);
         }
 
         public async Task<PublisherModel> GetByNameAsync(string companyName, bool includeDeleted = false)
         {
             PublisherModel publisherModel;
             
-            var publisherTask = _publisherRepository.GetByNameAsync(companyName, includeDeleted);
-            var supplierTask = _supplierRepository.GetByNameAsync(companyName);
+            var publisherTask = _publisherSqlServerRepository.GetByNameAsync(companyName, includeDeleted);
+            var supplierTask = _supplierMongoDbRepository.GetByNameAsync(companyName);
             await Task.WhenAll(publisherTask, supplierTask);
 
             var publisher = await publisherTask;
@@ -79,7 +79,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<PublisherModel> GetByIdAsync(Guid id, bool includeDeleted = false)
         {
-            var publisher = await _publisherRepository.GetByIdAsync(id, includeDeleted);
+            var publisher = await _publisherSqlServerRepository.GetByIdAsync(id, includeDeleted);
             var publisherModel = _mapper.Map<PublisherModel>(publisher);
 
             return publisherModel;
@@ -87,13 +87,13 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
-            return await _supplierRepository.GetIdsByNamesAsync(companiesNames);
+            return await _supplierMongoDbRepository.GetIdsByNamesAsync(companiesNames);
         }
 
         public async Task<IEnumerable<PublisherModel>> GetAllAsync()
         {
-            var publishersTask = _publisherRepository.GetAllAsync();
-            var suppliersTask = _supplierRepository.GetAllAsync();
+            var publishersTask = _publisherSqlServerRepository.GetAllAsync();
+            var suppliersTask = _supplierMongoDbRepository.GetAllAsync();
             await Task.WhenAll(publishersTask, suppliersTask);
 
             var publishers = await publishersTask;

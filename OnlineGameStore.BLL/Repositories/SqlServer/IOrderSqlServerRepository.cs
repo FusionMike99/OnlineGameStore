@@ -5,9 +5,9 @@ using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
 
-namespace OnlineGameStore.BLL.Repositories.GameStore
+namespace OnlineGameStore.BLL.Repositories.SqlServer
 {
-    public interface IGameStoreOrderRepository : IGameStoreGenericRepository<OrderEntity>
+    public interface IOrderSqlServerRepository : ISqlServerRepository<OrderEntity>
     {
         Task<OrderEntity> GetOpenOrInProcessOrderAsync(Guid customerId);
 

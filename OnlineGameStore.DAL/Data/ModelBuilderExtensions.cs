@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Data

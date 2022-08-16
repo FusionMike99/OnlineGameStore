@@ -5,45 +5,45 @@ using AutoMapper;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class PlatformTypeRepository : IPlatformTypeRepository
     {
-        private readonly IGameStorePlatformTypeRepository _platformTypeRepository;
+        private readonly IPlatformTypeSqlServerRepository _platformTypeSqlServerRepository;
         private readonly IMapper _mapper;
 
-        public PlatformTypeRepository(IGameStorePlatformTypeRepository platformTypeRepository,
+        public PlatformTypeRepository(IPlatformTypeSqlServerRepository platformTypeSqlServerRepository,
             IMapper mapper)
         {
-            _platformTypeRepository = platformTypeRepository;
+            _platformTypeSqlServerRepository = platformTypeSqlServerRepository;
             _mapper = mapper;
         }
 
         public async Task CreateAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-            var createdPlatformType = await _platformTypeRepository.CreateAsync(platformType);
+            var createdPlatformType = await _platformTypeSqlServerRepository.CreateAsync(platformType);
             platformTypeModel.Id = createdPlatformType.Id;
         }
 
         public async Task UpdateAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-            await _platformTypeRepository.UpdateAsync(platformType);
+            await _platformTypeSqlServerRepository.UpdateAsync(platformType);
         }
 
         public async Task DeleteAsync(PlatformTypeModel platformTypeModel)
         {
             var platformType = _mapper.Map<PlatformTypeEntity>(platformTypeModel);
-            await _platformTypeRepository.DeleteAsync(platformType);
+            await _platformTypeSqlServerRepository.DeleteAsync(platformType);
         }
 
         public async Task<PlatformTypeModel> GetByIdAsync(Guid id, bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformType = await _platformTypeRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var platformType = await _platformTypeSqlServerRepository.GetByIdAsync(id, includeDeleted, includeProperties);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
@@ -53,7 +53,7 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformType = await _platformTypeRepository.GetByTypeAsync(type, includeDeleted, includeProperties);
+            var platformType = await _platformTypeSqlServerRepository.GetByTypeAsync(type, includeDeleted, includeProperties);
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
             return mappedPlatformType;
@@ -61,13 +61,13 @@ namespace OnlineGameStore.DAL.Repositories
 
         public async Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types)
         {
-            return await _platformTypeRepository.GetIdsByTypesAsync(types);
+            return await _platformTypeSqlServerRepository.GetIdsByTypesAsync(types);
         }
 
         public async Task<IEnumerable<PlatformTypeModel>> GetAllAsync(bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var platformTypes = await _platformTypeRepository.GetAllAsync(includeDeleted, includeProperties);
+            var platformTypes = await _platformTypeSqlServerRepository.GetAllAsync(includeDeleted, includeProperties);
             var mappedPlatformTypes = _mapper.Map<IEnumerable<PlatformTypeModel>>(platformTypes);
 
             return mappedPlatformTypes;

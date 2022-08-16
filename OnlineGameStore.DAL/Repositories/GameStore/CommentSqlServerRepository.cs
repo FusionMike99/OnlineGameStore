@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreCommentRepository : GameStoreGenericRepository<CommentEntity>, IGameStoreCommentRepository
+    public class CommentSqlServerRepository : SqlServerRepository<CommentEntity>, ICommentSqlServerRepository
     {
-        public GameStoreCommentRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
+        public CommentSqlServerRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 

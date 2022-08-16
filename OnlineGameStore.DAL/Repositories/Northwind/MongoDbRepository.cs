@@ -7,24 +7,24 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
 using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public abstract class NorthwindGenericRepository<TEntity> : INorthwindGenericRepository<TEntity>
+    public abstract class MongoDbRepository<TEntity> : IMongoDbRepository<TEntity>
         where TEntity : MongoBaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
         protected readonly IMongoQueryable<TEntity> Query;
-        private readonly ILogger<NorthwindGenericRepository<TEntity>> _logger;
+        private readonly ILogger<MongoDbRepository<TEntity>> _logger;
 
-        protected NorthwindGenericRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
+        protected MongoDbRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
         {
             _collection = database.GetCollection<TEntity>();
             Query = _collection.AsQueryable();
-            _logger = loggerFactory.CreateLogger<NorthwindGenericRepository<TEntity>>();
+            _logger = loggerFactory.CreateLogger<MongoDbRepository<TEntity>>();
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()

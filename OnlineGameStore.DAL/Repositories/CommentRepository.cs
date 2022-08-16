@@ -5,46 +5,46 @@ using AutoMapper;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
-        private readonly IGameStoreCommentRepository _commentRepository;
+        private readonly ICommentSqlServerRepository _commentSqlServerRepository;
         private readonly IMapper _mapper;
 
-        public CommentRepository(IGameStoreCommentRepository commentRepository,
+        public CommentRepository(ICommentSqlServerRepository commentSqlServerRepository,
             IMapper mapper)
         {
-            _commentRepository = commentRepository;
+            _commentSqlServerRepository = commentSqlServerRepository;
             _mapper = mapper;
         }
 
         public async Task CreateAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            var createdComment = await _commentRepository.CreateAsync(comment);
+            var createdComment = await _commentSqlServerRepository.CreateAsync(comment);
             commentModel.Id = createdComment.Id;
         }
 
         public async Task UpdateAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            await _commentRepository.UpdateAsync(comment);
+            await _commentSqlServerRepository.UpdateAsync(comment);
         }
 
         public async Task DeleteAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            await _commentRepository.DeleteAsync(comment);
+            await _commentSqlServerRepository.DeleteAsync(comment);
         }
 
         public async Task<CommentModel> GetByIdAsync(Guid id,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var comment = await _commentRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var comment = await _commentSqlServerRepository.GetByIdAsync(id, includeDeleted, includeProperties);
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
             return mappedComment;
@@ -54,7 +54,7 @@ namespace OnlineGameStore.DAL.Repositories
             bool includeDeleted = false,
             params string[] includeProperties)
         {
-            var comments = await _commentRepository
+            var comments = await _commentSqlServerRepository
                 .GetAllByGameKeyAsync(gameKey, includeDeleted, includeProperties);
             var mappedComments = _mapper.Map<IEnumerable<CommentModel>>(comments);
 

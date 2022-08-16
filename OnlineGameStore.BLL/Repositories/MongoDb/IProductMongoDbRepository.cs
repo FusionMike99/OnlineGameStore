@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
 
-namespace OnlineGameStore.BLL.Repositories.Northwind
+namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface INorthwindProductRepository : INorthwindGenericRepository<NorthwindProduct>
+    public interface IProductMongoDbRepository : IMongoDbRepository<NorthwindProduct>
     {
         Task<NorthwindProduct> GetByKeyAsync(string gameKey);
 

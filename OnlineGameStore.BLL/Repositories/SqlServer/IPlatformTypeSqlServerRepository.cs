@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities;
 
-namespace OnlineGameStore.BLL.Repositories.GameStore
+namespace OnlineGameStore.BLL.Repositories.SqlServer
 {
-    public interface IGameStorePlatformTypeRepository : IGameStoreGenericRepository<PlatformTypeEntity>
+    public interface IPlatformTypeSqlServerRepository : ISqlServerRepository<PlatformTypeEntity>
     {
         Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types);
 

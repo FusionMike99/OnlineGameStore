@@ -8,15 +8,15 @@ using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreOrderRepository : GameStoreGenericRepository<OrderEntity>, IGameStoreOrderRepository
+    public class OrderSqlServerRepository : SqlServerRepository<OrderEntity>, IOrderSqlServerRepository
     {
-        public GameStoreOrderRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
+        public OrderSqlServerRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 

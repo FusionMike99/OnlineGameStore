@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class NorthwindShipperRepository : NorthwindGenericRepository<NorthwindShipper>, INorthwindShipperRepository
+    public class ShipperMongoDbRepository : MongoDbRepository<NorthwindShipper>, IShipperMongoDbRepository
     {
-        public NorthwindShipperRepository(IMongoDatabase database,
+        public ShipperMongoDbRepository(IMongoDatabase database,
             ILoggerFactory loggerFactory) : base(database, loggerFactory)
         {
         }

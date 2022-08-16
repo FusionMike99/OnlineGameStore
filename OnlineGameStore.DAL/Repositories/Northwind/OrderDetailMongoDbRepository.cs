@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class NorthwindOrderDetailRepository : NorthwindGenericRepository<NorthwindOrderDetail>,
-        INorthwindOrderDetailRepository
+    public class OrderDetailMongoDbRepository : MongoDbRepository<NorthwindOrderDetail>,
+        IOrderDetailMongoDbRepository
     {
-        public NorthwindOrderDetailRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
+        public OrderDetailMongoDbRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
             : base(database, loggerFactory)
         {
         }

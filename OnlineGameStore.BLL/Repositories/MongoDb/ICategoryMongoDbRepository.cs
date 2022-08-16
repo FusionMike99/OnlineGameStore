@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities.Northwind;
 
-namespace OnlineGameStore.BLL.Repositories.Northwind
+namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface INorthwindCategoryRepository : INorthwindGenericRepository<NorthwindCategory>
+    public interface ICategoryMongoDbRepository : IMongoDbRepository<NorthwindCategory>
     {
         Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames);
         

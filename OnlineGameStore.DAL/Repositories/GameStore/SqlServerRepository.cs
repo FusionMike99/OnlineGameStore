@@ -7,23 +7,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public abstract class GameStoreGenericRepository<TEntity> : IGameStoreGenericRepository<TEntity>
+    public abstract class SqlServerRepository<TEntity> : ISqlServerRepository<TEntity>
         where TEntity : BaseEntity
     {
         protected readonly StoreDbContext Context;
         private readonly DbSet<TEntity> _entities;
-        private readonly ILogger<GameStoreGenericRepository<TEntity>> _logger;
+        private readonly ILogger<SqlServerRepository<TEntity>> _logger;
 
-        protected GameStoreGenericRepository(StoreDbContext context, ILoggerFactory logger)
+        protected SqlServerRepository(StoreDbContext context, ILoggerFactory logger)
         {
             Context = context;
-            _logger = logger.CreateLogger<GameStoreGenericRepository<TEntity>>();
+            _logger = logger.CreateLogger<SqlServerRepository<TEntity>>();
 
             _entities = context.Set<TEntity>();
         }

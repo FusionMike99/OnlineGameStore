@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
-using OnlineGameStore.BLL.Repositories.Northwind;
+using OnlineGameStore.BLL.Repositories.MongoDb;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
 using OnlineGameStore.DAL.Repositories.GameStore;
@@ -38,12 +38,12 @@ namespace OnlineGameStore.Infrastructure.Injections
         {
             services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
             
-            services.AddScoped<IGameStoreCommentRepository, GameStoreCommentRepository>();
-            services.AddScoped<IGameStoreGameRepository, GameStoreGameRepository>();
-            services.AddScoped<IGameStoreGenreRepository, GameStoreGenreRepository>();
-            services.AddScoped<IGameStoreOrderRepository, GameStoreOrderRepository>();
-            services.AddScoped<IGameStorePlatformTypeRepository, GameStorePlatformTypeRepository>();
-            services.AddScoped<IGameStorePublisherRepository, GameStorePublisherRepository>();
+            services.AddScoped<ICommentSqlServerRepository, CommentSqlServerRepository>();
+            services.AddScoped<IGameSqlServerRepository, GameSqlServerRepository>();
+            services.AddScoped<IGenreSqlServerRepository, GenreSqlServerRepository>();
+            services.AddScoped<IOrderSqlServerRepository, OrderSqlServerRepository>();
+            services.AddScoped<IPlatformTypeSqlServerRepository, PlatformTypeSqlServerRepository>();
+            services.AddScoped<IPublisherSqlServerRepository, PublisherSqlServerRepository>();
         }
 
         private static void AddNorthwindRepositories(this IServiceCollection services, string connectionString)
@@ -53,21 +53,21 @@ namespace OnlineGameStore.Infrastructure.Injections
             var mongoClient = new MongoClient(connectionString);
             var mongoDatabase = mongoClient.GetDatabase(connection.DatabaseName);
             
-            services.AddScoped<INorthwindCategoryRepository>(provider => 
-                new NorthwindCategoryRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
-            services.AddScoped<INorthwindOrderDetailRepository>(provider => 
-                new NorthwindOrderDetailRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
-            services.AddScoped<INorthwindOrderRepository>(provider => 
-                new NorthwindOrderRepository(mongoDatabase, provider.GetService<ILoggerFactory>(),
-                    provider.GetService<INorthwindOrderDetailRepository>(),
-                    provider.GetService<INorthwindShipperRepository>()));
-            services.AddScoped<INorthwindProductRepository>(provider => 
-                new NorthwindProductRepository(mongoDatabase, provider.GetService<ILoggerFactory>(),
-                    provider.GetService<INorthwindSupplierRepository>()));
-            services.AddScoped<INorthwindShipperRepository>(provider => 
-                new NorthwindShipperRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
-            services.AddScoped<INorthwindSupplierRepository>(provider => 
-                new NorthwindSupplierRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
+            services.AddScoped<ICategoryMongoDbRepository>(provider => 
+                new CategoryMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
+            services.AddScoped<IOrderDetailMongoDbRepository>(provider => 
+                new OrderDetailMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
+            services.AddScoped<IOrderMongoDbRepository>(provider => 
+                new OrderMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>(),
+                    provider.GetService<IOrderDetailMongoDbRepository>(),
+                    provider.GetService<IShipperMongoDbRepository>()));
+            services.AddScoped<IProductMongoDbRepository>(provider => 
+                new ProductMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>(),
+                    provider.GetService<ISupplierMongoDbRepository>()));
+            services.AddScoped<IShipperMongoDbRepository>(provider => 
+                new ShipperMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
+            services.AddScoped<ISupplierMongoDbRepository>(provider => 
+                new SupplierMongoDbRepository(mongoDatabase, provider.GetService<ILoggerFactory>()));
         }
     }
 }

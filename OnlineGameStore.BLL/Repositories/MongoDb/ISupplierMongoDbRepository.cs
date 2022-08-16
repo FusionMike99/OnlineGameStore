@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities.Northwind;
 
-namespace OnlineGameStore.BLL.Repositories.Northwind
+namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface INorthwindSupplierRepository : INorthwindGenericRepository<NorthwindSupplier>
+    public interface ISupplierMongoDbRepository : IMongoDbRepository<NorthwindSupplier>
     {
         Task<NorthwindSupplier> GetByNameAsync(string companyName);
         

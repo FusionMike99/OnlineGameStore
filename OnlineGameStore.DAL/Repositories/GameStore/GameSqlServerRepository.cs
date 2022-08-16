@@ -10,14 +10,14 @@ using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Pipelines;
 using OnlineGameStore.BLL.Pipelines.Filters.Games;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Repositories.GameStore
 {
-    public class GameStoreGameRepository : GameStoreGenericRepository<GameEntity>, IGameStoreGameRepository
+    public class GameSqlServerRepository : SqlServerRepository<GameEntity>, IGameSqlServerRepository
     {
-        public GameStoreGameRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
+        public GameSqlServerRepository(StoreDbContext context, ILoggerFactory logger) : base(context, logger)
         {
         }
 
