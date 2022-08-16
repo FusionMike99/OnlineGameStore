@@ -2,9 +2,9 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -20,7 +20,7 @@ namespace OnlineGameStore.Tests.Services
             PublisherService sut)
         {
             // Arrange
-            publisherRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>(), It.IsAny<bool>()))
+            publisherRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(publisher);
 
             // Act
@@ -29,7 +29,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualPublisher.Should().BeEquivalentTo(publisher);
 
-            publisherRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>(), It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()),
                 Times.Once);
         }
     }

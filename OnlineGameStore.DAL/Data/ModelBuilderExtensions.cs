@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories.Northwind;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.ExtensionsUtility.Extensions;
 
 namespace OnlineGameStore.DAL.Data
 {

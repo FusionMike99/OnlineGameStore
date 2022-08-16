@@ -3,7 +3,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;

@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(genre);
 
             genreRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GenreModel>()));
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             await sut.DeleteGenreAsync(genre.Id);
 
             // Assert
-            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
             
             genreRepositoryMock.Verify(x => x.DeleteAsync(
                     It.Is<GenreModel>(g => g.Name == genre.Name && g.Id == genre.Id)),
@@ -48,8 +46,7 @@ namespace OnlineGameStore.Tests.Services
             GenreService sut)
         {
             // Arrange
-            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            genreRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(genre);
 
             // Act
@@ -58,8 +55,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

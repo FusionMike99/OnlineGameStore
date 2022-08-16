@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -23,8 +23,7 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            commentRepositoryMock.Setup(x => x.GetAllByGameKeyAsync(It.IsAny<string>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            commentRepositoryMock.Setup(x => x.GetAllByGameKeyAsync(It.IsAny<string>()))
                 .ReturnsAsync(comments);
 
             var expectedComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
@@ -35,8 +34,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualComments.Should().BeEquivalentTo(expectedComments);
 
-            commentRepositoryMock.Verify(x => x.GetAllByGameKeyAsync(It.IsAny<string>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.GetAllByGameKeyAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

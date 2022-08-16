@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.ModelBuilders

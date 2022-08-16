@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             platformTypeRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PlatformTypeModel>()));
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             await sut.DeletePlatformTypeAsync(platformType.Id);
 
             // Assert
-            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
             platformTypeRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<PlatformTypeModel>()),
                 Times.Once);
         }
@@ -46,8 +44,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -56,8 +53,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

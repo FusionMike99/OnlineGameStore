@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -23,7 +23,7 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<bool> CheckCompanyNameForUniqueAsync(Guid publisherId, string companyName)
         {
-            var publisher = await _publisherRepository.GetByNameAsync(companyName, includeDeleted: true);
+            var publisher = await _publisherRepository.GetByNameIncludeDeletedAsync(companyName);
 
             return publisher != null && publisher.Id != publisherId;
         }
@@ -41,17 +41,13 @@ namespace OnlineGameStore.BLL.Services
 
             if (publisher == null)
             {
-                var exception = new InvalidOperationException("Publisher has not been found");
-
-                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
-                    Deleting publisher with id {PublisherId} unsuccessfully", nameof(PublisherService),
-                    nameof(DeletePublisherAsync), publisherId);
-
-                throw exception;
+                _logger.LogError("Deleting publisher with id {PublisherId} unsuccessfully", publisherId);
+                throw new InvalidOperationException("Publisher has not been found");
             }
 
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {
+                _logger.LogError("Deleting supplier from Northwind is prohibited");
                 throw new InvalidOperationException("You cannot delete Northwind suppliers");
             }
             
@@ -62,6 +58,7 @@ namespace OnlineGameStore.BLL.Services
         {
             if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
             {
+                _logger.LogError("Editing supplier from Northwind is prohibited");
                 throw new InvalidOperationException("You cannot edit Northwind suppliers");
             }
 

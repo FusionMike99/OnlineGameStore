@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DomainModels;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper

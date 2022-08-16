@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities.Northwind;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
@@ -186,8 +186,8 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var shippers = await _shipperService.GetAllShippersAsync();
 
-            shipOrderViewModel.Shippers = new SelectList(shippers, nameof(NorthwindShipper.CompanyName),
-                nameof(NorthwindShipper.CompanyName));
+            shipOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
+                nameof(ShipperEntity.CompanyName));
         }
     }
 }

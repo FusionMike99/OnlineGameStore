@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 

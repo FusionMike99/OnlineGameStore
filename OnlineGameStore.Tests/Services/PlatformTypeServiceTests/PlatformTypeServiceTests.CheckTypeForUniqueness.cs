@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -22,8 +22,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>(),
-                    It.IsAny<bool>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -32,8 +31,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeTrue();
 
-            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>(),
-                It.IsAny<bool>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -46,8 +44,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>(),
-                    It.IsAny<bool>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -56,8 +53,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeFalse();
 
-            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>(),
-                It.IsAny<bool>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
@@ -68,8 +64,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>(),
-                    It.IsAny<bool>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -78,8 +73,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualResult.Should().BeFalse();
 
-            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>(),
-                It.IsAny<bool>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

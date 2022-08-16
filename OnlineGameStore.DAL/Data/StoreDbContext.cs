@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Data
 {
@@ -31,7 +31,7 @@ namespace OnlineGameStore.DAL.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-                if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
             modelBuilder.StoreSeed();

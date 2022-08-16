@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OnlineGameStore.BLL.Services;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.Identity.Services;
 using OnlineGameStore.Identity.Services.Interfaces;
 

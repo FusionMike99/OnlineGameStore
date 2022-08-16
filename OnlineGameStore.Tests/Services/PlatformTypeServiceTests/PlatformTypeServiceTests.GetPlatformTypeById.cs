@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             PlatformTypeService sut)
         {
             // Arrange
-            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(platformType);
 
             // Act
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);
 
-            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

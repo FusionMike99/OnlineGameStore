@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Moq;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 

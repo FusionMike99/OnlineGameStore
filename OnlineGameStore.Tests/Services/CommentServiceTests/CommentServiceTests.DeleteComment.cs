@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -21,8 +21,7 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            commentRepositoryMock
-                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+            commentRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             commentRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<CommentModel>()));
@@ -31,8 +30,7 @@ namespace OnlineGameStore.Tests.Services
             await sut.DeleteCommentAsync(comment.Id);
 
             // Assert
-            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
             commentRepositoryMock.Verify(x => x.DeleteAsync(
                     It.Is<CommentModel>(c => c.Id == comment.Id)), Times.Once);
         }
@@ -46,8 +44,7 @@ namespace OnlineGameStore.Tests.Services
             CommentService sut)
         {
             // Arrange
-            commentRepositoryMock
-                .Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+            commentRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(comment);
 
             // Act
@@ -56,8 +53,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<bool>(),
-                It.IsAny<string[]>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

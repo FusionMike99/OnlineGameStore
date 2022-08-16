@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using OnlineGameStore.MVC.Infrastructure;
 using Serilog;
 using Serilog.Events;

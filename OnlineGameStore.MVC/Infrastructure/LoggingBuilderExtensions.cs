@@ -1,12 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using OnlineGameStore.DAL.Repositories.GameStore;
-using OnlineGameStore.DAL.Repositories.Northwind;
+using OnlineGameStore.DAL.Repositories.MongoDb;
+using OnlineGameStore.DAL.Repositories.SqlServer;
 using Serilog;
-using Serilog.Extensions.Logging;
 using Serilog.Filters;
 
 namespace OnlineGameStore.MVC.Infrastructure
@@ -39,8 +37,8 @@ namespace OnlineGameStore.MVC.Infrastructure
                         cfg.SetCreateCappedCollection(10);
                     });
                     
-                    var isFromGameStore = Matching.FromSource(typeof(GameStoreGenericRepository<>).Namespace);
-                    var isFromNorthwind = Matching.FromSource(typeof(NorthwindGenericRepository<>).Namespace);
+                    var isFromGameStore = Matching.FromSource(typeof(SqlServerRepository<>).Namespace);
+                    var isFromNorthwind = Matching.FromSource(typeof(MongoDbRepository<>).Namespace);
                     l.Filter.ByIncludingOnly(e => isFromGameStore(e) || isFromNorthwind(e));
                 });
 

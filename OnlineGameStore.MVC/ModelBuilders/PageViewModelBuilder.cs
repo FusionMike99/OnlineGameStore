@@ -1,6 +1,6 @@
 ﻿using System;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 

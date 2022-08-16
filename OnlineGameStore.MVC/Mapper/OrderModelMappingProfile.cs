@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Mapper

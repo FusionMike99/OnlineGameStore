@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;

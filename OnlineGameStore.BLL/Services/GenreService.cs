@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -34,12 +33,8 @@ namespace OnlineGameStore.BLL.Services
 
             if (genre == null)
             {
-                var exception = new InvalidOperationException("Genre has not been found");
-
-                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
-                    Deleting genre with id {GenreId} unsuccessfully", nameof(GenreService), nameof(DeleteGenreAsync), genreId);
-
-                throw exception;
+                _logger.LogError("Deleting genre with id {GenreId} unsuccessfully", genreId);
+                throw new InvalidOperationException("Genre has not been found");
             }
 
             await _genreRepository.DeleteAsync(genre);
@@ -61,8 +56,7 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<IEnumerable<GenreModel>> GetAllParentGenresAsync()
         {
-            var genres = await _genreRepository
-                .GetParentGenresAsync(includeProperties: $"{nameof(GenreEntity.SubGenres)}");
+            var genres = await _genreRepository.GetParentGenresAsync();
 
             return genres;
         }
@@ -90,15 +84,14 @@ namespace OnlineGameStore.BLL.Services
 
         public async Task<GenreModel> GetGenreByIdAsync(Guid genreId)
         {
-            var genre = await _genreRepository.GetByIdAsync(genreId,
-                includeProperties: $"{nameof(GenreEntity.SubGenres)}");
+            var genre = await _genreRepository.GetByIdAsync(genreId);
 
             return genre;
         }
 
         public async Task<bool> CheckNameForUniqueAsync(Guid genreId, string name)
         {
-            var genre = await _genreRepository.GetByNameAsync(name, includeDeleted: true);
+            var genre = await _genreRepository.GetByNameIncludeDeletedAsync(name);
 
             return genre != null && genre.Id != genreId;
         }

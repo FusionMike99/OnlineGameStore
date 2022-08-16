@@ -2,60 +2,56 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.GameStore;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.DAL.Repositories
 {
     public class CommentRepository : ICommentRepository
     {
-        private readonly IGameStoreCommentRepository _commentRepository;
+        private readonly ICommentSqlServerRepository _commentSqlServerRepository;
         private readonly IMapper _mapper;
 
-        public CommentRepository(IGameStoreCommentRepository commentRepository,
+        public CommentRepository(ICommentSqlServerRepository commentSqlServerRepository,
             IMapper mapper)
         {
-            _commentRepository = commentRepository;
+            _commentSqlServerRepository = commentSqlServerRepository;
             _mapper = mapper;
         }
 
         public async Task CreateAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            var createdComment = await _commentRepository.CreateAsync(comment);
+            var createdComment = await _commentSqlServerRepository.CreateAsync(comment);
             commentModel.Id = createdComment.Id;
         }
 
         public async Task UpdateAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            await _commentRepository.UpdateAsync(comment);
+            await _commentSqlServerRepository.UpdateAsync(comment);
         }
 
         public async Task DeleteAsync(CommentModel commentModel)
         {
             var comment = _mapper.Map<CommentEntity>(commentModel);
-            await _commentRepository.DeleteAsync(comment);
+            await _commentSqlServerRepository.DeleteAsync(comment);
         }
 
-        public async Task<CommentModel> GetByIdAsync(Guid id,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<CommentModel> GetByIdAsync(Guid id)
         {
-            var comment = await _commentRepository.GetByIdAsync(id, includeDeleted, includeProperties);
+            var comment = await _commentSqlServerRepository.GetByIdAsync(id);
             var mappedComment = _mapper.Map<CommentModel>(comment);
 
             return mappedComment;
         }
 
-        public async Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey,
-            bool includeDeleted = false,
-            params string[] includeProperties)
+        public async Task<IEnumerable<CommentModel>> GetAllByGameKeyAsync(string gameKey)
         {
-            var comments = await _commentRepository
-                .GetAllByGameKeyAsync(gameKey, includeDeleted, includeProperties);
+            var comments = await _commentSqlServerRepository
+                .GetAllByGameKeyAsync(gameKey);
             var mappedComments = _mapper.Map<IEnumerable<CommentModel>>(comments);
 
             return mappedComments;
