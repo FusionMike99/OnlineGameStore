@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,89 +15,65 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CheckTypeForUniqueness_ReturnsTrue_WhenPlatformTypeIsNotNullAndIdIsNotSame(
-            PlatformType platformType,
-            int id,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckTypeForUniqueness_ReturnsTrue_WhenPlatformTypeIsNotNullAndIdIsNotSame(
+            PlatformTypeModel platformType,
+            Guid id,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUnique(id, platformType.Type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(id, platformType.Type);
 
             // Assert
             actualResult.Should().BeTrue();
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void CheckTypeForUniqueness_ReturnsFalse_WhenPlatformTypeIsNull(
-            PlatformType platformType,
-            int id,
+        public async Task CheckTypeForUniqueness_ReturnsFalse_WhenPlatformTypeIsNull(
+            PlatformTypeModel platformType,
+            Guid id,
             string type,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUnique(id, type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(id, type);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void CheckTypeForUniqueness_ReturnsFalse_WhenIdIsSame(
-            PlatformType platformType,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckTypeForUniqueness_ReturnsFalse_WhenIdIsSame(
+            PlatformTypeModel platformType,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByTypeAsync(It.IsAny<string>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var actualResult = sut.CheckTypeForUnique(platformType.Id, platformType.Type);
+            var actualResult = await sut.CheckTypeForUniqueAsync(platformType.Id, platformType.Type);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByTypeAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

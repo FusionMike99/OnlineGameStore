@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods
 {
@@ -18,7 +18,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             _orderService = orderService;
         }
 
-        public IActionResult PaymentProcess(Order order)
+        public IActionResult PaymentProcess(OrderModel order)
         {
             const string viewName = "Visa";
             const string orderId = "OrderId";
@@ -38,7 +38,7 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             
             var cancelledDate = DateTime.UtcNow.Add(TimeSpan.FromMinutes(minutes));
             
-            _orderService.SetCancelledDate(order.Id, cancelledDate);
+            _orderService.SetCancelledDateAsync(order.Id, cancelledDate);
 
             return viewResult;
         }

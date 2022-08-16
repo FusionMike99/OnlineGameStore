@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -16,11 +17,11 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Create_Get_ReturnsViewResult(
+        public async Task Create_Get_ReturnsViewResult(
             GameController sut)
         {
             // Act
-            var result = sut.Create();
+            var result = await sut.Create();
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -29,14 +30,14 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsRedirectToActionResult_WhenGameIsValid(
-            Game game,
+        public async Task Create_Post_ReturnsRedirectToActionResult_WhenGameIsValid(
+            GameModel game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.CreateGame(It.IsAny<Game>()))
-                .Returns(game);
+            mockGameService.Setup(x => x.CreateGameAsync(It.IsAny<GameModel>()))
+                .ReturnsAsync(game);
 
             var editGameViewModel = new EditGameViewModel
             {
@@ -49,18 +50,18 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Create(editGameViewModel);
+            var result = await sut.Create(editGameViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetGames));
 
-            mockGameService.Verify(x => x.CreateGame(It.IsAny<Game>()), Times.Once);
+            mockGameService.Verify(x => x.CreateGameAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Create_Post_ReturnsViewResult_WhenGameIsInvalid(
+        public async Task Create_Post_ReturnsViewResult_WhenGameIsInvalid(
             EditGameViewModel editGameViewModel,
             GameController sut)
         {
@@ -68,7 +69,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Create(editGameViewModel);
+            var result = await sut.Create(editGameViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

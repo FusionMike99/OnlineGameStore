@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,60 +15,22 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void OrderService_ChangeStatusToClosed_ReturnsOrder(
-            Order order,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task OrderService_ChangeStatusToClosed_ReturnsOrder(
+            OrderModel order,
+            [Frozen] Mock<IOrderRepository> orderRepositoryMock,
             OrderService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()));
+            orderRepositoryMock.Setup(x => x.ChangeStatusToClosedAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(order);
 
             // Act
-            var actualOrder = sut.ChangeStatusToClosed(order.Id);
+            var actualOrder = await sut.ChangeStatusToClosedAsync(order.Id);
 
             // Assert
-            actualOrder.OrderStatusId.Should().Be(4);
+            actualOrder.OrderState.Should().Be(order.OrderState);
 
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void OrderService_ChangeStatusToClosed_ThrowsInvalidOperationExceptionWithNullEntity(
-            Order order,
-            int customerId,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            OrderService sut)
-        {
-            // Arrange
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            // Act
-            Action actual = () => sut.ChangeStatusToClosed(customerId);
-
-            // Assert
-            actual.Should().Throw<InvalidOperationException>();
-
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            orderRepositoryMock.Verify(x => x.ChangeStatusToClosedAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

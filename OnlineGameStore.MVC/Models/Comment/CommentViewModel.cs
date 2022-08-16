@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineGameStore.MVC.Models
 {
     public class CommentViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
@@ -14,7 +15,7 @@ namespace OnlineGameStore.MVC.Models
         
         public bool IsQuoted { get; set; }
 
-        public int? ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
 
         public CommentViewModel ReplyTo { get; set; }
 

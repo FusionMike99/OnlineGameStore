@@ -14,7 +14,6 @@ namespace OnlineGameStore.Tests.Helpers
         public void Customize(IFixture fixture)
         {
             fixture.Customizations.Add(new ControllerBasePropertyOmitter());
-
             fixture.Inject(new ViewDataDictionary(fixture.Create<DefaultModelMetadataProvider>(),
                 fixture.Create<ModelStateDictionary>()));
         }

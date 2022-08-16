@@ -1,9 +1,11 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -15,57 +17,57 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Ship_Get_ReturnsViewResult(
-            Order order,
+        public async Task Ship_Get_ReturnsViewResult(
+            OrderModel order,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.GetOrderById(It.IsAny<int>()))
-                .Returns(order);
+            mockOrderService.Setup(x => x.GetOrderByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(order);
 
             // Act
-            var result = sut.Ship(order.Id);
+            var result = await sut.Ship(order.Id);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<ShipOrderViewModel>()
                 .Which.Id.Should().Be(order.Id);
             
-            mockOrderService.Verify(x => x.GetOrderById(It.IsAny<int>()), Times.Once);
+            mockOrderService.Verify(x => x.GetOrderByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Ship_Get_ReturnsNotFoundResult_WhenOrderIsNotFound(
-            Order order,
-            int orderId,
+        public async Task Ship_Get_ReturnsNotFoundResult_WhenOrderIsNotFound(
+            OrderModel order,
+            Guid orderId,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.GetOrderById(It.IsAny<int>()))
-                .Returns(order);
+            mockOrderService.Setup(x => x.GetOrderByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(order);
 
             // Act
-            var result = sut.Ship(orderId);
+            var result = await sut.Ship(orderId);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockOrderService.Verify(x => x.GetOrderById(It.IsAny<int>()), Times.Once);
+            mockOrderService.Verify(x => x.GetOrderByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Ship_Post_ReturnsRedirectToActionResult_WhenOrderIsValid(
-            Order order,
+        public async Task Ship_Post_ReturnsRedirectToActionResult_WhenOrderIsValid(
+            OrderModel order,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.EditOrder(It.IsAny<Order>()))
-                .Returns(order);
+            mockOrderService.Setup(x => x.EditOrderAsync(It.IsAny<OrderModel>()))
+                .ReturnsAsync(order);
 
             var shipOrderViewModel = new ShipOrderViewModel
             {
@@ -75,18 +77,18 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
+            var result = await sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.Make));
 
-            mockOrderService.Verify(x => x.EditOrder(It.IsAny<Order>()), Times.Once);
+            mockOrderService.Verify(x => x.EditOrderAsync(It.IsAny<OrderModel>()), Times.Once);
         }
         
         [Theory]
         [AutoMoqData]
-        public void Ship_Post_ReturnsViewResult_WhenOrderIsInvalid(
+        public async Task Ship_Post_ReturnsViewResult_WhenOrderIsInvalid(
             ShipOrderViewModel shipOrderViewModel,
             OrderController sut)
         {
@@ -94,7 +96,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
+            var result = await sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

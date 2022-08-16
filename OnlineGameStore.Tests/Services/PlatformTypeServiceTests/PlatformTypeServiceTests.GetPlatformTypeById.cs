@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,30 +15,22 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PlatformTypeService_GetPlatformTypeById_ReturnsPlatformType(
-            PlatformType platformType,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PlatformTypeService_GetPlatformTypeById_ReturnsPlatformType(
+            PlatformTypeModel platformType,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            var actualPlatformType = sut.GetPlatformTypeById(platformType.Id);
+            var actualPlatformType = await sut.GetPlatformTypeByIdAsync(platformType.Id);
 
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

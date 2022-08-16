@@ -1,26 +1,19 @@
-using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Hangfire;
-using Hangfire.Client;
-using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services;
-using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.BLL.Utils;
-using OnlineGameStore.DAL.Data;
-using OnlineGameStore.DAL.Repositories;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.Infrastructure.Injections;
 using OnlineGameStore.MVC.Infrastructure;
-using OnlineGameStore.MVC.Mapper;
+using OnlineGameStore.MVC.Infrastructure.Configurations;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using Serilog;
 using Serilog.Events;
@@ -34,70 +27,33 @@ namespace OnlineGameStore.MVC
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var gameStoreConnection = Configuration.GetConnectionString("DockerSqlServerConnection");
-            var northwindConnection = Configuration.GetConnectionString("NorthwindConnection");
+            var connectionStrings = new Dictionary<string, string>
+            {
+                ["GameStore"] = Configuration.GetConnectionString("DockerSqlServerConnection"),
+                ["Northwind"] = Configuration.GetConnectionString("NorthwindConnection")
+            };
             
-            services.AddDbContext<StoreDbContext>(options =>
-                options.UseSqlServer(gameStoreConnection));
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddScoped<INorthwindUnitOfWork>(provider =>
-                new NorthwindUnitOfWork(northwindConnection));
-
-            services.AddScoped<IGameService, GameService>();
-
-            services.AddScoped<ICommentService, CommentService>();
-
-            services.AddScoped<IGenreService, GenreService>();
-
-            services.AddScoped<IPlatformTypeService, PlatformTypeService>();
-
-            services.AddScoped<IPublisherService, PublisherService>();
-
-            services.AddScoped<IOrderService, OrderService>();
-            
-            services.AddScoped<IUserService, UserService>();
-            
-            services.AddScoped<IShipperService, ShipperService>();
-            
-            services.AddScoped<INorthwindLogService, NorthwindLogService>();
+            services.AddRepositories(connectionStrings);
+            services.AddServices();
 
             services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
 
             services.AddHttpContextAccessor();
 
-            services.AddAutoMapper(
-                typeof(CommentMappingProfile),
-                typeof(GameMappingProfile),
-                typeof(GenreMappingProfile),
-                typeof(PlatformTypeMappingProfile),
-                typeof(PublisherMappingProfile),
-                typeof(OrderMappingProfile),
-                typeof(NorthwindMappingProfile),
-                typeof(ShipperMappingProfile));
+            services.AddAutoMapper(configuration =>
+            {
+                configuration.AddEntitiesProfiles();
+                configuration.AddModelsProfiles();
+            });
 
-            services.AddScoped<IPaymentMethodStrategy, BankPaymentMethodStrategy>();
-            services.AddScoped<IPaymentMethodStrategy, TerminalIBoxPaymentMethodStrategy>();
-            services.AddScoped<IPaymentMethodStrategy, VisaPaymentMethodStrategy>();
+            services.AddPaymentMethods();
 
             services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(gameStoreConnection,
-                    new SqlServerStorageOptions
-                    {
-                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                        QueuePollInterval = TimeSpan.Zero,
-                        UseRecommendedIsolationLevel = true,
-                        DisableGlobalLocks = true
-                    }));
+                .SetHangfireConfiguration(connectionStrings["GameStore"]));
 
             services.AddHangfireServer();
 
@@ -118,16 +74,8 @@ namespace OnlineGameStore.MVC
             });
             
             services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.SubFolder);
-        }
-
-        private static void ConfigureCancellingOrderTask(IOrderService orderService)
-        {
-            RecurringJob.AddOrUpdate("cancellingOrders",
-                () => orderService.CancelOrdersWithTimeout(),
-                Cron.Minutely);
-
-            BackgroundJob.Enqueue(() => Console.WriteLine());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOrderService orderService)
@@ -177,6 +125,13 @@ namespace OnlineGameStore.MVC
                 endpoints.MapControllers();
                 endpoints.MapHangfireDashboard();
             });
+        }
+
+        private static void ConfigureCancellingOrderTask(IOrderService orderService)
+        {
+            RecurringJob.AddOrUpdate("cancellingOrders",
+                () => orderService.CancelOrdersWithTimeoutAsync(),
+                Cron.Minutely);
         }
     }
 }

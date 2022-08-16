@@ -2,8 +2,8 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;

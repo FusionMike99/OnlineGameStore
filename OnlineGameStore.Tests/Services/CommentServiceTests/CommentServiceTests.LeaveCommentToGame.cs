@@ -1,10 +1,11 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -14,34 +15,27 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CommentService_LeaveCommentToGame_ReturnsComment(
-            Game game,
-            Comment comment,
+        public async Task CommentService_LeaveCommentToGame_ReturnsComment(
+            GameModel game,
+            CommentModel comment,
             [Frozen] Mock<IGameService> mockGameService,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<ICommentRepository> commentRepositoryMock,
             CommentService sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
-            mockUnitOfWork.Setup(x => x.Comments.Create(It.IsAny<Comment>()))
-                .Returns(comment);
+            commentRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<CommentModel>()));
 
             // Act
-            var actualComment = sut.LeaveCommentToGame(game.Key, comment);
+            var actualComment = await sut.LeaveCommentToGameAsync(game.Key, comment);
 
             // Assert
             actualComment.Should().BeEquivalentTo(comment);
-
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
-                It.IsAny<bool>()),
-                Times.Once);
-            
-            mockUnitOfWork.Verify(x => x.Comments.Create(It.IsAny<Comment>()), Times.Once);
-            
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+            commentRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<CommentModel>()), Times.Once);
         }
     }
 }

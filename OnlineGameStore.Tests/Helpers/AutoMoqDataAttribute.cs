@@ -4,7 +4,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Community.AutoMapper;
 using AutoFixture.Xunit2;
 using MongoDB.Bson;
-using OnlineGameStore.BLL.Utils;
 using OnlineGameStore.MVC.Mapper;
 
 namespace OnlineGameStore.Tests.Helpers
@@ -23,21 +22,18 @@ namespace OnlineGameStore.Tests.Helpers
                 new ViewComponentCustomization(),
                 new AutoMapperCustomization(cfg =>
                 {
-                    cfg.AddProfile(typeof(CommentMappingProfile));
-                    cfg.AddProfile(typeof(GameMappingProfile));
-                    cfg.AddProfile(typeof(GenreMappingProfile));
-                    cfg.AddProfile(typeof(PlatformTypeMappingProfile));
-                    cfg.AddProfile(typeof(PublisherMappingProfile));
-                    cfg.AddProfile(typeof(OrderMappingProfile));
-                    cfg.AddProfile(typeof(NorthwindMappingProfile));
-                    cfg.AddProfile(typeof(ShipperMappingProfile));
+                    cfg.AddProfile(typeof(CommentModelMappingProfile));
+                    cfg.AddProfile(typeof(GameModelMappingProfile));
+                    cfg.AddProfile(typeof(GenreModelMappingProfile));
+                    cfg.AddProfile(typeof(PlatformTypeModelMappingProfile));
+                    cfg.AddProfile(typeof(PublisherModelMappingProfile));
+                    cfg.AddProfile(typeof(OrderModelMappingProfile));
+                    cfg.AddProfile(typeof(ShipperModelMappingProfile));
                 })));
 
             fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList().ForEach(b =>
                 fixture.Behaviors.Remove(b));
-
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            
             fixture.Register(ObjectId.GenerateNewId);
 
             return fixture;

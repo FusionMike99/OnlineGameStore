@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.ModelBuilders;
 using OnlineGameStore.MVC.Models;
@@ -37,44 +39,44 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var editGameViewModel = new EditGameViewModel();
 
-            ConfigureEditGameViewModel(editGameViewModel);
+            await ConfigureEditGameViewModel(editGameViewModel);
 
             return View(editGameViewModel);
         }
 
         [HttpPost("new")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] EditGameViewModel game)
+        public async Task<IActionResult> Create([FromForm] EditGameViewModel game)
         {
-            VerifyGame(game);
+            await VerifyGame(game);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGameViewModel(game);
+                await ConfigureEditGameViewModel(game);
 
                 return View(game);
             }
 
-            var mappedGame = _mapper.Map<Game>(game);
+            var mappedGame = _mapper.Map<GameModel>(game);
 
-            _gameService.CreateGame(mappedGame);
+            await _gameService.CreateGameAsync(mappedGame);
 
             return RedirectToAction(nameof(GetGames));
         }
 
         [HttpGet("update/{gameKey}")]
-        public IActionResult Update([FromRoute] string gameKey)
+        public async Task<IActionResult> Update([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -83,40 +85,40 @@ namespace OnlineGameStore.MVC.Controllers
 
             var editGameViewModel = _mapper.Map<EditGameViewModel>(game);
 
-            ConfigureEditGameViewModel(editGameViewModel);
+            await ConfigureEditGameViewModel(editGameViewModel);
 
             return View(editGameViewModel);
         }
 
         [HttpPost("update/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(string gameKey, [FromForm] EditGameViewModel game)
+        public async Task<IActionResult> Update(string gameKey, [FromForm] EditGameViewModel game)
         {
-            VerifyGame(game);
+            await VerifyGame(game);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGameViewModel(game);
+                await ConfigureEditGameViewModel(game);
 
                 return View(game);
             }
 
-            var mappedGame = _mapper.Map<Game>(game);
+            var mappedGame = _mapper.Map<GameModel>(game);
 
-            _gameService.EditGame(gameKey, mappedGame);
+            await _gameService.EditGameAsync(mappedGame);
 
             return RedirectToAction(nameof(GetGames));
         }
 
         [HttpGet("{gameKey}")]
-        public IActionResult GetGameByKey([FromRoute] string gameKey)
+        public async Task<IActionResult> GetGameByKey([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            var game = _gameService.GetGameByKey(gameKey, increaseViews: true);
+            var game = await _gameService.GetGameByKeyAsync(gameKey, increaseViews: true);
 
             if (game == null)
             {
@@ -129,15 +131,15 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGames(SortFilterGameViewModel sortFilterGameViewModel,
+        public async Task<IActionResult> GetGames(SortFilterGameViewModel sortFilterGameViewModel,
             int pageNumber = 1, PageSize pageSize = PageSize.Ten)
         {
-            SortFilterGameModel sortFilterGameModel = new SortFilterGameModelBuilder(sortFilterGameViewModel,
+            SortFilterGameModel sortFilterGameModel = await SortFilterGameModelBuilder.Create(sortFilterGameViewModel,
                 _genreService, _platformTypeService, _publisherService);
 
             var pageModel = new PageModel(pageNumber, pageSize);
-            
-            var games = _gameService.GetAllGames(out var gamesNumber, sortFilterGameModel, pageModel);
+
+            var (games, gamesNumber) = await _gameService.GetAllGamesAsync(sortFilterGameModel, pageModel);
 
             var gamesViewModel = _mapper.Map<IEnumerable<GameViewModel>>(games);
 
@@ -147,7 +149,7 @@ namespace OnlineGameStore.MVC.Controllers
             {
                 PageViewModel = pageViewModel,
                 Games = gamesViewModel,
-                SortFilterGameViewModel = new SortFilterGameViewModelBuilder(sortFilterGameModel,
+                SortFilterGameViewModel = await SortFilterGameViewModelBuilder.Create(sortFilterGameModel,
                     _genreService, _platformTypeService, _publisherService)
             };
 
@@ -156,27 +158,27 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove(string gameKey)
+        public async Task<IActionResult> Remove(string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            _gameService.DeleteGame(gameKey);
+            await _gameService.DeleteGameAsync(gameKey);
 
             return RedirectToAction(nameof(GetGames));
         }
 
         [HttpGet("{gameKey}/download")]
-        public IActionResult Download([FromRoute] string gameKey)
+        public async Task<IActionResult> Download([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
                 return BadRequest();
             }
 
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -195,24 +197,25 @@ namespace OnlineGameStore.MVC.Controllers
             return File(serializedGame, "application/txt", $"{game.Name}.txt");
         }
 
-        private void ConfigureEditGameViewModel(EditGameViewModel model)
+        private async Task ConfigureEditGameViewModel(EditGameViewModel model)
         {
-            model.Genres = new SelectList(_genreService.GetAllGenres(),
-                nameof(Genre.Id),
-                nameof(Genre.Name));
+            var genres = await _genreService.GetAllGenresAsync();
+            var platforms = await _platformTypeService.GetAllPlatformTypesAsync();
+            var publishers = await _publisherService.GetAllPublishersAsync();
+            
+            model.Genres = new SelectList(genres,
+                nameof(GenreEntity.Id), nameof(GenreEntity.Name));
 
-            model.PlatformTypes = new SelectList(_platformTypeService.GetAllPlatformTypes(),
-                nameof(PlatformType.Id),
-                nameof(PlatformType.Type));
+            model.PlatformTypes = new SelectList(platforms,
+                nameof(PlatformTypeEntity.Id), nameof(PlatformTypeEntity.Type));
 
-            model.Publishers = new SelectList(_publisherService.GetAllPublishers(),
-                nameof(Publisher.CompanyName),
-                nameof(Publisher.CompanyName));
+            model.Publishers = new SelectList(publishers,
+                nameof(PublisherEntity.CompanyName), nameof(PublisherEntity.CompanyName));
         }
 
-        private void VerifyGame(EditGameViewModel game)
+        private async Task VerifyGame(EditGameViewModel game)
         {
-            var checkResult = _gameService.CheckKeyForUnique(game.Id, game.Key);
+            var checkResult = await _gameService.CheckKeyForUniqueAsync(game.Id, game.Key);
 
             if (checkResult)
             {

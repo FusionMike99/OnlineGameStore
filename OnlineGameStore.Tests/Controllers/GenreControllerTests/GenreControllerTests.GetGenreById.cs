@@ -1,9 +1,11 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -15,58 +17,45 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGenreById_ReturnsViewResult_WhenGenreIdHasValue(
-            Genre genre,
+        public async Task GetGenreById_ReturnsViewResult_WhenGenreIdHasValue(
+            GenreModel genre,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetGenreById(It.IsAny<int>()))
-                .Returns(genre);
+            mockGenreService.Setup(x => x.GetGenreByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(genre);
 
             // Act
-            var result = sut.GetGenreById(genre.Id);
+            var result = await sut.GetGenreById(genre.Id);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<GenreViewModel>()
                 .Which.Id.Should().Be(genre.Id);
 
-            mockGenreService.Verify(x => x.GetGenreById(It.IsAny<int>()), Times.Once);
+            mockGenreService.Verify(x => x.GetGenreByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetGenreById_ReturnsBadRequestResult_WhenGenreIdHasNotValue(
-            int? genreId,
-            GenreController sut)
-        {
-            // Act
-            var result = sut.GetGenreById(genreId);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void GetGenreById_ReturnsNotFoundResult_WhenGenreIsNotFound(
-            Genre genre,
-            int genreId,
+        public async Task GetGenreById_ReturnsNotFoundResult_WhenGenreIsNotFound(
+            GenreModel genre,
+            Guid genreId,
             [Frozen] Mock<IGenreService> mockGenreService,
             GenreController sut)
         {
             // Arrange
-            mockGenreService.Setup(x => x.GetGenreById(It.IsAny<int>()))
-                .Returns(genre);
+            mockGenreService.Setup(x => x.GetGenreByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(genre);
 
             // Act
-            var result = sut.GetGenreById(genreId);
+            var result = await sut.GetGenreById(genreId);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGenreService.Verify(x => x.GetGenreById(It.IsAny<int>()), Times.Once);
+            mockGenreService.Verify(x => x.GetGenreByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

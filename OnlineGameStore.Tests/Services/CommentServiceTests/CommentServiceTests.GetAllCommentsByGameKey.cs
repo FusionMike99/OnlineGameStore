@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -17,39 +16,25 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CommentService_GetAllCommentsByGameKey_ReturnsComments(
+        public async Task CommentService_GetAllCommentsByGameKey_ReturnsComments(
             string gameKey,
-            IEnumerable<Comment> comments,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            List<CommentModel> comments,
+            [Frozen] Mock<ICommentRepository> commentRepositoryMock,
             CommentService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Comments.GetMany(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Comment>,IOrderedQueryable<Comment>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string[]>()))
-                .Returns(comments);
+            commentRepositoryMock.Setup(x => x.GetAllByGameKeyAsync(It.IsAny<string>()))
+                .ReturnsAsync(comments);
 
             var expectedComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 
             // Act
-            var actualComments = sut.GetAllCommentsByGameKey(gameKey);
+            var actualComments = await sut.GetAllCommentsByGameKeyAsync(gameKey);
 
             // Assert
             actualComments.Should().BeEquivalentTo(expectedComments);
 
-            mockUnitOfWork.Verify(x => x.Comments.GetMany(
-                    It.IsAny<Expression<Func<Comment, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<Comment>,IOrderedQueryable<Comment>>>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<int?>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            commentRepositoryMock.Verify(x => x.GetAllByGameKeyAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

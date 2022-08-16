@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
@@ -31,31 +33,26 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("new")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] EditPlatformTypeViewModel platformType)
+        public async Task<IActionResult> Create([FromForm] EditPlatformTypeViewModel platformType)
         {
-            VerifyPlatformType(platformType);
+            await VerifyPlatformType(platformType);
 
             if (!ModelState.IsValid)
             {
                 return View(platformType);
             }
 
-            var mappedPlatformType = _mapper.Map<PlatformType>(platformType);
+            var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
-            _platformTypeService.CreatePlatformType(mappedPlatformType);
+            await _platformTypeService.CreatePlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
-        [HttpGet("update/{platformTypeId:int}")]
-        public IActionResult Update([FromRoute] int? platformTypeId)
+        [HttpGet("update/{platformTypeId:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid platformTypeId)
         {
-            if (!platformTypeId.HasValue)
-            {
-                return BadRequest();
-            }
-
-            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
+            var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
 
             if (platformType == null)
             {
@@ -67,38 +64,33 @@ namespace OnlineGameStore.MVC.Controllers
             return View(editPlatformTypeViewModel);
         }
 
-        [HttpPost("update/{platformTypeId:int}")]
+        [HttpPost("update/{platformTypeId:guid}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int platformTypeId, [FromForm] EditPlatformTypeViewModel platformType)
+        public async Task<IActionResult> Update(Guid platformTypeId, [FromForm] EditPlatformTypeViewModel platformType)
         {
             if (platformTypeId != platformType.Id)
             {
                 return NotFound();
             }
             
-            VerifyPlatformType(platformType);
+            await VerifyPlatformType(platformType);
 
             if (!ModelState.IsValid)
             {
                 return View(platformType);
             }
 
-            var mappedPlatformType = _mapper.Map<PlatformType>(platformType);
+            var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
 
-            _platformTypeService.EditPlatformType(mappedPlatformType);
+            await _platformTypeService.EditPlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
-        [HttpGet("{platformTypeId}")]
-        public IActionResult GetPlatformTypeById([FromRoute] int? platformTypeId)
+        [HttpGet("{platformTypeId:guid}")]
+        public async Task<IActionResult> GetPlatformTypeById([FromRoute] Guid platformTypeId)
         {
-            if (!platformTypeId.HasValue)
-            {
-                return BadRequest();
-            }
-
-            var platformType = _platformTypeService.GetPlatformTypeById(platformTypeId.Value);
+            var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
 
             if (platformType == null)
             {
@@ -111,9 +103,9 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetPlatformTypes()
+        public async Task<IActionResult> GetPlatformTypes()
         {
-            var platformTypes = _platformTypeService.GetAllPlatformTypes();
+            var platformTypes = await _platformTypeService.GetAllPlatformTypesAsync();
 
             var platformTypesViewModel = _mapper.Map<IEnumerable<PlatformTypeViewModel>>(platformTypes);
 
@@ -122,21 +114,16 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            if (!id.HasValue)
-            {
-                return BadRequest();
-            }
-
-            _platformTypeService.DeletePlatformType(id.Value);
+            await _platformTypeService.DeletePlatformTypeAsync(id);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
-        private void VerifyPlatformType(EditPlatformTypeViewModel platformType)
+        private async Task VerifyPlatformType(EditPlatformTypeViewModel platformType)
         {
-            var checkResult = _platformTypeService.CheckTypeForUnique(platformType.Id, platformType.Type);
+            var checkResult = await _platformTypeService.CheckTypeForUniqueAsync(platformType.Id, platformType.Type);
 
             if (checkResult)
             {

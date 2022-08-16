@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -13,35 +15,37 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void RemoveFromBasket_ReturnsRedirectToActionResult_WhenIdHasValue(
+        public async Task RemoveFromBasket_ReturnsRedirectToActionResult_WhenIdHasValue(
             string gameKey,
             [Frozen] Mock<IOrderService> mockOrderService,
             OrderController sut)
         {
             // Arrange
-            mockOrderService.Setup(x => x.RemoveFromOrder(It.IsAny<string>(),
+            mockOrderService.Setup(x => x.RemoveFromOrderAsync(It.IsAny<Guid>(),
                 It.IsAny<string>()));
 
             // Act
-            var result = sut.RemoveFromBasket(gameKey);
+            var result = await sut.RemoveFromBasket(gameKey);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetBasket));
 
-            mockOrderService.Verify(x => x.RemoveFromOrder(It.IsAny<string>(),
+            mockOrderService.Verify(x => x.RemoveFromOrderAsync(It.IsAny<Guid>(),
                 It.IsAny<string>()),
                 Times.Once);
         }
 
         [Theory]
+        [InlineAutoMoqData("")]
+        [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void RemoveFromBasket_ReturnsBadRequestResult_WhenIdHasNotValue(
+        public async Task RemoveFromBasket_ReturnsBadRequestResult_WhenIdHasNotValue(
             string gameKey,
             OrderController sut)
         {
             // Act
-            var result = sut.RemoveFromBasket(gameKey);
+            var result = await sut.RemoveFromBasket(gameKey);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();

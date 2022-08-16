@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.MVC.Infrastructure;
 
 namespace OnlineGameStore.MVC.Models
@@ -11,7 +11,7 @@ namespace OnlineGameStore.MVC.Models
     public class EditGameViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [BindProperty(BinderType = typeof(TrimmingModelBinder))]
@@ -53,12 +53,6 @@ namespace OnlineGameStore.MVC.Models
         public string QuantityPerUnit { get; set; }
         
         [UIHint("HiddenInput")]
-        public int UnitsOnOrder { get; set; }
-        
-        [UIHint("HiddenInput")]
-        public int ReorderLevel { get; set; }
-        
-        [UIHint("HiddenInput")]
         public DatabaseEntity DatabaseEntity { get; set; }
 
         public SelectList Genres { get; set; }
@@ -68,10 +62,10 @@ namespace OnlineGameStore.MVC.Models
         public SelectList Publishers { get; set; }
 
         [Display(Name = "Choose genres")]
-        public List<int> SelectedGenres { get; set; }
+        public List<Guid> SelectedGenres { get; set; }
 
         [Display(Name = "Choose platform types")]
-        public List<int> SelectedPlatformTypes { get; set; }
+        public List<Guid> SelectedPlatformTypes { get; set; }
 
         [Display(Name = "Publisher")]
         public string SelectedPublisher { get; set; }

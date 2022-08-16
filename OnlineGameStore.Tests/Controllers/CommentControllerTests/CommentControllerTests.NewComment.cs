@@ -1,9 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -15,17 +16,16 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void NewComment_ReturnsJsonResult_WhenGameKeyHasValueAndCommentIsValid(
-            Comment comment,
+        public async Task NewComment_ReturnsJsonResult_WhenGameKeyHasValueAndCommentIsValid(
+            CommentModel comment,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.LeaveCommentToGame(
-                    It.IsAny<string>(),
-                    It.IsAny<Comment>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.LeaveCommentToGameAsync(It.IsAny<string>(),
+                    It.IsAny<CommentModel>()))
+                .ReturnsAsync(comment);
 
             var editCommentViewModel = new EditCommentViewModel
             {
@@ -35,15 +35,14 @@ namespace OnlineGameStore.Tests.Controllers
             };
 
             // Act
-            var result = sut.NewComment(gameKey, editCommentViewModel);
+            var result = await sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
-            mockCommentService.Verify(x => x.LeaveCommentToGame(
-                    It.IsAny<string>(),
-                    It.IsAny<Comment>()),
+            mockCommentService.Verify(x => x.LeaveCommentToGameAsync(It.IsAny<string>(),
+                    It.IsAny<CommentModel>()),
                 Times.Once);
         }
 
@@ -51,13 +50,13 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void NewComment_ReturnsBadRequestObjectResult_WhenGameKeyHasNotValue(
+        public async Task NewComment_ReturnsBadRequestObjectResult_WhenGameKeyHasNotValue(
             string gameKey,
             EditCommentViewModel editCommentViewModel,
             CommentController sut)
         {
             // Act
-            var result = sut.NewComment(gameKey, editCommentViewModel);
+            var result = await sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
@@ -67,7 +66,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void NewComment_ReturnsViewResult_WhenCommentIsInvalid(
+        public async Task NewComment_ReturnsViewResult_WhenCommentIsInvalid(
             string gameKey,
             EditCommentViewModel editCommentViewModel,
             CommentController sut)
@@ -76,7 +75,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.NewComment(gameKey, editCommentViewModel);
+            var result = await sut.NewComment(gameKey, editCommentViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

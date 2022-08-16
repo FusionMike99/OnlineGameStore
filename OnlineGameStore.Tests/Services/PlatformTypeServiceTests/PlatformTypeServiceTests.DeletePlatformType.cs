@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,60 +15,45 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PlatformTypeService_DeletePlatformType_DeletesPlatformType(
-            PlatformType platformType,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PlatformTypeService_DeletePlatformType_DeletesPlatformType(
+            PlatformTypeModel platformType,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
-            mockUnitOfWork.Setup(x => x.PlatformTypes.Delete(It.IsAny<PlatformType>()));
+            platformTypeRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PlatformTypeModel>()));
 
             // Act
-            sut.DeletePlatformType(platformType.Id);
+            await sut.DeletePlatformTypeAsync(platformType.Id);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>()),
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<PlatformTypeModel>()),
                 Times.Once);
-            mockUnitOfWork.Verify(x => x.PlatformTypes.Delete(
-                    It.Is<PlatformType>(g => g.Type == platformType.Type && g.Id == platformType.Id)),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void PlatformTypeService_DeletePlatformType_ThrowsInvalidOperationExceptionWithNullEntity(
-            PlatformType platformType,
-            int platformTypeId,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PlatformTypeService_DeletePlatformType_ThrowsInvalidOperationExceptionWithNullEntity(
+            PlatformTypeModel platformType,
+            Guid platformTypeId,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(platformType);
 
             // Act
-            Action actual = () => sut.DeletePlatformType(platformTypeId);
+            Func<Task> actual = async () => await sut.DeletePlatformTypeAsync(platformTypeId);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetSingle(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

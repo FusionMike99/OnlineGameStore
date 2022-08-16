@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.DomainModels.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {
     public class OrderViewModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "Customer")]
-        public string CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         [Display(Name = "Order Date")]
         [DataType(DataType.Date)]

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -17,32 +14,23 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_GetCategoriesIdsByNames_ReturnsIds(
-            List<NorthwindCategory> categories,
+        public async Task GenreService_GetCategoriesIdsByNames_ReturnsIds(
+            List<string> categories,
             string[] names,
-            [Frozen] Mock<INorthwindUnitOfWork> mockNorthwindUnitOfWork,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockNorthwindUnitOfWork
-                .Setup(m => m.Categories.GetMany(It.IsAny<Expression<Func<NorthwindCategory, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindCategory>, IOrderedQueryable<NorthwindCategory>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()))
-                .Returns(categories);
-
-            var expectedIds = categories.Select(x => x.CategoryId);
+            genreRepositoryMock.Setup(x => x.GetCategoryIdsByNamesAsync(names))
+                .ReturnsAsync(categories);
 
             // Act
-            var actualGenres = sut.GetCategoriesIdsByNames(names);
+            var actualGenres = await sut.GetCategoriesIdsByNamesAsync(names);
 
             // Assert
-            actualGenres.Should().BeEquivalentTo(expectedIds);
+            actualGenres.Should().BeEquivalentTo(categories);
 
-            mockNorthwindUnitOfWork.Verify(x => x.Categories.GetMany(
-                    It.IsAny<Expression<Func<NorthwindCategory, bool>>>(),
-                    It.IsAny<Func<IQueryable<NorthwindCategory>, IOrderedQueryable<NorthwindCategory>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetCategoryIdsByNamesAsync(names), Times.Once);
         }
     }
 }

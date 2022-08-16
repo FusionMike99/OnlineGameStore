@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    internal class PublisherConfiguration : IEntityTypeConfiguration<Publisher>
+    internal class PublisherConfiguration : IEntityTypeConfiguration<PublisherEntity>
     {
-        public void Configure(EntityTypeBuilder<Publisher> builder)
+        public void Configure(EntityTypeBuilder<PublisherEntity> builder)
         {
             builder.HasKey(m => m.Id);
+            
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(p => p.CompanyName)
                 .HasColumnType("nvarchar(40)")
@@ -51,8 +54,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(p => p.Fax)
                 .HasDefaultValue(string.Empty);
-
-            builder.Ignore(p => p.DatabaseEntity);
             
             builder.Ignore(p => p.Games);
 

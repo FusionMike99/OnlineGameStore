@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -16,66 +14,22 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PublisherService_GetPublisherByCompanyName_ReturnsGameStorePublisher(
-            Publisher publisher,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PublisherService_GetPublisherByCompanyName_ReturnsGameStorePublisher(
+            PublisherModel publisher,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(publisher);
+            publisherRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(publisher);
 
             // Act
-            var actualPublisher = sut.GetPublisherByCompanyName(publisher.CompanyName);
+            var actualPublisher = await sut.GetPublisherByCompanyNameAsync(publisher.CompanyName);
 
             // Assert
             actualPublisher.Should().BeEquivalentTo(publisher);
 
-            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-        }
-        
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void PublisherService_GetPublisherByCompanyName_ReturnsNorthwindPublisher(
-            Publisher publisher,
-            NorthwindSupplier supplier,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            [Frozen] Mock<INorthwindUnitOfWork> mockNorthwindUnitOfWork,
-            PublisherService sut)
-        {
-            // Arrange
-            mockUnitOfWork.Setup(m => m.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(publisher);
-
-            mockNorthwindUnitOfWork.Setup(m => m.Suppliers.GetFirst(
-                    It.IsAny<Expression<Func<NorthwindSupplier, bool>>>()))
-                .Returns(supplier);
-
-            // Act
-            var actualPublisher = sut.GetPublisherByCompanyName(supplier.CompanyName);
-
-            // Assert
-            actualPublisher.CompanyName.Should().Be(supplier.CompanyName);
-
-            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-
-            mockNorthwindUnitOfWork.Verify(x => x.Suppliers.GetFirst(
-                    It.IsAny<Expression<Func<NorthwindSupplier, bool>>>()),
+            publisherRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()),
                 Times.Once);
         }
     }

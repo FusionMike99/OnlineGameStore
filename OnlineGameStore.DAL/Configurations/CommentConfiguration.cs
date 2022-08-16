@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    internal class CommentConfiguration : IEntityTypeConfiguration<Comment>
+    internal class CommentConfiguration : IEntityTypeConfiguration<CommentEntity>
     {
-        public void Configure(EntityTypeBuilder<Comment> builder)
+        public void Configure(EntityTypeBuilder<CommentEntity> builder)
         {
             builder.HasKey(m => m.Id);
+            
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(c => c.Name)
                 .IsRequired();

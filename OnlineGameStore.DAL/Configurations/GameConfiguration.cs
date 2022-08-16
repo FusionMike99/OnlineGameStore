@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    internal class GameConfiguration : IEntityTypeConfiguration<Game>
+    internal class GameConfiguration : IEntityTypeConfiguration<GameEntity>
     {
-        public void Configure(EntityTypeBuilder<Game> builder)
+        public void Configure(EntityTypeBuilder<GameEntity> builder)
         {
             builder.HasKey(m => m.Id);
+            
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(g => g.Key)
                 .IsRequired();
@@ -34,14 +37,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(g => g.QuantityPerUnit)
                 .HasDefaultValue(string.Empty);
-            
-            builder.Property(g => g.UnitsOnOrder)
-                .HasDefaultValue(0);
-            
-            builder.Property(g => g.ReorderLevel)
-                .HasDefaultValue(0);
-
-            builder.Ignore(g => g.DatabaseEntity);
             
             builder.Ignore(g => g.Publisher);
             

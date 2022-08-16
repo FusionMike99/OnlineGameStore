@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -17,32 +15,22 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PlatformTypeService_GetAllPlatformTypes_ReturnsPlatformTypes(
-            List<PlatformType> platformTypes,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PlatformTypeService_GetAllPlatformTypes_ReturnsPlatformTypes(
+            List<PlatformTypeModel> platformTypes,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.PlatformTypes.GetMany(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<PlatformType>,IOrderedQueryable<PlatformType>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()))
-                .Returns(platformTypes);
+            platformTypeRepositoryMock.Setup(x => x.GetAllAsync())
+                .ReturnsAsync(platformTypes);
 
             // Act
-            var actualPlatformTypes = sut.GetAllPlatformTypes();
+            var actualPlatformTypes = await sut.GetAllPlatformTypesAsync();
 
             // Assert
             actualPlatformTypes.Should().BeEquivalentTo(platformTypes);
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.GetMany(
-                    It.IsAny<Expression<Func<PlatformType, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<Func<IQueryable<PlatformType>,IOrderedQueryable<PlatformType>>>(),
-                    It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<string[]>()),
-                Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.GetAllAsync(), Times.Once);
         }
     }
 }

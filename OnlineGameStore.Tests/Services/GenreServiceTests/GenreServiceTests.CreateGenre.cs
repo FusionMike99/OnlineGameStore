@@ -1,9 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -13,23 +14,21 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GenreService_CreateGenre_ReturnsGenre(
-            Genre genre,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GenreService_CreateGenre_ReturnsGenre(
+            GenreModel genre,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Genres.Create(It.IsAny<Genre>()))
-                .Returns(genre);
+            genreRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<GenreModel>()));
 
             // Act
-            var actualGenre = sut.CreateGenre(genre);
+            var actualGenre = await sut.CreateGenreAsync(genre);
 
             // Assert
             actualGenre.Should().BeEquivalentTo(genre);
 
-            mockUnitOfWork.Verify(x => x.Genres.Create(It.IsAny<Genre>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            genreRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<GenreModel>()), Times.Once);
         }
     }
 }

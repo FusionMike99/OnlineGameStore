@@ -1,29 +1,23 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using System.Threading.Tasks;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class ShipperService : IShipperService
     {
-        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
-        private readonly ILogger<ShipperService> _logger;
+        private readonly IShipperRepository _shipperRepository;
 
-        public ShipperService(INorthwindUnitOfWork northwindUnitOfWork,
-            ILogger<ShipperService> logger)
+        public ShipperService(IShipperRepository shipperRepository)
         {
-            _northwindUnitOfWork = northwindUnitOfWork;
-            _logger = logger;
+            _shipperRepository = shipperRepository;
         }
 
-        public IEnumerable<NorthwindShipper> GetAllShippers()
+        public async Task<IEnumerable<ShipperModel>> GetAllShippersAsync()
         {
-            var shippers = _northwindUnitOfWork.Shippers.GetMany();
-
-            _logger.LogDebug($@"Class: {nameof(ShipperService)}; Method: {nameof(GetAllShippers)}.
-                    Receiving shippers successfully", shippers);
+            var shippers = await _shipperRepository.GetAllAsync();
 
             return shippers;
         }

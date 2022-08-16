@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    internal class OrderConfiguration : IEntityTypeConfiguration<Order>
+    internal class OrderConfiguration : IEntityTypeConfiguration<OrderEntity>
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
+        public void Configure(EntityTypeBuilder<OrderEntity> builder)
         {
             builder.HasKey(m => m.Id);
+
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(o => o.OrderDate)
                 .IsRequired();
@@ -18,11 +21,9 @@ namespace OnlineGameStore.DAL.Configurations
 
             builder.Property(o => o.IsDeleted)
                 .HasDefaultValue(false);
-
-            builder.Property(o => o.OrderStatusId)
-                .HasDefaultValue(1);
             
             builder.Property(o => o.Freight)
+                .HasColumnType("money")
                 .HasDefaultValue(0D);
             
             builder.Property(o => o.ShipName)
@@ -42,10 +43,6 @@ namespace OnlineGameStore.DAL.Configurations
             
             builder.Property(o => o.ShipCountry)
                 .HasDefaultValue(string.Empty);
-
-            builder.HasOne(o => o.OrderStatus)
-                .WithMany(os => os.Orders)
-                .HasForeignKey(o => o.OrderStatusId);
         }
     }
 }

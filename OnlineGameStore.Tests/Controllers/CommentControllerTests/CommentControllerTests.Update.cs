@@ -1,10 +1,12 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -16,75 +18,61 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Update_Get_ReturnsViewResult(
-            Comment comment,
+        public async Task Update_Get_ReturnsViewResult(
+            CommentModel comment,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<int>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(comment);
 
             // Act
-            var result = sut.UpdateComment(comment.Id, gameKey);
+            var result = await sut.UpdateComment(comment.Id, gameKey);
 
             // Assert
             result.Should().BeOfType<PartialViewResult>()
                 .Which.Model.Should().BeAssignableTo<EditCommentViewModel>()
                 .Which.Id.Should().Be(comment.Id);
             
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<int>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsBadRequestResult_WhenCommentIdHasNotValue(
-            int? commentId,
-            string gameKey,
-            CommentController sut)
-        {
-            // Act
-            var result = sut.UpdateComment(commentId, gameKey);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Update_Get_ReturnsNotFoundResult_WhenCommentIsNotFound(
-            Comment comment,
-            int? commentId,
+        public async Task Update_Get_ReturnsNotFoundResult_WhenCommentIsNotFound(
+            CommentModel comment,
+            Guid commentId,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<int>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(comment);
 
             // Act
-            var result = sut.UpdateComment(commentId, gameKey);
+            var result = await sut.UpdateComment(commentId, gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<int>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsRedirectToActionResult_WhenCommentIsValid(
-            Comment comment,
+        public async Task Update_Post_ReturnsRedirectToActionResult_WhenCommentIsValid(
+            CommentModel comment,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             [Frozen] Mock<IUrlHelper> mockUrlHelper,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.EditComment(It.IsAny<Comment>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.EditCommentAsync(It.IsAny<CommentModel>()))
+                .ReturnsAsync(comment);
 
             mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>()))
                 .Returns("TestUrl");
@@ -102,26 +90,24 @@ namespace OnlineGameStore.Tests.Controllers
             sut.Url = mockUrlHelper.Object;
 
             // Act
-            var result = sut.UpdateComment(editCommentViewModel.Id, editCommentViewModel, gameKey);
+            var result = await sut.UpdateComment(editCommentViewModel.Id, editCommentViewModel, gameKey);
 
             // Assert
             result.Should().BeOfType<JsonResult>();
 
-            mockCommentService.Verify(x => x.EditComment(It.IsAny<Comment>()), Times.Once);
+            mockCommentService.Verify(x => x.EditCommentAsync(It.IsAny<CommentModel>()), Times.Once);
         }
         
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsNotFoundResult_WhenCommentIsNotFound(
+        public async Task Update_Post_ReturnsNotFoundResult_WhenCommentIsNotFound(
+            Guid id,
             EditCommentViewModel editCommentViewModel,
             string gameKey,
             CommentController sut)
         {
-            // Arrange
-            var id = editCommentViewModel.Id - 1;
-
             // Act
-            var result = sut.UpdateComment(id, editCommentViewModel, gameKey);
+            var result = await sut.UpdateComment(id, editCommentViewModel, gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
@@ -129,7 +115,7 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [AutoMoqData]
-        public void Update_Post_ReturnsViewResult_WhenCommentIsInvalid(
+        public async Task Update_Post_ReturnsViewResult_WhenCommentIsInvalid(
             EditCommentViewModel editCommentViewModel,
             string gameKey,
             CommentController sut)
@@ -138,7 +124,7 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = sut.UpdateComment(editCommentViewModel.Id, editCommentViewModel, gameKey);
+            var result = await sut.UpdateComment(editCommentViewModel.Id, editCommentViewModel, gameKey);
 
             // Assert
             result.Should().BeOfType<PartialViewResult>()

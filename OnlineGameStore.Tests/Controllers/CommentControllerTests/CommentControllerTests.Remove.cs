@@ -1,9 +1,11 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -15,96 +17,68 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Remove_Get_ReturnsViewResult(
-            Comment comment,
+        public async Task Remove_Get_ReturnsViewResult(
+            CommentModel comment,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<int>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(comment);
 
             // Act
-            var result = sut.RemoveComment(comment.Id, gameKey);
+            var result = await sut.RemoveComment(comment.Id, gameKey);
 
             // Assert
             result.Should().BeOfType<PartialViewResult>()
                 .Which.Model.Should().BeAssignableTo<CommentViewModel>()
                 .Which.Id.Should().Be(comment.Id);
             
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<int>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Remove_Get_ReturnsBadRequestResult_WhenCommentIdHasNotValue(
-            int? commentId,
-            string gameKey,
-            CommentController sut)
-        {
-            // Act
-            var result = sut.RemoveComment(commentId, gameKey);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Remove_Get_ReturnsNotFoundResult_WhenCommentIsNotFound(
-            Comment comment,
-            int? commentId,
+        public async Task Remove_Get_ReturnsNotFoundResult_WhenCommentIsNotFound(
+            CommentModel comment,
+            Guid commentId,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.GetCommentById(It.IsAny<int>()))
-                .Returns(comment);
+            mockCommentService.Setup(x => x.GetCommentByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(comment);
 
             // Act
-            var result = sut.RemoveComment(commentId, gameKey);
+            var result = await sut.RemoveComment(commentId, gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockCommentService.Verify(x => x.GetCommentById(It.IsAny<int>()), Times.Once);
+            mockCommentService.Verify(x => x.GetCommentByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
         
         [Theory]
         [AutoMoqData]
-        public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
-            int id,
+        public async Task Remove_ReturnsRedirectToActionResult(
+            Guid id,
             string gameKey,
             [Frozen] Mock<ICommentService> mockCommentService,
             CommentController sut)
         {
             // Arrange
-            mockCommentService.Setup(x => x.DeleteComment(It.IsAny<int>()));
+            mockCommentService.Setup(x => x.DeleteCommentAsync(It.IsAny<Guid>()));
 
             // Act
-            var result = sut.RemoveCommentConfirmed(id, gameKey);
+            var result = await sut.RemoveCommentConfirmed(id, gameKey);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetCommentsByGameKey));
 
-            mockCommentService.Verify(x => x.DeleteComment(It.IsAny<int>()), Times.Once);
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
-            int? id,
-            string gameKey,
-            CommentController sut)
-        {
-            // Act
-            var result = sut.RemoveCommentConfirmed(id, gameKey);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
+            mockCommentService.Verify(x => x.DeleteCommentAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }

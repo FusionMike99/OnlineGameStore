@@ -1,8 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System;
+using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -13,35 +15,22 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
-            int id,
+        public async Task Remove_ReturnsRedirectToActionResult_WhenIdHasValue(
+            Guid id,
             [Frozen] Mock<IPublisherService> mockPublisherService,
             PublisherController sut)
         {
             // Arrange
-            mockPublisherService.Setup(x => x.DeletePublisher(It.IsAny<int>()));
+            mockPublisherService.Setup(x => x.DeletePublisherAsync(It.IsAny<Guid>()));
 
             // Act
-            var result = sut.Remove(id);
+            var result = await sut.Remove(id);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
                 .Subject.ActionName.Should().BeEquivalentTo(nameof(sut.GetPublishers));
 
-            mockPublisherService.Verify(x => x.DeletePublisher(It.IsAny<int>()), Times.Once);
-        }
-
-        [Theory]
-        [InlineAutoMoqData(null)]
-        public void Remove_ReturnsBadRequestResult_WhenIdHasNotValue(
-            int? id,
-            PublisherController sut)
-        {
-            // Act
-            var result = sut.Remove(id);
-
-            // Assert
-            result.Should().BeOfType<BadRequestResult>();
+            mockPublisherService.Verify(x => x.DeletePublisherAsync(It.IsAny<Guid>()), Times.Once);
         }
     }
 }
