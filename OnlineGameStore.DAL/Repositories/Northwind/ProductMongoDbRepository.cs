@@ -14,7 +14,7 @@ using OnlineGameStore.BLL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class ProductMongoDbRepository : MongoDbRepository<NorthwindProduct>,
+    public class ProductMongoDbRepository : MongoDbRepository<ProductEntity>,
         IProductMongoDbRepository
     {
         private readonly ISupplierMongoDbRepository _supplierMongoDbRepository;
@@ -26,15 +26,15 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             _supplierMongoDbRepository = supplierMongoDbRepository;
         }
 
-        public async Task<NorthwindProduct> GetByKeyAsync(string gameKey)
+        public async Task<ProductEntity> GetByKeyAsync(string gameKey)
         {
-            Expression<Func<NorthwindProduct, bool>> predicate = p => p.Key == gameKey;
+            Expression<Func<ProductEntity, bool>> predicate = p => p.Key == gameKey;
             var product = await Query.FirstOrDefaultAsync(predicate);
 
             return product;
         }
 
-        public async Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products)
+        public async Task<IEnumerable<ProductEntity>> SetGameKeyAndDateAddedAsync(List<ProductEntity> products)
         {
             foreach (var product in products)
             {
@@ -44,7 +44,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return products;
         }
 
-        public async Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
+        public async Task<IEnumerable<ProductEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = await GetNorthwindPredicate(sortFilterModel);
             var products = await Query.Where(predicate).ToListAsync();
@@ -52,14 +52,14 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return products;
         }
 
-        private async Task SetGameKeyAndDateAddedPerUnitAsync(NorthwindProduct product)
+        private async Task SetGameKeyAndDateAddedPerUnitAsync(ProductEntity product)
         {
             product.Key ??= product.Name.ToKebabCase();
             await UpdateAsync(product);
             product.DateAdded ??= Constants.AddedAtDefault;
         }
         
-        private async Task<Expression<Func<NorthwindProduct, bool>>> GetNorthwindPredicate(SortFilterGameModel model)
+        private async Task<Expression<Func<ProductEntity, bool>>> GetNorthwindPredicate(SortFilterGameModel model)
         {
             var productsFilterPipeline = ProductsPipelineBuilder.CreatePipeline();
             await SetSuppliersIds(model);

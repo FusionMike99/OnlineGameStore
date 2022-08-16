@@ -5,12 +5,12 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface IProductMongoDbRepository : IMongoDbRepository<NorthwindProduct>
+    public interface IProductMongoDbRepository : IMongoDbRepository<ProductEntity>
     {
-        Task<NorthwindProduct> GetByKeyAsync(string gameKey);
+        Task<ProductEntity> GetByKeyAsync(string gameKey);
 
-        Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products);
+        Task<IEnumerable<ProductEntity>> SetGameKeyAndDateAddedAsync(List<ProductEntity> products);
         
-        Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel);
+        Task<IEnumerable<ProductEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel);
     }
 }

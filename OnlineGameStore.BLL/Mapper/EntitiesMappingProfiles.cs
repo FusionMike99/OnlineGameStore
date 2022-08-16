@@ -36,7 +36,7 @@ namespace OnlineGameStore.BLL.Mapper
                     opts.MapFrom(source => DatabaseEntity.GameStore))
                 .ReverseMap();
             
-            CreateMap<NorthwindProduct, GameModel>()
+            CreateMap<ProductEntity, GameModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.ProductId.ToGuid()))
                 .ForMember(dest => dest.Description, opts => opts.Ignore())
@@ -73,7 +73,7 @@ namespace OnlineGameStore.BLL.Mapper
             CreateMap<GenreEntity, GenreModel>()
                 .ReverseMap();
             
-            CreateMap<NorthwindCategory, GenreModel>()
+            CreateMap<CategoryEntity, GenreModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.CategoryId.ToGuid()))
                 .ForMember(dest => dest.ParentId, opts => opts.Ignore())
@@ -95,7 +95,7 @@ namespace OnlineGameStore.BLL.Mapper
             CreateMap<OrderDetail, OrderDetailModel>()
                 .ReverseMap();
             
-            CreateMap<NorthwindOrderDetail, OrderDetailModel>()
+            CreateMap<OrderDetailMongoDbEntity, OrderDetailModel>()
                 .ForMember(dest => dest.OrderId, opts =>
                     opts.MapFrom(source => source.OrderId.ToGuid()))
                 .ForMember(dest => dest.Id, opts => opts.Ignore())
@@ -119,7 +119,7 @@ namespace OnlineGameStore.BLL.Mapper
             CreateMap<OrderEntity, OrderModel>()
                 .ReverseMap();
             
-            CreateMap<NorthwindOrder, OrderModel>()
+            CreateMap<OrderMongoDbEntity, OrderModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.OrderId.ToGuid()))
                 .ForMember(dest => dest.CustomerId, opts =>
@@ -153,7 +153,7 @@ namespace OnlineGameStore.BLL.Mapper
                     opts.MapFrom(source => DatabaseEntity.GameStore))
                 .ReverseMap();
             
-            CreateMap<NorthwindSupplier, PublisherModel>()
+            CreateMap<SupplierEntity, PublisherModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.SupplierId.ToGuid()))
                 .ForMember(dest => dest.Description, opts => opts.Ignore())
@@ -172,7 +172,7 @@ namespace OnlineGameStore.BLL.Mapper
 
             #region Shipper
 
-            CreateMap<NorthwindShipper, ShipperModel>()
+            CreateMap<ShipperEntity, ShipperModel>()
                 .ForMember(dest => dest.Id, opts =>
                     opts.MapFrom(source => source.ShipperId.ToGuid()))
                 .ForMember(dest => dest.IsDeleted, opts => opts.Ignore())

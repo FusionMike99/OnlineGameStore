@@ -11,7 +11,7 @@ using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class SupplierMongoDbRepository : MongoDbRepository<NorthwindSupplier>,
+    public class SupplierMongoDbRepository : MongoDbRepository<SupplierEntity>,
         ISupplierMongoDbRepository
     {
         public SupplierMongoDbRepository(IMongoDatabase database,
@@ -19,17 +19,17 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<NorthwindSupplier> GetByNameAsync(string companyName)
+        public async Task<SupplierEntity> GetByNameAsync(string companyName)
         {
-            Expression<Func<NorthwindSupplier, bool>> predicate = s => s.CompanyName == companyName;
+            Expression<Func<SupplierEntity, bool>> predicate = s => s.CompanyName == companyName;
             var supplier = await Query.FirstOrDefaultAsync(predicate);
 
             return supplier;
         }
 
-        public async Task<NorthwindSupplier> GetBySupplierIdAsync(int supplierId)
+        public async Task<SupplierEntity> GetBySupplierIdAsync(int supplierId)
         {
-            Expression<Func<NorthwindSupplier, bool>> predicate = c => c.SupplierId == supplierId;
+            Expression<Func<SupplierEntity, bool>> predicate = c => c.SupplierId == supplierId;
             var supplier = await Query.FirstOrDefaultAsync(predicate);
 
             return supplier;
@@ -37,7 +37,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
-            Expression<Func<NorthwindSupplier, bool>> predicate = s => companiesNames.Contains(s.CompanyName);
+            Expression<Func<SupplierEntity, bool>> predicate = s => companiesNames.Contains(s.CompanyName);
             var suppliersIds = await Query.Where(predicate)
                 .Select(s => s.Id.ToString())
                 .ToListAsync();

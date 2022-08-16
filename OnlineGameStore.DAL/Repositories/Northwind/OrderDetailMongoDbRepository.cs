@@ -10,7 +10,7 @@ using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class OrderDetailMongoDbRepository : MongoDbRepository<NorthwindOrderDetail>,
+    public class OrderDetailMongoDbRepository : MongoDbRepository<OrderDetailMongoDbEntity>,
         IOrderDetailMongoDbRepository
     {
         public OrderDetailMongoDbRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
@@ -18,9 +18,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         {
         }
 
-        public async Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderIdAsync(int orderId)
+        public async Task<IEnumerable<OrderDetailMongoDbEntity>> GetManyByOrderIdAsync(int orderId)
         {
-            Expression<Func<NorthwindOrderDetail, bool>> predicate = od => od.OrderId == orderId;
+            Expression<Func<OrderDetailMongoDbEntity, bool>> predicate = od => od.OrderId == orderId;
             var orderDetails = await Query.Where(predicate).ToListAsync();
 
             return orderDetails;

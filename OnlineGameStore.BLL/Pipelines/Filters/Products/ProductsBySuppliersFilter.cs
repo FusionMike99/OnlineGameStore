@@ -6,13 +6,13 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Pipelines.Filters.Products
 {
-    public class ProductsBySuppliersFilter : IFilter<SortFilterGameModel, Expression<Func<NorthwindProduct, bool>>>
+    public class ProductsBySuppliersFilter : IFilter<SortFilterGameModel, Expression<Func<ProductEntity, bool>>>
     {
-        public Expression<Func<NorthwindProduct, bool>> Execute(SortFilterGameModel input)
+        public Expression<Func<ProductEntity, bool>> Execute(SortFilterGameModel input)
         {
             var selectedSuppliers = input?.SelectedSuppliers;
             
-            Expression<Func<NorthwindProduct, bool>> filterExpression = null;
+            Expression<Func<ProductEntity, bool>> filterExpression = null;
             
             if (selectedSuppliers?.Any() == true)
             {

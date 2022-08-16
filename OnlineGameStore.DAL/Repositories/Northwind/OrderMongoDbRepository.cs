@@ -10,7 +10,7 @@ using OnlineGameStore.DAL.Utils;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class OrderMongoDbRepository : MongoDbRepository<NorthwindOrder>, IOrderMongoDbRepository
+    public class OrderMongoDbRepository : MongoDbRepository<OrderMongoDbEntity>, IOrderMongoDbRepository
     {
         private readonly IOrderDetailMongoDbRepository _orderDetailMongoDbRepository;
         private readonly IShipperMongoDbRepository _shipperMongoDbRepository;
@@ -24,16 +24,16 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             _shipperMongoDbRepository = shipperMongoDbRepository;
         }
 
-        public async Task<IEnumerable<NorthwindOrder>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
+        public async Task<IEnumerable<OrderMongoDbEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
-            var predicate = OrderPredicate.GetPredicate<NorthwindOrder>(filterOrderModel);
+            var predicate = OrderPredicate.GetPredicate<OrderMongoDbEntity>(filterOrderModel);
             var orders = await Query.Where(predicate).ToListAsync();
             orders.ForEach(SetOrderDetailAndShipper);
 
             return orders;
         }
 
-        private async void SetOrderDetailAndShipper(NorthwindOrder o)
+        private async void SetOrderDetailAndShipper(OrderMongoDbEntity o)
         {
             o.OrderDetails = await _orderDetailMongoDbRepository.GetManyByOrderIdAsync(o.OrderId);
             o.Shipper = await _shipperMongoDbRepository.GetByShipperIdAsync(o.ShipVia);

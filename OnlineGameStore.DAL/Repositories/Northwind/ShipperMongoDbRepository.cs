@@ -9,16 +9,16 @@ using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class ShipperMongoDbRepository : MongoDbRepository<NorthwindShipper>, IShipperMongoDbRepository
+    public class ShipperMongoDbRepository : MongoDbRepository<ShipperEntity>, IShipperMongoDbRepository
     {
         public ShipperMongoDbRepository(IMongoDatabase database,
             ILoggerFactory loggerFactory) : base(database, loggerFactory)
         {
         }
 
-        public async Task<NorthwindShipper> GetByShipperIdAsync(int shipperId)
+        public async Task<ShipperEntity> GetByShipperIdAsync(int shipperId)
         {
-            Expression<Func<NorthwindShipper, bool>> predicate = s => s.ShipperId == shipperId;
+            Expression<Func<ShipperEntity, bool>> predicate = s => s.ShipperId == shipperId;
             var shipper = await Query.FirstOrDefaultAsync(predicate);
 
             return shipper;

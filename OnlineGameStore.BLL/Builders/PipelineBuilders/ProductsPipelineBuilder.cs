@@ -9,7 +9,7 @@ namespace OnlineGameStore.BLL.Builders.PipelineBuilders
 {
     public static class ProductsPipelineBuilder
     {
-        public static Pipeline<SortFilterGameModel, Expression<Func<NorthwindProduct,bool>>> CreatePipeline()
+        public static Pipeline<SortFilterGameModel, Expression<Func<ProductEntity,bool>>> CreatePipeline()
         {
             var productsFilterPipeline = new ProductsFilterPipeline()
                 .Register(new ProductsByCategoriesFilter())

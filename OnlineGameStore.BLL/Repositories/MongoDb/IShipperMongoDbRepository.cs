@@ -3,8 +3,8 @@ using OnlineGameStore.BLL.Entities.Northwind;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface IShipperMongoDbRepository : IMongoDbRepository<NorthwindShipper>
+    public interface IShipperMongoDbRepository : IMongoDbRepository<ShipperEntity>
     {
-        Task<NorthwindShipper> GetByShipperIdAsync(int shipperId);
+        Task<ShipperEntity> GetByShipperIdAsync(int shipperId);
     }
 }

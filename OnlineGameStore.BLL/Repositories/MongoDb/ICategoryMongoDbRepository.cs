@@ -4,10 +4,10 @@ using OnlineGameStore.BLL.Entities.Northwind;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface ICategoryMongoDbRepository : IMongoDbRepository<NorthwindCategory>
+    public interface ICategoryMongoDbRepository : IMongoDbRepository<CategoryEntity>
     {
         Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames);
         
-        Task<NorthwindCategory> GetByCategoryIdAsync(int categoryId);
+        Task<CategoryEntity> GetByCategoryIdAsync(int categoryId);
     }
 }

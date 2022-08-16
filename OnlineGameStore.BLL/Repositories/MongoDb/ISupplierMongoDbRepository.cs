@@ -4,11 +4,11 @@ using OnlineGameStore.BLL.Entities.Northwind;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface ISupplierMongoDbRepository : IMongoDbRepository<NorthwindSupplier>
+    public interface ISupplierMongoDbRepository : IMongoDbRepository<SupplierEntity>
     {
-        Task<NorthwindSupplier> GetByNameAsync(string companyName);
+        Task<SupplierEntity> GetByNameAsync(string companyName);
         
-        Task<NorthwindSupplier> GetBySupplierIdAsync(int supplierId);
+        Task<SupplierEntity> GetBySupplierIdAsync(int supplierId);
 
         Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> companiesNames);
     }

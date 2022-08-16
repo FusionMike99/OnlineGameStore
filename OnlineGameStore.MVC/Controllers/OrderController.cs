@@ -186,8 +186,8 @@ namespace OnlineGameStore.MVC.Controllers
         {
             var shippers = await _shipperService.GetAllShippersAsync();
 
-            shipOrderViewModel.Shippers = new SelectList(shippers, nameof(NorthwindShipper.CompanyName),
-                nameof(NorthwindShipper.CompanyName));
+            shipOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
+                nameof(ShipperEntity.CompanyName));
         }
     }
 }

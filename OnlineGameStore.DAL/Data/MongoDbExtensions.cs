@@ -13,12 +13,12 @@ namespace OnlineGameStore.DAL.Data
         {
             CollectionNames = new Dictionary<Type, string>
             {
-                [typeof(NorthwindCategory)] = "categories",
-                [typeof(NorthwindOrderDetail)] = "order-details",
-                [typeof(NorthwindOrder)] = "orders",
-                [typeof(NorthwindProduct)] = "products",
-                [typeof(NorthwindShipper)] = "shippers",
-                [typeof(NorthwindSupplier)] = "suppliers"
+                [typeof(CategoryEntity)] = "categories",
+                [typeof(OrderDetailMongoDbEntity)] = "order-details",
+                [typeof(OrderMongoDbEntity)] = "orders",
+                [typeof(ProductEntity)] = "products",
+                [typeof(ShipperEntity)] = "shippers",
+                [typeof(SupplierEntity)] = "suppliers"
             };
         }
 

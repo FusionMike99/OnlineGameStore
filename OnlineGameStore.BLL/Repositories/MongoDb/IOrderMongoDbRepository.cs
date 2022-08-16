@@ -5,8 +5,8 @@ using OnlineGameStore.BLL.Models;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface IOrderMongoDbRepository : IMongoDbRepository<NorthwindOrder>
+    public interface IOrderMongoDbRepository : IMongoDbRepository<OrderMongoDbEntity>
     {
-        Task<IEnumerable<NorthwindOrder>> GetOrdersAsync(FilterOrderModel filterOrderModel = null);
+        Task<IEnumerable<OrderMongoDbEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null);
     }
 }

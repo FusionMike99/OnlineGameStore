@@ -104,7 +104,7 @@ namespace OnlineGameStore.DAL.Repositories
         }
         
         private IEnumerable<PublisherModel> UnionPublishersSuppliers(IEnumerable<PublisherEntity> publishers,
-            IEnumerable<NorthwindSupplier> suppliers)
+            IEnumerable<SupplierEntity> suppliers)
         {
             var mappedPublishers = _mapper.Map<IEnumerable<PublisherModel>>(publishers);
             var mappedProducts = _mapper.Map<IEnumerable<PublisherModel>>(suppliers);

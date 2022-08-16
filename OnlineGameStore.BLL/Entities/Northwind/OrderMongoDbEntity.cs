@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace OnlineGameStore.BLL.Entities.Northwind
 {
-    public class NorthwindOrder : MongoBaseEntity
+    public class OrderMongoDbEntity : MongoBaseEntity
     {
         [BsonElement("OrderID")]
         public int OrderId { get; set; }
@@ -38,9 +38,9 @@ namespace OnlineGameStore.BLL.Entities.Northwind
         public string ShipCountry { get; set; }
         
         [BsonIgnore]
-        public IEnumerable<NorthwindOrderDetail> OrderDetails { get; set; }
+        public IEnumerable<OrderDetailMongoDbEntity> OrderDetails { get; set; }
         
         [BsonIgnore]
-        public NorthwindShipper Shipper { get; set; }
+        public ShipperEntity Shipper { get; set; }
     }
 }

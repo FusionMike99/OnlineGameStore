@@ -172,7 +172,7 @@ namespace OnlineGameStore.DAL.Repositories
             }
             else
             {
-                var product = _mapper.Map<NorthwindProduct>(gameModel);
+                var product = _mapper.Map<ProductEntity>(gameModel);
                 await _productMongoDbRepository.UpdateAsync(product);
             }
         }
@@ -188,7 +188,7 @@ namespace OnlineGameStore.DAL.Repositories
             }
             else
             {
-                var product = _mapper.Map<NorthwindProduct>(gameModel);
+                var product = _mapper.Map<ProductEntity>(gameModel);
                 _productMongoDbRepository.UpdateAsync(product);
             }
         }
@@ -211,7 +211,7 @@ namespace OnlineGameStore.DAL.Repositories
             }
         }
 
-        private async Task<IEnumerable<NorthwindProduct>> GetNorthwindProducts(
+        private async Task<IEnumerable<ProductEntity>> GetNorthwindProducts(
             SortFilterGameModel sortFilterModel = null)
         {
             var products = await _productMongoDbRepository.GetAllByFilterAsync(sortFilterModel);
@@ -221,7 +221,7 @@ namespace OnlineGameStore.DAL.Repositories
         }
 
         private IEnumerable<GameModel> UnionGamesProducts(IEnumerable<GameEntity> games,
-            IEnumerable<NorthwindProduct> products)
+            IEnumerable<ProductEntity> products)
         {
             var mappedGames = _mapper.Map<IEnumerable<GameModel>>(games);
             var mappedProducts = _mapper.Map<IEnumerable<GameModel>>(products);

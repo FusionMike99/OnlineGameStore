@@ -2,7 +2,7 @@
 
 namespace OnlineGameStore.BLL.Entities.Northwind
 {
-    public class NorthwindCategory : MongoBaseEntity
+    public class CategoryEntity : MongoBaseEntity
     {
         [BsonElement("CategoryID")]
         public int CategoryId { get; set; }

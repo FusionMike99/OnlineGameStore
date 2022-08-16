@@ -11,7 +11,7 @@ using OnlineGameStore.BLL.Repositories.MongoDb;
 
 namespace OnlineGameStore.DAL.Repositories.Northwind
 {
-    public class CategoryMongoDbRepository : MongoDbRepository<NorthwindCategory>,
+    public class CategoryMongoDbRepository : MongoDbRepository<CategoryEntity>,
         ICategoryMongoDbRepository
     {
         public CategoryMongoDbRepository(IMongoDatabase database, ILoggerFactory loggerFactory) : base(database, loggerFactory)
@@ -20,7 +20,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames)
         {
-            Expression<Func<NorthwindCategory, bool>> predicate = c => categoriesNames.Contains(c.Name);
+            Expression<Func<CategoryEntity, bool>> predicate = c => categoriesNames.Contains(c.Name);
             var categoryIds = await Query.Where(predicate)
                 .Select(c => c.Id.ToString())
                 .ToListAsync();
@@ -28,9 +28,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             return categoryIds;
         }
 
-        public async Task<NorthwindCategory> GetByCategoryIdAsync(int categoryId)
+        public async Task<CategoryEntity> GetByCategoryIdAsync(int categoryId)
         {
-            Expression<Func<NorthwindCategory, bool>> predicate = c => c.CategoryId == categoryId;
+            Expression<Func<CategoryEntity, bool>> predicate = c => c.CategoryId == categoryId;
             var category = await Query.FirstOrDefaultAsync(predicate);
 
             return category;

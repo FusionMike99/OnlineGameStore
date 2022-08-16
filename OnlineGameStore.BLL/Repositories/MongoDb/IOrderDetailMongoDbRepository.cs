@@ -4,8 +4,8 @@ using OnlineGameStore.BLL.Entities.Northwind;
 
 namespace OnlineGameStore.BLL.Repositories.MongoDb
 {
-    public interface IOrderDetailMongoDbRepository : IMongoDbRepository<NorthwindOrderDetail>
+    public interface IOrderDetailMongoDbRepository : IMongoDbRepository<OrderDetailMongoDbEntity>
     {
-        Task<IEnumerable<NorthwindOrderDetail>> GetManyByOrderIdAsync(int orderId);
+        Task<IEnumerable<OrderDetailMongoDbEntity>> GetManyByOrderIdAsync(int orderId);
     }
 }
