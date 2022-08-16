@@ -17,6 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\OnlineGameStore.BLL\OnlineGameStore.BLL.csproj" />
+        <ProjectReference Include="..\OnlineGameStore.DAL.Abstractions\OnlineGameStore.DAL.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

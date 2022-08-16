@@ -3,8 +3,8 @@ using System.Text;
 using System.Text.Json;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods

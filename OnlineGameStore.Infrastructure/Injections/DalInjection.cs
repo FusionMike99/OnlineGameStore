@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.MongoDb;
-using OnlineGameStore.BLL.Repositories.SqlServer;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.DAL.Data;
 using OnlineGameStore.DAL.Repositories;
-using OnlineGameStore.DAL.Repositories.GameStore;
-using OnlineGameStore.DAL.Repositories.Northwind;
+using OnlineGameStore.DAL.Repositories.MongoDb;
+using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
+using OnlineGameStore.DAL.Repositories.SqlServer;
+using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 
 namespace OnlineGameStore.Infrastructure.Injections
 {

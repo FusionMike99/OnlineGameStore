@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 

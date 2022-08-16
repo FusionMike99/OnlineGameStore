@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Enums;
+using OnlineGameStore.DomainModels.Enums;
 
 namespace OnlineGameStore.MVC.Models
 {

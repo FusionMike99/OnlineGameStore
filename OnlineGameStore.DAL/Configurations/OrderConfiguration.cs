@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {

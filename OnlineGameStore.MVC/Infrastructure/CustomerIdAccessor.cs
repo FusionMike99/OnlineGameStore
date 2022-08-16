@@ -1,5 +1,5 @@
 ﻿using System;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DomainModels;
 
 namespace OnlineGameStore.MVC.Infrastructure
 {

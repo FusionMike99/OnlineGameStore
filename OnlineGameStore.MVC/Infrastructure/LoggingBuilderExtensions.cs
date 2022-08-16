@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
-using OnlineGameStore.DAL.Repositories.GameStore;
-using OnlineGameStore.DAL.Repositories.Northwind;
+using OnlineGameStore.DAL.Repositories.MongoDb;
+using OnlineGameStore.DAL.Repositories.SqlServer;
 using Serilog;
 using Serilog.Filters;
 

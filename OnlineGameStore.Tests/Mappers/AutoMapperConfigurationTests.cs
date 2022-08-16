@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoMapper;
-using OnlineGameStore.BLL.Mapper;
+using OnlineGameStore.DAL.Mapper;
 using OnlineGameStore.MVC.Mapper;
 using Xunit;
 

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -40,7 +39,7 @@ namespace OnlineGameStore.BLL.Services
         public async Task<CommentModel> GetCommentByIdAsync(Guid commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId,
-                includeProperties: $"{nameof(CommentEntity.Replies)}");
+                includeProperties: $"{nameof(CommentModel.Replies)}");
 
             return comment;
         }
@@ -48,7 +47,7 @@ namespace OnlineGameStore.BLL.Services
         public async Task<IEnumerable<CommentModel>> GetAllCommentsByGameKeyAsync(string gameKey)
         {
             var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey,
-                includeProperties: $"{nameof(CommentEntity.Replies)}");
+                includeProperties: $"{nameof(CommentModel.Replies)}");
 
             var parentComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
 
@@ -68,13 +67,8 @@ namespace OnlineGameStore.BLL.Services
 
             if (comment == null)
             {
-                var exception = new InvalidOperationException("Comment has not been found");
-
-                _logger.LogError(exception, @"Service: {Service}; Method: {Method}. 
-                    Deleting comment with id {Id} unsuccessfully", nameof(CommentService), nameof(DeleteCommentAsync),
-                    commentId);
-
-                throw exception;
+                _logger.LogError("Deleting comment with id {Id} unsuccessfully", commentId);
+                throw new InvalidOperationException("Comment has not been found");
             }
 
             await _commentRepository.DeleteAsync(comment);

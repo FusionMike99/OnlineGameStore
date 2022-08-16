@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Data
 {

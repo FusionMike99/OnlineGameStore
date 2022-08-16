@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Driver;
-using OnlineGameStore.BLL.Entities.Northwind;
+using OnlineGameStore.DAL.Entities.Northwind;
 
 namespace OnlineGameStore.DAL.Data
 {

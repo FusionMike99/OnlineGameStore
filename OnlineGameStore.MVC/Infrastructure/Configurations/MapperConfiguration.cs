@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using OnlineGameStore.BLL.Mapper;
+using OnlineGameStore.DAL.Mapper;
 using OnlineGameStore.MVC.Mapper;
 
 namespace OnlineGameStore.MVC.Infrastructure.Configurations

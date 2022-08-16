@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DomainModels.Models;
 
 namespace OnlineGameStore.DAL.Utils
 {

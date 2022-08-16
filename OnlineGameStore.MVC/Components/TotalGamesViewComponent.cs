@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 
 namespace OnlineGameStore.MVC.Components
 {

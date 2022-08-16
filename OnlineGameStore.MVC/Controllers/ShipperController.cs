@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers

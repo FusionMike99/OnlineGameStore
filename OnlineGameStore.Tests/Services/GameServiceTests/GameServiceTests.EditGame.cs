@@ -2,9 +2,9 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -20,7 +20,7 @@ namespace OnlineGameStore.Tests.Services
             GameService sut)
         {
             // Arrange
-            gameRepositoryMock.Setup(x => x.UpdateOrCreateAsync(It.IsAny<GameModel>()));
+            gameRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<GameModel>()));
 
             // Act
             var actualGame = await sut.EditGameAsync(game);
@@ -28,7 +28,7 @@ namespace OnlineGameStore.Tests.Services
             // Assert
             actualGame.Should().BeEquivalentTo(game);
 
-            gameRepositoryMock.Verify(x => x.UpdateOrCreateAsync(It.IsAny<GameModel>()), Times.Once);
+            gameRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<GameModel>()), Times.Once);
         }
     }
 }

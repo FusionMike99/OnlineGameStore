@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.MongoDb;
-using OnlineGameStore.BLL.Repositories.SqlServer;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
+using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.DAL.Repositories
 {

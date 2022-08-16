@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods
 {

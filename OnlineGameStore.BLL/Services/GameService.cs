@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -34,20 +34,16 @@ namespace OnlineGameStore.BLL.Services
 
             if (game == null)
             {
-                var exception = new InvalidOperationException("Game has not been found");
-
-                _logger.LogError(exception, @"Service: {Service}; Method: {Method}.
-                    Deleting game with id {GameKey} unsuccessfully", nameof(GameService), nameof(DeleteGameAsync), gameKey);
-
-                throw exception;
+                _logger.LogError("Deleting game with game key {GameKey} unsuccessfully", gameKey);
+                throw new InvalidOperationException("Game has not been found");
             }
 
-            await _gameRepository.DeleteOrCreateAsync(game);
+            await _gameRepository.DeleteAsync(game);
         }
 
         public async Task<GameModel> EditGameAsync(GameModel game)
         {
-            await _gameRepository.UpdateOrCreateAsync(game);
+            await _gameRepository.UpdateAsync(game);
 
             return game;
         }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Utils;
+using OnlineGameStore.DomainModels.Utils;
 
 namespace OnlineGameStore.DAL.Data
 {

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.MongoDb;
-using OnlineGameStore.BLL.Repositories.SqlServer;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DAL.Entities.Northwind;
+using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
+using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
+using OnlineGameStore.DAL.Utils;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.DAL.Repositories
 {
@@ -47,7 +47,9 @@ namespace OnlineGameStore.DAL.Repositories
             gameModel.Id = createdGame.Id;
         }
 
-        public async Task UpdateOrCreateAsync(GameModel gameModel)
+        // Update game in SqlServer
+        // Or create new game in SqlServer when try to update MongoDb's product
+        public async Task UpdateAsync(GameModel gameModel)
         {
             var game = _mapper.Map<GameEntity>(gameModel);
             
@@ -73,7 +75,10 @@ namespace OnlineGameStore.DAL.Repositories
             await UpdateGameQuantity(gameKey, quantity, Operation);
         }
 
-        public async Task DeleteOrCreateAsync(GameModel gameModel)
+        // Delete game in SqlServer
+        // Or create new game in SqlServer when try to delete MongoDb's product
+        // And indicate that new game is deleted
+        public async Task DeleteAsync(GameModel gameModel)
         {
             var game = _mapper.Map<GameEntity>(gameModel);
             

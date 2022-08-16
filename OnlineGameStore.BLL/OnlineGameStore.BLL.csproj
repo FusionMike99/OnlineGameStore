@@ -11,4 +11,9 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OnlineGameStore.DAL.Abstractions\OnlineGameStore.DAL.Abstractions.csproj" />
+      <ProjectReference Include="..\OnlineGameStore.DomainModels\OnlineGameStore.DomainModels.csproj" />
+    </ItemGroup>
+
 </Project>

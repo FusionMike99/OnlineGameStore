@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -47,14 +47,8 @@ namespace OnlineGameStore.BLL.Services
 
             if (platformType == null)
             {
-                var exception = new InvalidOperationException("Platform type has not been found");
-
-                _logger.LogError(exception,
-                    @"Service: {PlatformType}; Method: {Method}.
-                    Deleting platform type with id {PlatformTypeId} unsuccessfully", nameof(PlatformTypeService),
-                    nameof(DeletePlatformTypeAsync), platformTypeId);
-
-                throw exception;
+                _logger.LogError("Deleting platform type with id {PlatformTypeId} unsuccessfully", platformTypeId);
+                throw new InvalidOperationException("Platform type has not been found");;
             }
 
             await _platformTypeRepository.DeleteAsync(platformType);

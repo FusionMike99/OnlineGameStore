@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Repositories.MongoDb;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.DAL.Repositories
 {
