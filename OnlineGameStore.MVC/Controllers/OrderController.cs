@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities.Northwind;
+using OnlineGameStore.DomainModels.Models;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
@@ -38,11 +40,11 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("games/{gameKey}/buy")]
-        public IActionResult BuyProduct([FromRoute] string gameKey)
+        public async Task<IActionResult> BuyProduct([FromRoute] string gameKey)
         {
             const int quantity = 1;
             
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             if (game == null)
             {
@@ -51,26 +53,26 @@ namespace OnlineGameStore.MVC.Controllers
 
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            _orderService.AddToOpenOrder(customerId, game, quantity);
+            await _orderService.AddToOpenOrderAsync(customerId, game, quantity);
 
             return RedirectToAction(nameof(GetBasket));
         }
 
         [HttpGet("basket")]
-        public IActionResult GetBasket()
+        public async Task<IActionResult> GetBasket()
         {
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            var order = _orderService.GetOpenOrder(customerId);
+            var order = await _orderService.GetOpenOrInProcessOrderAsync(customerId);
 
-            var orderViewModel = PrepareOrderViewModel(order, true);
+            var orderViewModel = PrepareOrderViewModel(order, enableModification: true);
 
             return View("Basket", orderViewModel);
         }
         
         [HttpPost("basket/remove/{gameKey}")]
         [ValidateAntiForgeryToken]
-        public IActionResult RemoveFromBasket(string gameKey)
+        public async Task<IActionResult> RemoveFromBasket(string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
             {
@@ -79,17 +81,17 @@ namespace OnlineGameStore.MVC.Controllers
             
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            _orderService.RemoveFromOrder(customerId, gameKey);
+            await _orderService.RemoveFromOrderAsync(customerId, gameKey);
 
             return RedirectToAction(nameof(GetBasket));
         }
         
         [HttpGet("orders/history")]
-        public IActionResult GetOrders(FilterOrderViewModel filterOrderViewModel = null)
+        public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = null)
         {
             var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
             
-            var orders = _orderService.GetOrders(filterOrderModel);
+            var orders = await _orderService.GetOrdersAsync(filterOrderModel);
 
             var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
 
@@ -102,10 +104,10 @@ namespace OnlineGameStore.MVC.Controllers
             return View("Index", orderListViewModel);
         }
         
-        [HttpGet("orders/ship/{orderId:int}")]
-        public IActionResult Ship(int orderId)
+        [HttpGet("orders/ship/{orderId:guid}")]
+        public async Task<IActionResult> Ship(Guid orderId)
         {
-            var order = _orderService.GetOrderById(orderId);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
 
             if (order == null)
             {
@@ -114,77 +116,78 @@ namespace OnlineGameStore.MVC.Controllers
 
             var editOrderViewModel = _mapper.Map<ShipOrderViewModel>(order);
 
-            ConfigureShipOrderViewModel(editOrderViewModel);
+            await ConfigureShipOrderViewModel(editOrderViewModel);
 
             return View(editOrderViewModel);
         }
 
-        [HttpPost("orders/ship/{orderId:int}")]
+        [HttpPost("orders/ship/{orderId:guid}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Ship(int orderId, [FromForm] ShipOrderViewModel order)
+        public async Task<IActionResult> Ship(Guid orderId, [FromForm] ShipOrderViewModel order)
         {
             if (!ModelState.IsValid)
             {
-                ConfigureShipOrderViewModel(order);
+                await ConfigureShipOrderViewModel(order);
 
                 return View(order);
             }
 
             order.Id = orderId;
-            var mappedOrder = _mapper.Map<Order>(order);
+            var mappedOrder = _mapper.Map<OrderModel>(order);
 
-            _orderService.EditOrder(mappedOrder);
+            await _orderService.EditOrderAsync(mappedOrder);
 
             return RedirectToAction(nameof(Make));
         }
 
-        private void ConfigureShipOrderViewModel(ShipOrderViewModel shipOrderViewModel)
-        {
-            shipOrderViewModel.Shippers = new SelectList(_shipperService.GetAllShippers(),
-                nameof(NorthwindShipper.CompanyName),
-                nameof(NorthwindShipper.CompanyName));
-        }
-
         [HttpGet("orders/make")]
-        public IActionResult Make()
+        public async Task<IActionResult> Make()
         {
             var customerId = _customerIdAccessor.GetCustomerId();
 
-            var order = _orderService.ChangeStatusToInProcess(customerId);
+            var order = await _orderService.ChangeStatusToInProcessAsync(customerId);
 
             var orderViewModel = PrepareOrderViewModel(order);
 
             return View(orderViewModel);
         }
 
-        [HttpGet("orders/{orderId:int}/pay")]
-        public IActionResult Pay(int orderId, PaymentMethod paymentMethod)
+        [HttpGet("orders/{orderId:guid}/pay")]
+        public async Task<IActionResult> Pay(Guid orderId, PaymentMethod paymentMethod)
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
 
-            var order = _orderService.GetOrderById(orderId);
+            var order = await _orderService.GetOrderByIdAsync(orderId);
 
             var result = paymentMethodStrategy.PaymentProcess(order);
 
             return result;
         }
 
-        [HttpPost("orders/{orderId:int}/pay")]
+        [HttpPost("orders/{orderId:guid}/pay")]
         [ValidateAntiForgeryToken]
-        public IActionResult Pay([FromRoute] int orderId)
+        public async Task<IActionResult> Pay([FromRoute] Guid orderId)
         {
-            _orderService.ChangeStatusToClosed(orderId);
+            await _orderService.ChangeStatusToClosedAsync(orderId);
 
             return RedirectToAction(nameof(GameController.GetGames), "Game");
         }
 
-        private OrderViewModel PrepareOrderViewModel(Order order, bool enableModification = false)
+        private OrderViewModel PrepareOrderViewModel(OrderModel order, bool enableModification = false)
         {
             var orderViewModel = _mapper.Map<OrderViewModel>(order);
 
             orderViewModel.EnableModification = enableModification;
 
             return orderViewModel;
+        }
+
+        private async Task ConfigureShipOrderViewModel(ShipOrderViewModel shipOrderViewModel)
+        {
+            var shippers = await _shipperService.GetAllShippersAsync();
+
+            shipOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
+                nameof(ShipperEntity.CompanyName));
         }
     }
 }

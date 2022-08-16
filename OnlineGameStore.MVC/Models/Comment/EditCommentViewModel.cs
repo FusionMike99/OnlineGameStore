@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineGameStore.MVC.Models
 {
     public class EditCommentViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         [Required]
         public string Name { get; set; }
@@ -19,9 +20,9 @@ namespace OnlineGameStore.MVC.Models
         public bool IsQuoted { get; set; }
         
         [UIHint("HiddenInput")]
-        public int GameId { get; set; }
+        public Guid GameId { get; set; }
 
         [UIHint("HiddenInput")]
-        public int? ReplyToId { get; set; }
+        public Guid? ReplyToId { get; set; }
     }
 }

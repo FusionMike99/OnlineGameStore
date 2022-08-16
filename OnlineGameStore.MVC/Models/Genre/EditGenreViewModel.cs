@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.MVC.Infrastructure;
@@ -8,7 +9,7 @@ namespace OnlineGameStore.MVC.Models
     public class EditGenreViewModel
     {
         [UIHint("HiddenInput")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [BindProperty(BinderType = typeof(TrimmingModelBinder))]
@@ -19,7 +20,7 @@ namespace OnlineGameStore.MVC.Models
         public string Description { get; set; }
 
         [Display(Name = "Parent genre")]
-        public int? SelectedParentGenre { get; set; }
+        public Guid? SelectedParentGenre { get; set; }
 
         public SelectList Genres { get; set; }
     }

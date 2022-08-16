@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,25 +14,21 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void PlatformTypeService_EditPlatformType_ReturnsPlatformType(
-            PlatformType platformType,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task PlatformTypeService_EditPlatformType_ReturnsPlatformType(
+            PlatformTypeModel platformType,
+            [Frozen] Mock<IPlatformTypeRepository> platformTypeRepositoryMock,
             PlatformTypeService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.PlatformTypes.Update(It.IsAny<PlatformType>(),
-                    It.IsAny<Expression<Func<PlatformType,bool>>>()))
-                .Returns(platformType);
+            platformTypeRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<PlatformTypeModel>()));
 
             // Act
-            var actualPlatformType = sut.EditPlatformType(platformType);
+            var actualPlatformType = await sut.EditPlatformTypeAsync(platformType);
 
             // Assert
             actualPlatformType.Should().BeEquivalentTo(platformType);
 
-            mockUnitOfWork.Verify(x => x.PlatformTypes.Update(It.IsAny<PlatformType>(),
-                It.IsAny<Expression<Func<PlatformType,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            platformTypeRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<PlatformTypeModel>()), Times.Once);
         }
     }
 }

@@ -1,160 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.BLL.Utils;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
     public class PublisherService : IPublisherService
     {
         private readonly ILogger<PublisherService> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindUnitOfWork _northwindUnitOfWork;
-        private readonly INorthwindLogService _logService;
-        private readonly IMapper _mapper;
+        private readonly IPublisherRepository _publisherRepository;
 
         public PublisherService(ILogger<PublisherService> logger,
-            IUnitOfWork unitOfWork,
-            INorthwindUnitOfWork northwindUnitOfWork,
-            INorthwindLogService logService,
-            IMapper mapper)
+            IPublisherRepository publisherRepository)
         {
             _logger = logger;
-            _unitOfWork = unitOfWork;
-            _northwindUnitOfWork = northwindUnitOfWork;
-            _logService = logService;
-            _mapper = mapper;
+            _publisherRepository = publisherRepository;
         }
 
-        public bool CheckCompanyNameForUnique(int publisherId, string companyName)
+        public async Task<bool> CheckCompanyNameForUniqueAsync(Guid publisherId, string companyName)
         {
-            var publisher = _unitOfWork.Publishers.GetSingle(g => g.CompanyName == companyName, true);
+            var publisher = await _publisherRepository.GetByNameIncludeDeletedAsync(companyName);
 
             return publisher != null && publisher.Id != publisherId;
         }
 
-        public Publisher CreatePublisher(Publisher publisher)
+        public async Task<PublisherModel> CreatePublisherAsync(PublisherModel publisher)
         {
-            var createdPublisher = _unitOfWork.Publishers.Create(publisher);
-            _unitOfWork.Commit();
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(CreatePublisher)}.
-                    Creating publisher with id {createdPublisher.Id} successfully", createdPublisher);
-            
-            _logService.LogCreating(createdPublisher);
-
-            return createdPublisher;
-        }
-
-        public void DeletePublisher(int publisherId)
-        {
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.Id == publisherId);
-
-            if (publisher == null)
-            {
-                var exception = new InvalidOperationException("Publisher has not been found");
-
-                _logger.LogError(exception, $@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
-                    Deleting publisher with id {publisherId} unsuccessfully", publisherId);
-
-                throw exception;
-            }
-
-            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
-            {
-                throw new InvalidOperationException("You cannot delete Northwind suppliers");
-            }
-            
-            _unitOfWork.Publishers.Delete(publisher);
-            _unitOfWork.Commit();
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(DeletePublisher)}.
-                    Deleting publisher with id {publisherId} successfully", publisher);
-            
-            _logService.LogDeleting(publisher);
-        }
-
-        public Publisher EditPublisher(string companyName, Publisher publisher)
-        {
-            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
-            {
-                throw new InvalidOperationException("You cannot edit Northwind suppliers");
-            }
-
-            var oldPublisher = GetPublisherByCompanyName(companyName);
-
-            var editedPublisher = _unitOfWork.Publishers.Update(publisher);
-            _unitOfWork.Commit();
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(EditPublisher)}.
-                    Editing publisher with id {editedPublisher.Id} successfully", editedPublisher);
-            
-            _logService.LogUpdating(oldPublisher, editedPublisher);
-
-            return editedPublisher;
-        }
-
-        public IEnumerable<int> GetSuppliersIdsByNames(IEnumerable<string> companiesNames)
-        {
-            var suppliersIds = _northwindUnitOfWork.Suppliers
-                .GetMany(s => companiesNames.Contains(s.CompanyName))
-                .Select(s => s.SupplierId);
-
-            return suppliersIds;
-        }
-
-        public IEnumerable<Publisher> GetAllPublishers()
-        {
-            var publishers = _unitOfWork.Publishers.GetMany();
-
-            var suppliers = _northwindUnitOfWork.Suppliers.GetMany();
-
-            var unionPublishersSuppliers = UnionPublishersSuppliers(publishers, suppliers);
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetAllPublishers)}.
-                    Receiving publishers successfully", unionPublishersSuppliers);
-
-            return unionPublishersSuppliers;
-        }
-
-        public Publisher GetPublisherByCompanyName(string companyName)
-        {
-            var publisher = _unitOfWork.Publishers.GetSingle(p => p.CompanyName == companyName);
-            
-            if (publisher == null)
-            {
-                var supplier = _northwindUnitOfWork.Suppliers.GetFirst(p => p.CompanyName == companyName);
-
-                if (supplier != null)
-                {
-                    publisher = _mapper.Map<Publisher>(supplier);
-                    publisher.DatabaseEntity = DatabaseEntity.Northwind;
-                }
-            }
-
-            _logger.LogDebug($@"Class: {nameof(PublisherService)}; Method: {nameof(GetPublisherByCompanyName)}.
-                    Receiving publisher with company name {companyName} successfully", publisher);
+            await _publisherRepository.CreateAsync(publisher);
 
             return publisher;
         }
-        
-        private IEnumerable<Publisher> UnionPublishersSuppliers(IEnumerable<Publisher> publishers,
-            IEnumerable<NorthwindSupplier> suppliers)
+
+        public async Task DeletePublisherAsync(Guid publisherId)
         {
-            var mappedProducts = _mapper.Map<List<Publisher>>(suppliers);
+            var publisher = await _publisherRepository.GetByIdAsync(publisherId);
+
+            if (publisher == null)
+            {
+                _logger.LogError("Deleting publisher with id {PublisherId} unsuccessfully", publisherId);
+                throw new InvalidOperationException("Publisher has not been found");
+            }
+
+            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
+            {
+                _logger.LogError("Deleting supplier from Northwind is prohibited");
+                throw new InvalidOperationException("You cannot delete Northwind suppliers");
+            }
             
-            mappedProducts.ForEach(p => p.DatabaseEntity = DatabaseEntity.Northwind);
+            await _publisherRepository.DeleteAsync(publisher);
+        }
 
-            var result = publishers.Concat(mappedProducts).DistinctBy(g => g.CompanyName).ToList();
+        public async Task<PublisherModel> EditPublisherAsync(PublisherModel publisher)
+        {
+            if (publisher.DatabaseEntity is DatabaseEntity.Northwind)
+            {
+                _logger.LogError("Editing supplier from Northwind is prohibited");
+                throw new InvalidOperationException("You cannot edit Northwind suppliers");
+            }
 
-            return result;
+            await _publisherRepository.UpdateAsync(publisher);
+
+            return publisher;
+        }
+
+        public async Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames)
+        {
+            return await _publisherRepository.GetSuppliersIdsByNamesAsync(companiesNames);
+        }
+
+        public async Task<IEnumerable<PublisherModel>> GetAllPublishersAsync()
+        {
+            var publishers = await _publisherRepository.GetAllAsync();
+
+            return publishers;
+        }
+
+        public async Task<PublisherModel> GetPublisherByCompanyNameAsync(string companyName)
+        {
+            var publisher = await _publisherRepository.GetByNameAsync(companyName);
+
+            return publisher;
         }
     }
 }

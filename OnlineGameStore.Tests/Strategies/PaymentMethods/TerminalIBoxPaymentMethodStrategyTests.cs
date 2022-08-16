@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
 using OnlineGameStore.Tests.Helpers;
@@ -13,7 +13,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
         [Theory]
         [AutoMoqData]
         public void ProcessPayment_ReturnsViewResult(
-            Order order,
+            OrderModel order,
             TerminalIBoxPaymentMethodStrategy sut)
         {
             // Act
@@ -22,7 +22,7 @@ namespace OnlineGameStore.Tests.Strategies.PaymentMethods
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<OrderViewModel>()
-                .Which.Id.Should().Be(order.Id);
+                .Which.Id.Should().Be(order.Id.ToString());
         }
     }
 }

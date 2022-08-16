@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -16,24 +17,24 @@ namespace OnlineGameStore.Tests.Controllers.ShipperControllerTests
     {
         [Theory]
         [AutoMoqData]
-        public void GetShippers_ReturnsViewResult(
-            List<NorthwindShipper> shippers,
+        public async Task GetShippers_ReturnsViewResult(
+            List<ShipperModel> shippers,
             [Frozen] Mock<IShipperService> mockShipperService,
             ShipperController sut)
         {
             // Arrange
-            mockShipperService.Setup(x => x.GetAllShippers())
-                .Returns(shippers);
+            mockShipperService.Setup(x => x.GetAllShippersAsync())
+                .ReturnsAsync(shippers);
 
             // Act
-            var result = sut.GetShippers();
+            var result = await sut.GetShippers();
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<IEnumerable<ShipperViewModel>>()
                 .Which.Should().HaveSameCount(shippers);
 
-            mockShipperService.Verify(x => x.GetAllShippers(), Times.Once);
+            mockShipperService.Verify(x => x.GetAllShippersAsync(), Times.Once);
         }
     }
 }

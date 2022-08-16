@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -17,8 +17,7 @@ namespace OnlineGameStore.BLL.Services
         {
             var message = $"User {userName} is banned for a {banPeriod}";
             
-            _logger.LogDebug($@"Class: {nameof(UserService)}; Method: {nameof(BanUser)}.
-                    Banning user with user name {userName} with period {banPeriod} successfully",
+            _logger.LogDebug("Banning user with user name {UserName} with period {BanPeriod} successfully",
                 userName, banPeriod);
 
             return message;

@@ -1,9 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
@@ -14,23 +15,23 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void Download_ReturnsFileContentResult_WhenGameKeyHasValue(
-            Game game,
+        public async Task Download_ReturnsFileContentResult_WhenGameKeyHasValue(
+            GameModel game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
             // Act
-            var result = sut.Download(game.Key);
+            var result = await sut.Download(game.Key);
 
             // Assert
             result.Should().BeOfType<FileContentResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }
@@ -39,12 +40,12 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void Download_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
+        public async Task Download_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
             string gameKey,
             GameController sut)
         {
             // Act
-            var result = sut.Download(gameKey);
+            var result = await sut.Download(gameKey);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -52,24 +53,24 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void Download_ReturnsNotFoundResult_WhenGameIsNotFound(
-            Game game,
+        public async Task Download_ReturnsNotFoundResult_WhenGameIsNotFound(
+            GameModel game,
             string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
             // Act
-            var result = sut.Download(gameKey);
+            var result = await sut.Download(gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }

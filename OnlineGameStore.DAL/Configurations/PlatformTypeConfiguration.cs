@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Configurations
 {
-    internal class PlatformTypeConfiguration : IEntityTypeConfiguration<PlatformType>
+    internal class PlatformTypeConfiguration : IEntityTypeConfiguration<PlatformTypeEntity>
     {
-        public void Configure(EntityTypeBuilder<PlatformType> builder)
+        public void Configure(EntityTypeBuilder<PlatformTypeEntity> builder)
         {
             builder.HasKey(m => m.Id);
+            
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
 
             builder.Property(pt => pt.Type)
                 .IsRequired();

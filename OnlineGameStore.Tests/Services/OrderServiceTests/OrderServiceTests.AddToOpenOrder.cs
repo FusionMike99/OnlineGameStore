@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -16,81 +13,22 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void OrderService_AddToOpenOrder_IncreaseQuantity_WhenGameIsAlreadyAdded(
-            Game game,
+        public async Task OrderService_AddToOpenOrder_IncreaseQuantity_WhenGameIsAlreadyAdded(
+            OrderModel order,
+            GameModel game,
             short quantity,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IOrderRepository> orderRepositoryMock,
             OrderService sut)
         {
             // Arrange
-            var order = GetTestOrder(game);
-
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()));
-
-            var arrangedOrderDetail = order.OrderDetails.First();
-
-            var newQuantity = (short)(arrangedOrderDetail.Quantity + quantity);
-                
-            var expectedQuantity = game.UnitsInStock - newQuantity >= 0 
-                ? newQuantity : game.UnitsInStock;
+            orderRepositoryMock.Setup(x => x.AddProductToOrderAsync(order.CustomerId, game, quantity));
 
             // Act
-            sut.AddToOpenOrder(order.CustomerId, game, quantity);
+            await sut.AddToOpenOrderAsync(order.CustomerId, game, quantity);
 
             // Assert
-            var resultOrderDetail = order.OrderDetails.First();
-            resultOrderDetail.Quantity.Should().Be(expectedQuantity);
-
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
+            orderRepositoryMock.Verify(x => x.AddProductToOrderAsync(order.CustomerId, game, quantity),
                 Times.Once);
-
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-        }
-
-        [Theory]
-        [AutoMoqData]
-        public void OrderService_AddToOpenOrder_AddGame_WhenGameIsNotAlreadyAdded(
-            Game game1,
-            Game game2,
-            short quantity,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            OrderService sut)
-        {
-            // Arrange
-            var order = GetTestOrder(game1);
-
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()));
-
-            // Act
-            sut.AddToOpenOrder(order.CustomerId, game2, quantity);
-
-            // Assert
-            order.OrderDetails.Should().HaveCount(2);
-
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
         }
     }
 }

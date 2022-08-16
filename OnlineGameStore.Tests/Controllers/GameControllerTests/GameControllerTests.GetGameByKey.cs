@@ -1,9 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Controllers;
 using OnlineGameStore.MVC.Models;
 using OnlineGameStore.Tests.Helpers;
@@ -15,25 +16,25 @@ namespace OnlineGameStore.Tests.Controllers
     {
         [Theory]
         [AutoMoqData]
-        public void GetGameByKey_ReturnsViewResult_WhenGameKeyHasValue(
-            Game game,
+        public async Task GetGameByKey_ReturnsViewResult_WhenGameKeyHasValue(
+            GameModel game,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
             // Act
-            var result = sut.GetGameByKey(game.Key);
+            var result = await sut.GetGameByKey(game.Key);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<GameViewModel>()
                 .Which.Id.Should().Be(game.Id);
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }
@@ -42,12 +43,12 @@ namespace OnlineGameStore.Tests.Controllers
         [InlineAutoMoqData("")]
         [InlineAutoMoqData(" ")]
         [InlineAutoMoqData(null)]
-        public void GetGameByKey_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
+        public async Task GetGameByKey_ReturnsBadRequestResult_WhenGameKeyHasNotValue(
             string gameKey,
             GameController sut)
         {
             // Act
-            var result = sut.GetGameByKey(gameKey);
+            var result = await sut.GetGameByKey(gameKey);
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();
@@ -55,24 +56,24 @@ namespace OnlineGameStore.Tests.Controllers
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void GetGameByKey_ReturnsNotFoundResult_WhenGameIsNotFound(
-            Game game,
+        public async Task GetGameByKey_ReturnsNotFoundResult_WhenGameIsNotFound(
+            GameModel game,
             string gameKey,
             [Frozen] Mock<IGameService> mockGameService,
             GameController sut)
         {
             // Arrange
-            mockGameService.Setup(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Setup(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                     It.IsAny<bool>()))
-                .Returns(game);
+                .ReturnsAsync(game);
 
             // Act
-            var result = sut.GetGameByKey(gameKey);
+            var result = await sut.GetGameByKey(gameKey);
 
             // Assert
             result.Should().BeOfType<NotFoundResult>();
 
-            mockGameService.Verify(x => x.GetGameByKey(It.IsAny<string>(),
+            mockGameService.Verify(x => x.GetGameByKeyAsync(It.IsAny<string>(),
                 It.IsAny<bool>()),
                 Times.Once);
         }

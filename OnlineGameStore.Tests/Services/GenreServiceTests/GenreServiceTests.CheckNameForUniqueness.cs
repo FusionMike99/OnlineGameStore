@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -15,89 +15,65 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void CheckNameForUniqueness_ReturnsTrue_WhenGenreIsNotNullAndIdIsNotSame(
-            Genre genre,
-            int id,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckNameForUniqueness_ReturnsTrue_WhenGenreIsNotNullAndIdIsNotSame(
+            GenreModel genre,
+            Guid id,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(genre);
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(genre);
 
             // Act
-            var actualResult = sut.CheckNameForUnique(id, genre.Name);
+            var actualResult = await sut.CheckNameForUniqueAsync(id, genre.Name);
 
             // Assert
             actualResult.Should().BeTrue();
 
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
-        public void CheckNameForUniqueness_ReturnsFalse_WhenGenreIsNull(
-            Genre genre,
-            int id,
+        public async Task CheckNameForUniqueness_ReturnsFalse_WhenGenreIsNull(
+            GenreModel genre,
+            Guid id,
             string name,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(genre);
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(genre);
 
             // Act
-            var actualResult = sut.CheckNameForUnique(id, name);
+            var actualResult = await sut.CheckNameForUniqueAsync(id, name);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Theory]
         [AutoMoqData]
-        public void CheckNameForUniqueness_ReturnsFalse_WhenIdIsSame(
-            Genre genre,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task CheckNameForUniqueness_ReturnsFalse_WhenIdIsSame(
+            GenreModel genre,
+            [Frozen] Mock<IGenreRepository> genreRepositoryMock,
             GenreService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(genre);
+            genreRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(genre);
 
             // Act
-            var actualResult = sut.CheckNameForUnique(genre.Id, genre.Name);
+            var actualResult = await sut.CheckNameForUniqueAsync(genre.Id, genre.Name);
 
             // Assert
             actualResult.Should().BeFalse();
 
-            mockUnitOfWork.Verify(x => x.Genres.GetSingle(
-                    It.IsAny<Expression<Func<Genre, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
+            genreRepositoryMock.Verify(x => x.GetByNameAsync(It.IsAny<string>()), Times.Once);
         }
     }
 }

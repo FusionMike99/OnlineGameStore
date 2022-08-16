@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
@@ -23,44 +26,39 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("new")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var editGenreViewModel = new EditGenreViewModel();
 
-            ConfigureEditGenreViewModel(editGenreViewModel);
+            await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
         }
 
         [HttpPost("new")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] EditGenreViewModel genre)
+        public async Task<IActionResult> Create([FromForm] EditGenreViewModel genre)
         {
-            VerifyGenre(genre);
+            await VerifyGenre(genre);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGenreViewModel(genre);
+                await ConfigureEditGenreViewModel(genre);
 
                 return View(genre);
             }
 
-            var mappedGenre = _mapper.Map<Genre>(genre);
+            var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            _genreService.CreateGenre(mappedGenre);
+            await _genreService.CreateGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("update/{genreId:int}")]
-        public IActionResult Update([FromRoute] int? genreId)
+        [HttpGet("update/{genreId:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid genreId)
         {
-            if (!genreId.HasValue)
-            {
-                return BadRequest();
-            }
-
-            var genre = _genreService.GetGenreById(genreId.Value);
+            var genre = await _genreService.GetGenreByIdAsync(genreId);
 
             if (genre == null)
             {
@@ -69,45 +67,40 @@ namespace OnlineGameStore.MVC.Controllers
 
             var editGenreViewModel = _mapper.Map<EditGenreViewModel>(genre);
 
-            ConfigureEditGenreViewModel(editGenreViewModel);
+            await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
         }
 
-        [HttpPost("update/{genreId:int}")]
+        [HttpPost("update/{genreId:guid}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int genreId, [FromForm] EditGenreViewModel genre)
+        public async Task<IActionResult> Update(Guid genreId, [FromForm] EditGenreViewModel genre)
         {
             if (genreId != genre.Id)
             {
                 return NotFound();
             }
             
-            VerifyGenre(genre);
+            await VerifyGenre(genre);
 
             if (!ModelState.IsValid)
             {
-                ConfigureEditGenreViewModel(genre);
+                await ConfigureEditGenreViewModel(genre);
 
                 return View(genre);
             }
 
-            var mappedGenre = _mapper.Map<Genre>(genre);
+            var mappedGenre = _mapper.Map<GenreModel>(genre);
 
-            _genreService.EditGenre(mappedGenre);
+            await _genreService.EditGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        [HttpGet("{genreId:int}")]
-        public IActionResult GetGenreById([FromRoute] int? genreId)
+        [HttpGet("{genreId:guid}")]
+        public async Task<IActionResult> GetGenreById([FromRoute] Guid genreId)
         {
-            if (!genreId.HasValue)
-            {
-                return BadRequest();
-            }
-
-            var genre = _genreService.GetGenreById(genreId.Value);
+            var genre = await _genreService.GetGenreByIdAsync(genreId);
 
             if (genre == null)
             {
@@ -120,9 +113,9 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetGenres()
+        public async Task<IActionResult> GetGenres()
         {
-            var genres = _genreService.GetAllParentGenres();
+            var genres = await _genreService.GetAllParentGenresAsync();
 
             var genresViewModel = _mapper.Map<IEnumerable<GenreViewModel>>(genres);
 
@@ -131,28 +124,23 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("remove")]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove([FromForm] int? id)
+        public async Task<IActionResult> Remove([FromForm] Guid id)
         {
-            if (!id.HasValue)
-            {
-                return BadRequest();
-            }
-
-            _genreService.DeleteGenre(id.Value);
+            await _genreService.DeleteGenreAsync(id);
 
             return RedirectToAction(nameof(GetGenres));
         }
 
-        private void ConfigureEditGenreViewModel(EditGenreViewModel model)
+        private async Task ConfigureEditGenreViewModel(EditGenreViewModel model)
         {
-            model.Genres = new SelectList(_genreService.GetAllWithoutGenre(model.Id),
-                nameof(Genre.Id),
-                nameof(Genre.Name));
+            var genres = await _genreService.GetAllWithoutGenreAsync(model.Id);
+            
+            model.Genres = new SelectList(genres, nameof(GenreEntity.Id), nameof(GenreEntity.Name));
         }
 
-        private void VerifyGenre(EditGenreViewModel genre)
+        private async Task VerifyGenre(EditGenreViewModel genre)
         {
-            var checkResult = _genreService.CheckNameForUnique(genre.Id, genre.Name);
+            var checkResult = await _genreService.CheckNameForUniqueAsync(genre.Id, genre.Name);
 
             if (checkResult)
             {

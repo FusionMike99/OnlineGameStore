@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Enums;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -16,62 +16,48 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [InlineAutoMoqData(DatabaseEntity.GameStore)]
-        public void PublisherService_DeletePublisher_DeletesPublisher(
+        public async Task PublisherService_DeletePublisher_DeletesPublisher(
             DatabaseEntity databaseEntity,
-            Publisher publisher,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            PublisherModel publisher,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
             publisher.DatabaseEntity = databaseEntity;
             
-            mockUnitOfWork
-                .Setup(m => m.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(publisher);
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(publisher);
 
-            mockUnitOfWork.Setup(x => x.Publishers.Delete(It.IsAny<Publisher>()));
+            publisherRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<PublisherModel>()));
 
             // Act
-            sut.DeletePublisher(publisher.Id);
+            await sut.DeletePublisherAsync(publisher.Id);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
-            mockUnitOfWork.Verify(x => x.Publishers.Delete(
-                    It.Is<Publisher>(p => p.CompanyName == publisher.CompanyName && p.Id == publisher.Id)),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            publisherRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<PublisherModel>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null)]
         public void PublisherService_DeletePublisher_ThrowsInvalidOperationExceptionWithNullEntity(
-            Publisher publisher,
-            int publisherId,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            PublisherModel publisher,
+            Guid publisherId,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
-            mockUnitOfWork
-                .Setup(m => m.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(publisher);
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(publisher);
 
             // Act
-            Action actual = () => sut.DeletePublisher(publisherId);
+            Func<Task> actual = async () => await sut.DeletePublisherAsync(publisherId);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
         }
         
@@ -79,29 +65,23 @@ namespace OnlineGameStore.Tests.Services
         [InlineAutoMoqData(DatabaseEntity.Northwind)]
         public void PublisherService_DeletePublisher_ThrowsInvalidOperationExceptionWhenNorthwindDatabase(
             DatabaseEntity databaseEntity,
-            Publisher publisher,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            PublisherModel publisher,
+            [Frozen] Mock<IPublisherRepository> publisherRepositoryMock,
             PublisherService sut)
         {
             // Arrange
             publisher.DatabaseEntity = databaseEntity;
             
-            mockUnitOfWork
-                .Setup(m => m.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>()))
-                .Returns(publisher);
+            publisherRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(publisher);
 
             // Act
-            Action actual = () => sut.DeletePublisher(publisher.Id);
+            Func<Task> actual = async () => await sut.DeletePublisherAsync(publisher.Id);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.Publishers.GetSingle(
-                    It.IsAny<Expression<Func<Publisher, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
+            publisherRepositoryMock.Verify(x => x.GetByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
         }
     }

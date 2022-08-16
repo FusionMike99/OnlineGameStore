@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineGameStore.BLL.Entities;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.MVC.Strategies.PaymentMethods
 {
@@ -7,6 +7,6 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
     {
         PaymentMethod PaymentMethod { get; }
 
-        IActionResult PaymentProcess(Order order);
+        IActionResult PaymentProcess(OrderModel order);
     }
 }

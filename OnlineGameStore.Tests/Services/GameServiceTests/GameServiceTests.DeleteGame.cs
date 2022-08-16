@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Entities.Northwind;
-using OnlineGameStore.BLL.Enums;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -16,103 +14,45 @@ namespace OnlineGameStore.Tests.Services
     public partial class GameServiceTests
     {
         [Theory]
-        [InlineAutoMoqData(DatabaseEntity.GameStore)]
-        public void GameService_DeleteGame_DeletesGame_WhenGameFromGameStore(
-            DatabaseEntity databaseEntity,
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        [AutoMoqData]
+        public async Task GameService_DeleteGame_DeletesGame(
+            GameModel game,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            game.DatabaseEntity = databaseEntity;
-            
-            mockUnitOfWork
-                .Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(), It.IsAny<string[]>()))
-                .Returns(game);
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
-            mockUnitOfWork.Setup(x => x.Games.Delete(It.IsAny<Game>()));
+            gameRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<GameModel>()));
 
             // Act
-            sut.DeleteGame(game.Key);
+            await sut.DeleteGameAsync(game.Key);
 
             // Assert
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Games.Delete(
-                    It.Is<Game>(g => g.Name == game.Name && g.Id == game.Id)),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-        }
-        
-        [Theory]
-        [InlineAutoMoqData(DatabaseEntity.Northwind)]
-        public void GameService_DeleteGame_DeletesGame_WhenGameFromNorthwind(
-            DatabaseEntity databaseEntity,
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            GameService sut)
-        {
-            // Arrange
-            game.DatabaseEntity = databaseEntity;
-            
-            mockUnitOfWork.Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(), It.IsAny<string[]>()))
-                .Returns(game);
-            
-            mockUnitOfWork.Setup(x => x.Games.Create(It.IsAny<Game>()))
-                .Returns(game);
-
-            // Act
-            sut.DeleteGame(game.Key);
-
-            // Assert
-            mockUnitOfWork.Verify(x => x.Games.Create(It.IsAny<Game>()),
-                Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+            gameRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<GameModel>()), Times.Once);
         }
 
         [Theory]
         [InlineAutoMoqData(null, null)]
-        public void GameService_DeleteGame_ThrowsInvalidOperationExceptionWithNullEntity(
-            Game game,
-            NorthwindProduct product,
+        public async Task GameService_DeleteGame_ThrowsInvalidOperationExceptionWithNullEntity(
+            GameModel game,
             string gameKey,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            [Frozen] Mock<INorthwindUnitOfWork> mockNorthwindUnitOfWork,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(m => m.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(game);
-
-            mockNorthwindUnitOfWork.Setup(m => m.Products.GetFirst(
-                    It.IsAny<Expression<Func<NorthwindProduct, bool>>>()))
-                .Returns(product);
+            gameRepositoryMock.Setup(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()))
+                .ReturnsAsync(game);
 
             // Act
-            Action actual = () => sut.DeleteGame(gameKey);
+            Func<Task> actual = async () => await sut.DeleteGameAsync(gameKey);
 
             // Assert
-            actual.Should().Throw<InvalidOperationException>();
+            await actual.Should().ThrowAsync<InvalidOperationException>();
 
-            mockUnitOfWork.Verify(x => x.Games.GetSingle(
-                    It.IsAny<Expression<Func<Game, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()),
-                Times.Once);
-            
-            mockNorthwindUnitOfWork.Verify(x => x.Products.GetFirst(
-                It.IsAny<Expression<Func<NorthwindProduct,bool>>>()),
-                Times.Once);
+            gameRepositoryMock.Verify(x => x.GetByKeyAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
     }
 }

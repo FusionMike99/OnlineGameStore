@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -16,70 +13,20 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void OrderService_RemoveFromOrder_RemoveOrderDetail_WhenPositionIsExist(
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task OrderService_RemoveFromOrder_RemoveOrderDetail_WhenPositionIsExist(
+            Guid customerId,
+            string gameKey,
+            [Frozen] Mock<IOrderRepository> orderRepositoryMock,
             OrderService sut)
         {
             // Arrange
-            var order = GetTestOrder(game);
-
-            var expectedCount = order.OrderDetails.Count - 1;
-
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            mockUnitOfWork.Setup(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()));
-
-            var arrangedOrderDetail = order.OrderDetails.First();
+            orderRepositoryMock.Setup(x => x.RemoveProductFromOrderAsync(customerId, gameKey));
 
             // Act
-            sut.RemoveFromOrder(order.CustomerId, arrangedOrderDetail.GameKey);
+            await sut.RemoveFromOrderAsync(customerId, gameKey);
 
             // Assert
-            order.OrderDetails.Should().HaveCount(expectedCount);
-
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
-                Times.Once());
-            
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
-        }
-        
-        [Theory]
-        [AutoMoqData]
-        public void OrderService_RemoveFromOrder_DoNothing_WhenPositionIsNotExist(
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            OrderService sut)
-        {
-            // Arrange
-            var order = GetTestOrder(game);
-
-            mockUnitOfWork.Setup(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                    It.IsAny<bool>(),
-                    It.IsAny<string[]>()))
-                .Returns(order);
-
-            // Act
-            sut.RemoveFromOrder(order.CustomerId, game.Key + 1);
-
-            // Assert
-            
-            mockUnitOfWork.Verify(x => x.Orders.GetSingle(It.IsAny<Expression<Func<Order, bool>>>(),
-                It.IsAny<bool>(),
-                It.IsAny<string[]>()),
-                Times.Once());
-            
-            mockUnitOfWork.Verify(x => x.Orders.Update(It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order,bool>>>()), Times.Never);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Never);
+            orderRepositoryMock.Verify(x => x.RemoveProductFromOrderAsync(customerId, gameKey), Times.Once());
         }
     }
 }

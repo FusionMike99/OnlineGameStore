@@ -1,9 +1,10 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
 using OnlineGameStore.BLL.Services;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Tests.Helpers;
 using Xunit;
 
@@ -13,23 +14,21 @@ namespace OnlineGameStore.Tests.Services
     {
         [Theory]
         [AutoMoqData]
-        public void GameService_CreateGame_ReturnsGame(
-            Game game,
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+        public async Task GameService_CreateGame_ReturnsGame(
+            GameModel game,
+            [Frozen] Mock<IGameRepository> gameRepositoryMock,
             GameService sut)
         {
             // Arrange
-            mockUnitOfWork.Setup(x => x.Games.Create(It.IsAny<Game>()))
-                .Returns(game);
+            gameRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<GameModel>()));
 
             // Act
-            var actualGame = sut.CreateGame(game);
+            var actualGame = await sut.CreateGameAsync(game);
 
             // Assert
             actualGame.Should().BeEquivalentTo(game);
 
-            mockUnitOfWork.Verify(x => x.Games.Create(It.IsAny<Game>()), Times.Once);
-            mockUnitOfWork.Verify(x => x.Commit(), Times.Once);
+            gameRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<GameModel>()), Times.Once);
         }
     }
 }

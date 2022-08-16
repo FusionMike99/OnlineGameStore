@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.BLL.Repositories;
-using OnlineGameStore.BLL.Services.Contracts;
+using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DAL.Abstractions.Interfaces;
+using OnlineGameStore.DomainModels.Models.General;
 
 namespace OnlineGameStore.BLL.Services
 {
@@ -12,105 +13,63 @@ namespace OnlineGameStore.BLL.Services
     {
         private readonly IGameService _gameService;
         private readonly ILogger<CommentService> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindLogService _logService;
+        private readonly ICommentRepository _commentRepository;
 
         public CommentService(
-            IUnitOfWork unitOfWork,
             IGameService gameService,
             ILogger<CommentService> logger,
-            INorthwindLogService logService)
+            ICommentRepository commentRepository)
         {
-            _unitOfWork = unitOfWork;
             _gameService = gameService;
             _logger = logger;
-            _logService = logService;
+            _commentRepository = commentRepository;
         }
 
-        public Comment LeaveCommentToGame(string gameKey, Comment comment)
+        public async Task<CommentModel> LeaveCommentToGameAsync(string gameKey, CommentModel comment)
         {
-            var game = _gameService.GetGameByKey(gameKey);
+            var game = await _gameService.GetGameByKeyAsync(gameKey);
 
             comment.GameId = game.Id;
 
-            var leavedComment = _unitOfWork.Comments.Create(comment);
-            _unitOfWork.Commit();
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(LeaveCommentToGame)}.
-                    Leaving comment with id {leavedComment.Id} successfully", leavedComment);
-            
-            _logService.LogCreating(comment);
-
-            return leavedComment;
-        }
-
-        public Comment GetCommentById(int commentId)
-        {
-            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId,
-                false,
-                $"{nameof(Comment.Game)}",
-                $"{nameof(Comment.Replies)}");
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetCommentById)}.
-                    Receiving comment with id {commentId} successfully", comment);
+            await _commentRepository.CreateAsync(comment);
 
             return comment;
         }
 
-        public IEnumerable<Comment> GetAllCommentsByGameKey(string gameKey)
+        public async Task<CommentModel> GetCommentByIdAsync(Guid commentId)
         {
-            var comments = _unitOfWork.Comments.GetMany(c => c.Game.Key == gameKey,
-                    true,
-                    null,
-                    null,
-                    null,
-                    $"{nameof(Comment.Game)}",
-                    $"{nameof(Comment.Replies)}");
+            var comment = await _commentRepository.GetByIdAsync(commentId);
+
+            return comment;
+        }
+
+        public async Task<IEnumerable<CommentModel>> GetAllCommentsByGameKeyAsync(string gameKey)
+        {
+            var comments = await _commentRepository.GetAllByGameKeyAsync(gameKey);
 
             var parentComments = comments.Where(c => !c.ReplyToId.HasValue).ToList();
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(GetAllCommentsByGameKey)}.
-                    Receiving comments with game key {gameKey} successfully", parentComments);
 
             return parentComments;
         }
 
-        public Comment EditComment(Comment comment)
+        public async Task<CommentModel> EditCommentAsync(CommentModel comment)
         {
-            var oldComment = GetCommentById(comment.Id);
-            
-            var editedComment = _unitOfWork.Comments.Update(comment);
-            _unitOfWork.Commit();
+            await _commentRepository.UpdateAsync(comment);
 
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(EditComment)}.
-                    Editing comment with id {editedComment.Id} successfully", editedComment);
-            
-            _logService.LogUpdating(oldComment, comment);
-
-            return editedComment;
+            return comment;
         }
 
-        public void DeleteComment(int commentId)
+        public async Task DeleteCommentAsync(Guid commentId)
         {
-            var comment = _unitOfWork.Comments.GetSingle(c => c.Id == commentId);
+            var comment = await _commentRepository.GetByIdAsync(commentId);
 
             if (comment == null)
             {
-                var exception = new InvalidOperationException("Genre has not been found");
-
-                _logger.LogError(exception, $@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
-                    Deleting comment with id {commentId} unsuccessfully", commentId);
-
-                throw exception;
+                _logger.LogError("Deleting comment with id {Id} unsuccessfully", commentId);
+                throw new InvalidOperationException("Comment has not been found");
             }
 
-            _unitOfWork.Comments.Delete(comment);
-            _unitOfWork.Commit();
-
-            _logger.LogDebug($@"Class: {nameof(CommentService)}; Method: {nameof(DeleteComment)}.
-                    Deleting comment with id {commentId} successfully", comment);
-            
-            _logService.LogDeleting(comment);
+            await _commentRepository.DeleteAsync(comment);
         }
     }
 }
