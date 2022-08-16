@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Repositories.Northwind;
 
@@ -18,8 +19,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<NorthwindShipper> GetByShipperIdAsync(int shipperId)
         {
             Expression<Func<NorthwindShipper, bool>> predicate = s => s.ShipperId == shipperId;
+            var shipper = await Query.FirstOrDefaultAsync(predicate);
 
-            return await GetFirst(predicate);
+            return shipper;
         }
     }
 }

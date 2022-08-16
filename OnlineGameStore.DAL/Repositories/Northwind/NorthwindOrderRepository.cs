@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
 using OnlineGameStore.BLL.Repositories.Northwind;
@@ -27,11 +27,10 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<IEnumerable<NorthwindOrder>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
             var predicate = OrderPredicate.GetPredicate<NorthwindOrder>(filterOrderModel);
-            var orders = await GetMany(predicate);
-            var orderList = orders.ToList();
-            orderList.ForEach(SetOrderDetailAndShipper);
+            var orders = await Query.Where(predicate).ToListAsync();
+            orders.ForEach(SetOrderDetailAndShipper);
 
-            return orderList;
+            return orders;
         }
 
         private async void SetOrderDetailAndShipper(NorthwindOrder o)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories.GameStore;
@@ -23,21 +24,23 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             await Context.SaveChangesAsync();
         }
 
-        public async Task<GenreEntity> GetByNameAsync(string name,
-            bool includeDeleted = false,
+        public async Task<GenreEntity> GetByNameAsync(string name, bool includeDeleted = false,
             params string[] includeProperties)
         {
             Expression<Func<GenreEntity, bool>> predicate = g => g.Name == name;
+            var genre = await IncludeProperties(includeDeleted, includeProperties).SingleOrDefaultAsync(predicate);
 
-            return await GetSingle(predicate, includeDeleted, includeProperties);
+            return genre;
         }
 
         public async Task<IEnumerable<GenreEntity>> GetParentGenresAsync(bool includeDeleted = false,
             params string[] includeProperties)
         {
             Expression<Func<GenreEntity, bool>> predicate = g => !g.ParentId.HasValue;
+            var genres = await IncludeProperties(includeDeleted, includeProperties)
+                .Where(predicate).ToListAsync();
 
-            return await GetMany(predicate, includeDeleted: includeDeleted, includeProperties: includeProperties);
+            return genres;
         }
 
         public async Task<IEnumerable<GenreEntity>> GetWithoutGenreAsync(Guid id,
@@ -45,14 +48,17 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             params string[] includeProperties)
         {
             Expression<Func<GenreEntity, bool>> predicate = g => g.Id != id && g.ParentId != id;
+            var genres = await IncludeProperties(includeDeleted, includeProperties)
+                .Where(predicate).ToListAsync();
 
-            return await GetMany(predicate, includeDeleted: includeDeleted, includeProperties: includeProperties);
+            return genres;
         }
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> genresNames)
         {
-            var genres = await GetMany(g => genresNames.Contains(g.Name));
-            var genreIds = genres.Select(g => g.Id.ToString());
+            Expression<Func<GenreEntity, bool>> predicate = g => genresNames.Contains(g.Name);
+            var genreIds = await IncludeProperties().Where(predicate)
+                .Select(g => g.Id.ToString()).ToListAsync();
 
             return genreIds;
         }

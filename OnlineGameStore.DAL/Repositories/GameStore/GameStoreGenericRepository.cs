@@ -52,8 +52,9 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(bool includeDeleted = false, params string[] includeProperties)
         {
-            return await GetMany(includeDeleted: includeDeleted,
-                includeProperties: includeProperties);
+            var foundEntities = await IncludeProperties(includeDeleted, includeProperties).ToListAsync();
+            
+            return foundEntities;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
@@ -86,11 +87,13 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public virtual async Task<TEntity> GetByIdAsync(Guid id, bool includeDeleted = false, params string[] includeProperties)
         {
             Expression<Func<TEntity,bool>> predicate = m => m.Id == id;
+            var foundEntity = await IncludeProperties(includeDeleted, includeProperties)
+                .SingleOrDefaultAsync(predicate);
             
-            return await GetSingle(predicate, includeDeleted, includeProperties);
+            return foundEntity;
         }
 
-        protected async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
+        /*protected async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
@@ -115,14 +118,14 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             var foundList = await query.ToListAsync();
             
             return foundList;
-        }
+        }*/
 
-        private IQueryable<TEntity> IncludeProperties(bool includeDeleteEntities = false,
+        protected IQueryable<TEntity> IncludeProperties(bool includeDeleted = false,
             params string[] includeProperties)
         {
             var query = Include(includeProperties);
 
-            if (includeDeleteEntities)
+            if (includeDeleted)
             {
                 query = query.IgnoreQueryFilters();
             }

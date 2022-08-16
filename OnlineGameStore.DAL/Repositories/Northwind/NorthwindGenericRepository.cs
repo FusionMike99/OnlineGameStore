@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -19,39 +17,21 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         where TEntity : MongoBaseEntity
     {
         private readonly IMongoCollection<TEntity> _collection;
+        protected readonly IMongoQueryable<TEntity> Query;
         private readonly ILogger<NorthwindGenericRepository<TEntity>> _logger;
 
         protected NorthwindGenericRepository(IMongoDatabase database, ILoggerFactory loggerFactory)
         {
             _collection = database.GetCollection<TEntity>();
+            Query = _collection.AsQueryable();
             _logger = loggerFactory.CreateLogger<NorthwindGenericRepository<TEntity>>();
-        }
-
-        protected async Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
-        {
-            var query = _collection.AsQueryable();
-            var foundEntity = await query.FirstOrDefaultAsync(predicate);
-
-            return foundEntity;
-        }
-
-        protected async Task<IEnumerable<TEntity>> GetMany(Expression<Func<TEntity, bool>> predicate = null)
-        {
-            var query = _collection.AsQueryable();
-            
-            if (predicate != null)
-            {
-                query = query.Where(predicate);
-            }
-            
-            var foundList = await query.ToListAsync();
-            
-            return foundList;
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await GetMany();
+            var foundList = await Query.ToListAsync();
+
+            return foundList;
         }
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
@@ -59,7 +39,7 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
             var filter = Builders<TEntity>.Filter.Eq(m => m.Id, entity.Id);
             var updateBuilder = Builders<TEntity>.Update;
             var updateDefinitions = new List<UpdateDefinition<TEntity>>();
-            var existEntity = _collection.Find(filter).FirstOrDefault();
+            var existEntity = await _collection.Find(filter).FirstOrDefaultAsync();
             var entityType = entity.GetType();
 
             foreach (var propertyInfo in entityType.GetProperties())

@@ -5,11 +5,10 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Builders.PipelineBuilders;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Pipelines;
-using OnlineGameStore.BLL.Pipelines.Filters.Products;
 using OnlineGameStore.BLL.Repositories.Northwind;
 using OnlineGameStore.BLL.Utils;
 
@@ -30,8 +29,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<NorthwindProduct> GetByKeyAsync(string gameKey)
         {
             Expression<Func<NorthwindProduct, bool>> predicate = p => p.Key == gameKey;
+            var product = await Query.FirstOrDefaultAsync(predicate);
 
-            return await GetFirst(predicate);
+            return product;
         }
 
         public async Task<IEnumerable<NorthwindProduct>> SetGameKeyAndDateAddedAsync(List<NorthwindProduct> products)
@@ -47,8 +47,9 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<IEnumerable<NorthwindProduct>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
             var predicate = await GetNorthwindPredicate(sortFilterModel);
+            var products = await Query.Where(predicate).ToListAsync();
 
-            return await GetMany(predicate);
+            return products;
         }
 
         private async Task SetGameKeyAndDateAddedPerUnitAsync(NorthwindProduct product)

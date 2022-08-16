@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Repositories.Northwind;
 
@@ -21,21 +22,25 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
         public async Task<NorthwindSupplier> GetByNameAsync(string companyName)
         {
             Expression<Func<NorthwindSupplier, bool>> predicate = s => s.CompanyName == companyName;
+            var supplier = await Query.FirstOrDefaultAsync(predicate);
 
-            return await GetFirst(predicate);
+            return supplier;
         }
 
         public async Task<NorthwindSupplier> GetBySupplierIdAsync(int supplierId)
         {
             Expression<Func<NorthwindSupplier, bool>> predicate = c => c.SupplierId == supplierId;
+            var supplier = await Query.FirstOrDefaultAsync(predicate);
 
-            return await GetFirst(predicate);
+            return supplier;
         }
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
-            var suppliers = await GetMany(s => companiesNames.Contains(s.CompanyName));
-            var suppliersIds = suppliers.Select(s => s.Id.ToString());
+            Expression<Func<NorthwindSupplier, bool>> predicate = s => companiesNames.Contains(s.CompanyName);
+            var suppliersIds = await Query.Where(predicate)
+                .Select(s => s.Id.ToString())
+                .ToListAsync();
 
             return suppliersIds;
         }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories.GameStore;
@@ -15,15 +17,15 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         {
         }
 
-        public Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey,
+        public async Task<IEnumerable<CommentEntity>> GetAllByGameKeyAsync(string gameKey,
             bool includeDeleted = false,
             params string[] includeProperties)
         {
             Expression<Func<CommentEntity, bool>> predicate = c => c.Game.Key == gameKey;
+            var comments = await IncludeProperties(includeDeleted, includeProperties)
+                .Where(predicate).ToListAsync();
 
-            return GetMany(predicate: predicate,
-                includeDeleted: includeDeleted,
-                includeProperties: includeProperties);
+            return comments;
         }
     }
 }

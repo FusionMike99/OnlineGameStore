@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Enums;
@@ -24,8 +25,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId
                                                            && o.OrderState <= OrderState.InProgress
                                                            && o.CancelledDate == null;
-            var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
+            var order = await IncludeProperties(includeDeleted: false,
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
 
             if (order != null)
             {
@@ -47,8 +48,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public async Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
             var predicate = OrderPredicate.GetPredicate<OrderEntity>(filterOrderModel);
-            var orders = await GetMany(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
+            var orders = await IncludeProperties(includeDeleted: false,
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").Where(predicate).ToListAsync();
 
             return orders;
         }
@@ -56,8 +57,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState)
         {
             Expression<Func<OrderEntity, bool>> predicate = o => o.OrderState == orderState;
-            var orders = await GetMany(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
+            var orders = await IncludeProperties(includeDeleted: false,
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").Where(predicate).ToListAsync();
 
             return orders;
         }
@@ -125,8 +126,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         public async Task<OrderEntity> GetOrderByIdAsync(Guid orderId)
         {
             Expression<Func<OrderEntity, bool>> predicate = o => o.Id == orderId;
-            var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
+            var order = await IncludeProperties(includeDeleted: false,
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
 
             return order;
         }
@@ -142,8 +143,8 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
         private async Task<OrderEntity> GetOrderByCustomerId(Guid customerId, OrderState orderState = OrderState.Open)
         {
             Expression<Func<OrderEntity, bool>> predicate = o => o.CustomerId == customerId && o.OrderState == orderState;
-            var order = await GetSingle(predicate, includeDeleted: false,
-                includeProperties: $"{nameof(OrderEntity.OrderDetails)}");
+            var order = await IncludeProperties(includeDeleted: false,
+                includeProperties: $"{nameof(OrderEntity.OrderDetails)}").SingleOrDefaultAsync(predicate);
 
             return order;
         }

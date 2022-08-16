@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.BLL.Entities.Northwind;
 using OnlineGameStore.BLL.Repositories.Northwind;
 
@@ -19,17 +20,20 @@ namespace OnlineGameStore.DAL.Repositories.Northwind
 
         public async Task<IEnumerable<string>> GetIdsByNamesAsync(IEnumerable<string> categoriesNames)
         {
-            var categories = await GetMany(c => categoriesNames.Contains(c.Name));
-            var genreIds = categories.Select(c => c.Id.ToString());
+            Expression<Func<NorthwindCategory, bool>> predicate = c => categoriesNames.Contains(c.Name);
+            var categoryIds = await Query.Where(predicate)
+                .Select(c => c.Id.ToString())
+                .ToListAsync();
 
-            return genreIds;
+            return categoryIds;
         }
 
         public async Task<NorthwindCategory> GetByCategoryIdAsync(int categoryId)
         {
             Expression<Func<NorthwindCategory, bool>> predicate = c => c.CategoryId == categoryId;
+            var category = await Query.FirstOrDefaultAsync(predicate);
 
-            return await GetFirst(predicate);
+            return category;
         }
     }
 }

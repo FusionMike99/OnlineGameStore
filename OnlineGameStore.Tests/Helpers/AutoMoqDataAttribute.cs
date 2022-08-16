@@ -35,7 +35,6 @@ namespace OnlineGameStore.Tests.Helpers
                 fixture.Behaviors.Remove(b));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            
             fixture.Register(ObjectId.GenerateNewId);
 
             return fixture;

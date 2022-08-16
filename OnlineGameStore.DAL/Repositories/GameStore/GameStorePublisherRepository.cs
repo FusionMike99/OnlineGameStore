@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Repositories.GameStore;
@@ -19,8 +20,9 @@ namespace OnlineGameStore.DAL.Repositories.GameStore
             params string[] includeProperties)
         {
             Expression<Func<PublisherEntity, bool>> predicate = p => p.CompanyName == companyName;
+            var publisher = await IncludeProperties(includeDeleted, includeProperties).SingleOrDefaultAsync(predicate);
 
-            return await GetSingle(predicate, includeDeleted, includeProperties);
+            return publisher;
         }
     }
 }
