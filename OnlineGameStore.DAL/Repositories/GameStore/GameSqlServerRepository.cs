@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 using OnlineGameStore.BLL.Builders.PipelineBuilders;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models;
-using OnlineGameStore.BLL.Pipelines;
-using OnlineGameStore.BLL.Pipelines.Filters.Games;
 using OnlineGameStore.BLL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Data;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using OnlineGameStore.BLL.Entities;
 
 namespace OnlineGameStore.BLL.Models.General
 {
