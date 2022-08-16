@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using OnlineGameStore.BLL.Entities;
-using OnlineGameStore.Identity.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using OnlineGameStore.BLL.Exceptions;
 using OnlineGameStore.Identity.Models;
+using OnlineGameStore.Identity.Services.Interfaces;
 
 namespace OnlineGameStore.Identity.Services
 {

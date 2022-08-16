@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineGameStore.BLL.Models.General;
 
-namespace OnlineGameStore.Identity.Interfaces.Services
+namespace OnlineGameStore.Identity.Services.Interfaces
 {
     public interface IRoleService
     {

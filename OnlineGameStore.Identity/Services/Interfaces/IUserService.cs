@@ -4,11 +4,11 @@ using OnlineGameStore.BLL.Enums;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.Identity.Models;
 
-namespace OnlineGameStore.Identity.Interfaces.Services
+namespace OnlineGameStore.Identity.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<bool> CreateUserAsync(RegisterModel registerModel);
+        Task CreateUserAsync(RegisterModel registerModel);
 
         Task<UserModel> EditUserAsync(UserModel user);
 

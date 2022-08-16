@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.BLL.Services.Contracts;
-using OnlineGameStore.Identity.Interfaces.Services;
 using OnlineGameStore.Identity.Services;
+using OnlineGameStore.Identity.Services.Interfaces;
 
 namespace OnlineGameStore.Infrastructure.Injections
 {

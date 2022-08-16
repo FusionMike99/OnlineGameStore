@@ -43,7 +43,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
-
             await _platformTypeService.CreatePlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
@@ -81,7 +80,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
-
             await _platformTypeService.EditPlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
@@ -106,7 +104,6 @@ namespace OnlineGameStore.MVC.Controllers
         public async Task<IActionResult> GetPlatformTypes()
         {
             var platformTypes = await _platformTypeService.GetAllPlatformTypesAsync();
-
             var platformTypesViewModel = _mapper.Map<IEnumerable<PlatformTypeViewModel>>(platformTypes);
 
             return View("Index", platformTypesViewModel);

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.BLL.Entities;
 using OnlineGameStore.BLL.Models.General;
-using OnlineGameStore.Identity.Interfaces.Services;
+using OnlineGameStore.Identity.Services.Interfaces;
 
 namespace OnlineGameStore.Identity.Services
 {
