@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OnlineGameStore.BLL.Services;
 using OnlineGameStore.BLL.Services.Interfaces;
-using OnlineGameStore.Identity.Services;
-using OnlineGameStore.Identity.Services.Interfaces;
 
-namespace OnlineGameStore.Infrastructure.Injections
+namespace OnlineGameStore.MVC.DependencyInjections
 {
     public static class BllInjection
     {
@@ -16,7 +14,6 @@ namespace OnlineGameStore.Infrastructure.Injections
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IShipperService, ShipperService>();
         }
     }

@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OnlineGameStore.BLL.Services.Interfaces;
-using OnlineGameStore.Infrastructure.Injections;
+using OnlineGameStore.MVC.DependencyInjections;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Infrastructure.Configurations;
 using OnlineGameStore.MVC.Strategies.PaymentMethods;
@@ -41,7 +41,6 @@ namespace OnlineGameStore.MVC
             services.AddServices();
 
             services.AddScoped<ICustomerIdAccessor, CustomerIdAccessor>();
-
             services.AddHttpContextAccessor();
 
             services.AddAutoMapper(configuration =>
@@ -54,11 +53,11 @@ namespace OnlineGameStore.MVC
 
             services.AddHangfire(configuration => configuration
                 .SetHangfireConfiguration(connectionStrings["GameStore"]));
-
             services.AddHangfireServer();
+            
+            services.AddConfiguredAuthentication();
 
             services.AddLocalization();
-            
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
@@ -97,13 +96,11 @@ namespace OnlineGameStore.MVC
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                                    ForwardedHeaders.XForwardedProto
             });
-
+            
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate = "Request {RequestPath} handled by {IpAdress} and elapsed in {Elapsed} ms";
-
                 options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
-
                 options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
                 {
                     diagnosticContext.Set("IpAdress", httpContext.Connection.RemoteIpAddress?.ToString());
@@ -111,12 +108,13 @@ namespace OnlineGameStore.MVC
             });
 
             app.UseStaticFiles();
-
             app.UseRouting();
 
             var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
-            
             app.UseRequestLocalization(localizationOptions);
+            
+            app.UseAuthentication();
+            app.UseAuthorization();
             
             ConfigureCancellingOrderTask(orderService);
 

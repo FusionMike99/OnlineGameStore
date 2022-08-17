@@ -13,17 +13,17 @@ using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
 using OnlineGameStore.DAL.Repositories.SqlServer;
 using OnlineGameStore.DAL.Repositories.SqlServer.Interfaces;
 
-namespace OnlineGameStore.Infrastructure.Injections
+namespace OnlineGameStore.MVC.DependencyInjections
 {
     public static class DalInjection
     {
         public static void AddRepositories(this IServiceCollection services,
             IDictionary<string, string> connectionStrings)
         {
-            services.AddSqlServerRepositories(connectionStrings["GameStore"]);
-            services.AddPipelineBuilders();
-            services.AddMongoDbRepositories(connectionStrings["Northwind"]);
-            services.AddCommonRepositories();
+            AddSqlServerRepositories(services, connectionStrings["GameStore"]);
+            AddPipelineBuilders(services);
+            AddMongoDbRepositories(services, connectionStrings["Northwind"]);
+            AddCommonRepositories(services);
         }
         
         private static void AddCommonRepositories(this IServiceCollection services)

@@ -40,10 +40,17 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
-            var predicate = GetGameStorePredicate(sortFilterModel);
-            var games = await Entities.IncludeDeleted().Where(predicate).ToListAsync();
+            var games = Entities.IncludeDeleted();
             
-            return games;
+            var predicate = GetGameStorePredicate(sortFilterModel);
+            if (predicate != null)
+            {
+                games = games.Where(predicate);
+            }
+            
+            var gamesList = await games.ToListAsync();
+            
+            return gamesList;
         }
         
         private Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)

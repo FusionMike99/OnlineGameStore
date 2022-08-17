@@ -8,6 +8,7 @@ using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
 {
+    [Route("auth")]
     public class AuthenticationController : Controller
     {
         private readonly IUserService _userService;
@@ -22,7 +23,7 @@ namespace OnlineGameStore.MVC.Controllers
             _mapper = mapper;
         }
         
-        [HttpGet]
+        [HttpGet("register")]
         public IActionResult Register(string returnUrl = null)
         {
             var model = new RegisterViewModel
@@ -33,7 +34,7 @@ namespace OnlineGameStore.MVC.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             var registerModel = _mapper.Map<RegisterModel>(model);
@@ -54,7 +55,7 @@ namespace OnlineGameStore.MVC.Controllers
             return View("Register", model);
         }
         
-        [HttpGet]
+        [HttpGet("login")]
         public IActionResult LogIn(string returnUrl = null)
         {
             var model = new LoginViewModel
@@ -65,7 +66,7 @@ namespace OnlineGameStore.MVC.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
             var loginModel = _mapper.Map<LoginModel>(model);
@@ -92,13 +93,16 @@ namespace OnlineGameStore.MVC.Controllers
             return View("LogIn", model);
         }
 
-        [HttpGet]
+        [HttpGet("logout")]
         public async Task<IActionResult> LogOut()
         {
             await _authenticationService.LogOutAsync();
             
             return RedirectToAction("GetGames", "Game");
         }
+
+        [HttpGet("access-denied")]
+        public IActionResult AccessDenied() => View();
 
         private IActionResult SetUpReturnUrl(string returnUrl)
         {
