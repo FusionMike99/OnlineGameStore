@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -12,10 +13,10 @@ namespace OnlineGameStore.Identity.Services
     public class RoleService : IRoleService
     {
         private readonly UserManager<UserEntity> _userManager;
-        private readonly RoleManager<RoleEntity> _roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly IMapper _mapper;
 
-        public RoleService(UserManager<UserEntity> userManager, RoleManager<RoleEntity> roleManager, IMapper mapper)
+        public RoleService(UserManager<UserEntity> userManager, RoleManager<IdentityRole<Guid>> roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;

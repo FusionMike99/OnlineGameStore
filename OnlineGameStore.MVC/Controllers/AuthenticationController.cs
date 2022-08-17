@@ -35,6 +35,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpPost("register")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             var registerModel = _mapper.Map<RegisterModel>(model);
@@ -67,6 +68,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(LoginViewModel model)
         {
             var loginModel = _mapper.Map<LoginModel>(model);

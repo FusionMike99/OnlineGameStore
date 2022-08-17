@@ -21,9 +21,9 @@ namespace OnlineGameStore.MVC.Controllers
     {
         private readonly IGameService _gameService;
         private readonly IGenreService _genreService;
-        private readonly IMapper _mapper;
         private readonly IPlatformTypeService _platformTypeService;
         private readonly IPublisherService _publisherService;
+        private readonly IMapper _mapper;
 
         public GameController(IGameService gameService,
             IGenreService genreService,
@@ -84,7 +84,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var editGameViewModel = _mapper.Map<EditGameViewModel>(game);
-
             await ConfigureEditGameViewModel(editGameViewModel);
 
             return View(editGameViewModel);

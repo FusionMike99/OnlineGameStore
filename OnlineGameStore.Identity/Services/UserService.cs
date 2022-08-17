@@ -65,6 +65,7 @@ namespace OnlineGameStore.Identity.Services
         {
             var user = await _userManager.FindByNameAsync(userName);
             var mappedUser = _mapper.Map<UserModel>(user);
+            mappedUser.RoleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
             return mappedUser;
         }
@@ -72,7 +73,7 @@ namespace OnlineGameStore.Identity.Services
         public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
-            var mappedUsers = _mapper.Map<IEnumerable<UserModel>>(users);
+            var mappedUsers = _mapper.Map<List<UserModel>>(users);
 
             return mappedUsers;
         }

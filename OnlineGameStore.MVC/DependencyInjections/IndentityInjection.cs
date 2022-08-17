@@ -13,7 +13,7 @@ namespace OnlineGameStore.MVC.DependencyInjections
     {
         public static void AddConfiguredAuthentication(this IServiceCollection services)
         {
-            services.AddIdentity<UserEntity, RoleEntity>().AddEntityFrameworkStores<StoreDbContext>();
+            services.AddIdentity<UserEntity, IdentityRole<Guid>>().AddEntityFrameworkStores<StoreDbContext>();
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
