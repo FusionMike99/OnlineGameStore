@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Entities.Northwind;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
@@ -87,6 +88,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
         
         [HttpGet("orders/history")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
         public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = null)
         {
             var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);

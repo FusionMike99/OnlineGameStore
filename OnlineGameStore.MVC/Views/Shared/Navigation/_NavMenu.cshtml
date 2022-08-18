@@ -25,9 +25,18 @@
         <li class="nav-item">
           <a class="nav-link text-dark" asp-controller="Order" asp-action="GetBasket">Basket</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" asp-controller="Order" asp-action="GetOrders">Orders History</a>
-        </li>
+        @if (User.IsInRoles(Permissions.ManagerPermission))
+        {
+          <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Order" asp-action="GetOrders">Orders History</a>
+          </li>
+        }
+        @if (User.IsInRoles(Permissions.AdminPermission))
+        {
+          <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="GetUsers">User</a>
+          </li>
+        }
         <partial name="./Navigation/_Authentication"/>
       </ul>
       <vc:total-games/>

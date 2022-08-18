@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using OnlineGameStore.DomainModels.Constants;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.TagHelpers
@@ -118,26 +120,19 @@ namespace OnlineGameStore.MVC.TagHelpers
                         quoteButtonTagBuilder.InnerHtml.Append("Quote");
 
                         cardBodyTagBuilder.InnerHtml.AppendHtml(quoteButtonTagBuilder);
-                    
-                        var updateLinkHref = urlHelper.Action(ActionValues["update"].ToString(), "Comment",
-                            new { gameKey = UrlValues["gameKey"], commentId = comment.Id });
-                    
-                        var updateLinkTagBuilder = new TagBuilder("a");
-                        updateLinkTagBuilder.AddCssClass("btn btn-info me-2 modal-link");
-                        updateLinkTagBuilder.Attributes.Add("href", updateLinkHref);
-                        updateLinkTagBuilder.InnerHtml.Append("Update");
 
-                        cardBodyTagBuilder.InnerHtml.AppendHtml(updateLinkTagBuilder);
+                        if (ViewContext.HttpContext.User.IsInRoles(Permissions.ModeratorPermission))
+                        {
+                            var removeLinkHref = urlHelper.Action(ActionValues["remove"].ToString(), "Comment",
+                                new { gameKey = UrlValues["gameKey"], id = comment.Id });
                     
-                        var removeLinkHref = urlHelper.Action(ActionValues["remove"].ToString(), "Comment",
-                            new { gameKey = UrlValues["gameKey"], id = comment.Id });
-                    
-                        var removeLinkTagBuilder = new TagBuilder("a");
-                        removeLinkTagBuilder.AddCssClass("btn btn-danger me-2 modal-link");
-                        removeLinkTagBuilder.Attributes.Add("href", removeLinkHref);
-                        removeLinkTagBuilder.InnerHtml.Append("Delete");
+                            var removeLinkTagBuilder = new TagBuilder("a");
+                            removeLinkTagBuilder.AddCssClass("btn btn-danger me-2 modal-link");
+                            removeLinkTagBuilder.Attributes.Add("href", removeLinkHref);
+                            removeLinkTagBuilder.InnerHtml.Append("Delete");
 
-                        cardBodyTagBuilder.InnerHtml.AppendHtml(removeLinkTagBuilder);
+                            cardBodyTagBuilder.InnerHtml.AppendHtml(removeLinkTagBuilder);
+                        }
                     }
                     
                     var banLinkHref = urlHelper.Action("Ban", "User",

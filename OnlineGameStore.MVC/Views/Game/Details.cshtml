@@ -101,10 +101,13 @@
 
 <div class="btn-toolbar" role="toolbar" aria-label="Details game toolbar">
     <div class="btn-group me-2" role="group" aria-label="Operation group">
-        <a asp-action="Update" asp-route-gameKey="@Model.Key" class="btn btn-warning">Update</a>
-        <form asp-controller="Game" asp-action="Remove" asp-route-gameKey="@Model.Key" method="post">
-            <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
-        </form>
+        @if (User.IsInRoles(Permissions.ManagerPermission))
+        {
+            <a asp-action="Update" asp-route-gameKey="@Model.Key" class="btn btn-warning">Update</a>
+            <form asp-controller="Game" asp-action="Remove" asp-route-gameKey="@Model.Key" method="post">
+                <button type="submit" value="Remove" class="btn btn-danger">Remove</button>
+            </form>
+        }
         <a asp-action="GetGames" class="btn btn-primary">Back to List</a>
     </div>
     <div class="btn-group" role="group" aria-label="Comments group">

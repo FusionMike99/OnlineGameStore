@@ -4,12 +4,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.Identity.Services.Interfaces;
+using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
 
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("users")]
+    [AuthorizeByRoles(Permissions.AdminPermission)]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -72,6 +75,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{userName}/ban")]
+        [AuthorizeByRoles(Permissions.ModeratorPermission)]
         public IActionResult Ban(string userName, string returnUrl = null)
         {
             var banViewModel = new BanViewModel
@@ -85,6 +89,7 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("{userName}/ban")]
         [ValidateAntiForgeryToken]
+        [AuthorizeByRoles(Permissions.ModeratorPermission)]
         public IActionResult Ban(BanViewModel model)
         {
             if (!ModelState.IsValid)

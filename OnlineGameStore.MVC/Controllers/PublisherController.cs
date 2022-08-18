@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -11,6 +13,7 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("publishers")]
+    [AuthorizeByRoles(Permissions.ManagerPermission)]
     public class PublisherController : Controller
     {
         private readonly IMapper _mapper;
@@ -91,6 +94,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{companyName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPublisherByCompanyName([FromRoute] string companyName)
         {
             if (string.IsNullOrWhiteSpace(companyName))
@@ -111,6 +115,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPublishers()
         {
             var publishers = await _publisherService.GetAllPublishersAsync();

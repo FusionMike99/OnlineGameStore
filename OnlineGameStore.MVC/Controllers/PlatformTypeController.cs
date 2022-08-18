@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -11,6 +13,7 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("platform-types")]
+    [AuthorizeByRoles(Permissions.ManagerPermission)]
     public class PlatformTypeController : Controller
     {
         private readonly IMapper _mapper;
@@ -86,6 +89,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{platformTypeId:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPlatformTypeById([FromRoute] Guid platformTypeId)
         {
             var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
@@ -101,6 +105,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPlatformTypes()
         {
             var platformTypes = await _platformTypeService.GetAllPlatformTypesAsync();

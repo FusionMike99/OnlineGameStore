@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Exceptions;
 using OnlineGameStore.Identity.Models;
@@ -96,6 +97,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("logout")]
+        [Authorize]
         public async Task<IActionResult> LogOut()
         {
             await _authenticationService.LogOutAsync();

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -62,43 +63,8 @@ namespace OnlineGameStore.MVC.Controllers
             return View("Index", aggregateCommentViewModel);
         }
         
-        [HttpGet("updateComment/{commentId:guid}")]
-        public async Task<IActionResult> UpdateComment([FromRoute] Guid commentId, [FromRoute] string gameKey)
-        {
-            var comment = await _commentService.GetCommentByIdAsync(commentId);
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            var editCommentViewModel = _mapper.Map<EditCommentViewModel>(comment);
-
-            return PartialView("_Update", editCommentViewModel);
-        }
-
-        [HttpPost("updateComment/{commentId:guid}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateComment(Guid commentId, EditCommentViewModel comment, string gameKey)
-        {
-            if (commentId != comment.Id)
-            {
-                return NotFound();
-            }
-            
-            if (!ModelState.IsValid)
-            {
-                return PartialView("_Update", comment);
-            }
-
-            var mappedComment = _mapper.Map<CommentModel>(comment);
-
-            await _commentService.EditCommentAsync(mappedComment);
-
-            return Json(new { url = Url.Action(nameof(GetCommentsByGameKey), new { gameKey }) });
-        }
-        
         [HttpGet("removeComment/{id:guid}")]
+        [AuthorizeByRoles(Permissions.ModeratorPermission)]
         public async Task<IActionResult> RemoveComment([FromRoute] Guid id, [FromRoute] string gameKey)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
@@ -115,6 +81,7 @@ namespace OnlineGameStore.MVC.Controllers
         
         [HttpPost("removeComment/{id:guid}")]
         [ValidateAntiForgeryToken]
+        [AuthorizeByRoles(Permissions.ModeratorPermission)]
         [ActionName("Remove")]
         public async Task<IActionResult> RemoveCommentConfirmed([FromRoute] Guid id, [FromRoute] string gameKey)
         {

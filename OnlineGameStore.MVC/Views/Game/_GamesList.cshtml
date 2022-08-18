@@ -31,9 +31,12 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <div class="btn-group">
-                    <a asp-action="Update" asp-route-gameKey="@item.Key" class="btn btn-warning">Update</a>
-                </div>
+                @if (User.IsInRoles(Permissions.ManagerPermission))
+                {
+                    <div class="btn-group">
+                        <a asp-action="Update" asp-route-gameKey="@item.Key" class="btn btn-warning">Update</a>
+                    </div>
+                }
             </td>
         </tr>
     }

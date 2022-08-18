@@ -35,7 +35,7 @@ namespace OnlineGameStore.DAL.Data
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
-            modelBuilder.StoreSeed();
+            modelBuilder.SeedData();
         }
     }
 }

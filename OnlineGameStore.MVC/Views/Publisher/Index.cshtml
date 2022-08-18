@@ -34,7 +34,7 @@
             </td>
             <td>@item.HomePage</td>
             <td>
-                @if (item.DatabaseEntity != DatabaseEntity.Northwind)
+                @if (User.IsInRoles(Permissions.ManagerPermission) && item.DatabaseEntity != DatabaseEntity.Northwind)
                 {
                     <div class="btn-group">
                         <a asp-action="Update" asp-route-companyName="@item.CompanyName" class="btn btn-warning">Update</a>

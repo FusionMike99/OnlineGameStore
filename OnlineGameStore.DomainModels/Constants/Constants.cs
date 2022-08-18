@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineGameStore.DomainModels
+namespace OnlineGameStore.DomainModels.Constants
 {
     public static class Constants
     {

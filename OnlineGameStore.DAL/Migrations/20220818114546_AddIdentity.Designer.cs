@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineGameStore.DAL.Data;
 
 namespace OnlineGameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20220818114546_AddIdentity")]
+    partial class AddIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,43 +47,6 @@ namespace OnlineGameStore.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("274fcde0-2619-41c9-9772-6e964fa0ef7d"),
-                            ConcurrencyStamp = "943a7823-9675-4672-9459-72f2ea5760b0",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = new Guid("3ae74d1f-43a3-43ef-bce2-0316994a2d0c"),
-                            ConcurrencyStamp = "5db2276b-065f-42e4-8c18-58a5245477a4",
-                            Name = "Publisher",
-                            NormalizedName = "PUBLISHER"
-                        },
-                        new
-                        {
-                            Id = new Guid("26bf4c5d-7779-4e3a-ad66-a59054e69d60"),
-                            ConcurrencyStamp = "085098cf-43b4-4548-b180-2bbdffb396f0",
-                            Name = "Moderator",
-                            NormalizedName = "MODERATOR"
-                        },
-                        new
-                        {
-                            Id = new Guid("3b175e2e-ba5f-4c9a-9a80-816c85065ecb"),
-                            ConcurrencyStamp = "3abe68a7-cbf4-4e1c-bc7d-3d722f2b6e7c",
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        },
-                        new
-                        {
-                            Id = new Guid("35de8211-62d9-43c2-a3d0-d3bb50b44bf6"),
-                            ConcurrencyStamp = "95e3bd43-c84e-4258-b635-45d96f43c416",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -164,28 +129,6 @@ namespace OnlineGameStore.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("16997a3c-43a1-409e-95e2-06d4e9aebfe2"),
-                            RoleId = new Guid("274fcde0-2619-41c9-9772-6e964fa0ef7d")
-                        },
-                        new
-                        {
-                            UserId = new Guid("e2523839-7358-41e6-85ed-a0c48ef27e47"),
-                            RoleId = new Guid("26bf4c5d-7779-4e3a-ad66-a59054e69d60")
-                        },
-                        new
-                        {
-                            UserId = new Guid("cc0bb8a8-48f0-49fd-a1d5-08578f0a4cdb"),
-                            RoleId = new Guid("3b175e2e-ba5f-4c9a-9a80-816c85065ecb")
-                        },
-                        new
-                        {
-                            UserId = new Guid("5ba77e7d-788a-403e-982c-29403d4d6dd2"),
-                            RoleId = new Guid("35de8211-62d9-43c2-a3d0-d3bb50b44bf6")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -913,64 +856,6 @@ namespace OnlineGameStore.DAL.Migrations
                         .HasFilter("[PublisherId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("16997a3c-43a1-409e-95e2-06d4e9aebfe2"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "049d49b1-5e4d-4c8e-8f48-0bd0958fd65c",
-                            Email = "user@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER@GMAIL.COM",
-                            NormalizedUserName = "USER",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "User"
-                        },
-                        new
-                        {
-                            Id = new Guid("e2523839-7358-41e6-85ed-a0c48ef27e47"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "1b8bb880-1c7b-411d-b1ad-07fd04e892f4",
-                            Email = "moderator@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "MODERATOR@GMAIL.COM",
-                            NormalizedUserName = "MODERATOR",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Moderator"
-                        },
-                        new
-                        {
-                            Id = new Guid("cc0bb8a8-48f0-49fd-a1d5-08578f0a4cdb"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "ae308e6b-b814-40f6-bb01-ab3616ef0fca",
-                            Email = "user@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER@GMAIL.COM",
-                            NormalizedUserName = "USER",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Manager"
-                        },
-                        new
-                        {
-                            Id = new Guid("5ba77e7d-788a-403e-982c-29403d4d6dd2"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "0c081c98-fabb-4d0e-a2c3-bc67109e7aac",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

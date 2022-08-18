@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Bogus;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.DAL.Entities;
 using OnlineGameStore.ExtensionsUtility.Extensions;
@@ -10,16 +11,19 @@ namespace OnlineGameStore.DAL.Data
 {
     internal static class ModelBuilderExtensions
     {
-        private static readonly IEnumerable<GenreEntity> Genres;
-        private static readonly IEnumerable<PlatformTypeEntity> PlatformTypes;
-        private static readonly IEnumerable<PublisherEntity> Publishers;
-        private static readonly IEnumerable<GameEntity> Games;
-        private static readonly IEnumerable<GameGenreEntity> GameGenres;
-        private static readonly IEnumerable<GamePlatformTypeEntity> GamePlatformTypes;
+        private static readonly List<GenreEntity> Genres;
+        private static readonly List<PlatformTypeEntity> PlatformTypes;
+        private static readonly List<PublisherEntity> Publishers;
+        private static readonly List<GameEntity> Games;
+        private static readonly List<GameGenreEntity> GameGenres;
+        private static readonly List<GamePlatformTypeEntity> GamePlatformTypes;
+        private static readonly List<IdentityRole<Guid>> Roles;
+        private static readonly List<UserEntity> Users;
+        private static readonly List<IdentityUserRole<Guid>> UserRoles;
 
         static ModelBuilderExtensions()
         {
-            Genres = new[]
+            Genres = new List<GenreEntity>
             {
                 new GenreEntity { Id = Guid.Parse("8978F06E-A703-4746-BBE7-CC16A7E0249E"), Name = "Strategy" },
                 new GenreEntity
@@ -71,7 +75,7 @@ namespace OnlineGameStore.DAL.Data
                 new GenreEntity { Id = Guid.Parse("90649709-A022-415F-9E4B-45F4F9AFFC78"), Name = "Misc." }
             };
 
-            PlatformTypes = new[]
+            PlatformTypes = new List<PlatformTypeEntity>
             {
                 new PlatformTypeEntity { Id = Guid.Parse("0D879FBC-75D9-4DF6-8EA2-2C0484207E20"), Type = "Mobile" },
                 new PlatformTypeEntity { Id = Guid.Parse("46C32720-7400-4E51-82BB-96D35D4EFF18"), Type = "Browser" },
@@ -79,7 +83,7 @@ namespace OnlineGameStore.DAL.Data
                 new PlatformTypeEntity { Id = Guid.Parse("8DAC1629-29CE-4054-89F0-6D5BBA95280F"), Type = "Console" }
             };
 
-            Publishers = new[]
+            Publishers = new List<PublisherEntity>
             {
                 new PublisherEntity
                 {
@@ -104,7 +108,7 @@ namespace OnlineGameStore.DAL.Data
                 }
             };
 
-            Games = new[]
+            Games = new List<GameEntity>
             {
                 new GameEntity
                 {
@@ -123,7 +127,7 @@ namespace OnlineGameStore.DAL.Data
                 }
             };
 
-            GameGenres = new[]
+            GameGenres = new List<GameGenreEntity>
             {
                 new GameGenreEntity
                 {
@@ -139,7 +143,7 @@ namespace OnlineGameStore.DAL.Data
                 }
             };
 
-            GamePlatformTypes = new[]
+            GamePlatformTypes = new List<GamePlatformTypeEntity>
             {
                 new GamePlatformTypeEntity
                 {
@@ -154,9 +158,103 @@ namespace OnlineGameStore.DAL.Data
                     PlatformId = Guid.Parse("8DAC1629-29CE-4054-89F0-6D5BBA95280F")
                 }
             };
+
+            Roles = new List<IdentityRole<Guid>>
+            {
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("274FCDE0-2619-41C9-9772-6E964FA0EF7D"),
+                    Name = "User",
+                    NormalizedName = "USER"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("3AE74D1F-43A3-43EF-BCE2-0316994A2D0C"),
+                    Name = "Publisher",
+                    NormalizedName = "PUBLISHER"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("26BF4C5D-7779-4E3A-AD66-A59054E69D60"),
+                    Name = "Moderator",
+                    NormalizedName = "MODERATOR"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("3B175E2E-BA5F-4C9A-9A80-816C85065ECB"),
+                    Name = "Manager",
+                    NormalizedName = "MANAGER"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("35DE8211-62D9-43C2-A3D0-D3BB50B44BF6"),
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                }
+            };
+
+            Users = new List<UserEntity>
+            {
+                new UserEntity
+                {
+                    Id = Guid.Parse("16997A3C-43A1-409E-95E2-06D4E9AEBFE2"),
+                    UserName = "User",
+                    NormalizedUserName = "USER",
+                    Email = "user@gmail.com",
+                    NormalizedEmail = "USER@GMAIL.COM"
+                },
+                new UserEntity
+                {
+                    Id = Guid.Parse("E2523839-7358-41E6-85ED-A0C48EF27E47"),
+                    UserName = "Moderator",
+                    NormalizedUserName = "MODERATOR",
+                    Email = "moderator@gmail.com",
+                    NormalizedEmail = "MODERATOR@GMAIL.COM"
+                },
+                new UserEntity
+                {
+                    Id = Guid.Parse("CC0BB8A8-48F0-49FD-A1D5-08578F0A4CDB"),
+                    UserName = "Manager",
+                    NormalizedUserName = "USER",
+                    Email = "user@gmail.com",
+                    NormalizedEmail = "USER@GMAIL.COM"
+                },
+                new UserEntity
+                {
+                    Id = Guid.Parse("5BA77E7D-788A-403E-982C-29403D4D6DD2"),
+                    UserName = "Admin",
+                    NormalizedUserName = "ADMIN",
+                    Email = "admin@gmail.com",
+                    NormalizedEmail = "ADMIN@GMAIL.COM"
+                }
+            };
+
+            UserRoles = new List<IdentityUserRole<Guid>>
+            {
+                new IdentityUserRole<Guid>
+                {
+                    UserId = Guid.Parse("16997A3C-43A1-409E-95E2-06D4E9AEBFE2"),
+                    RoleId = Guid.Parse("274FCDE0-2619-41C9-9772-6E964FA0EF7D")
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = Guid.Parse("E2523839-7358-41E6-85ED-A0C48EF27E47"),
+                    RoleId = Guid.Parse("26BF4C5D-7779-4E3A-AD66-A59054E69D60")
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = Guid.Parse("CC0BB8A8-48F0-49FD-A1D5-08578F0A4CDB"),
+                    RoleId = Guid.Parse("3B175E2E-BA5F-4C9A-9A80-816C85065ECB")
+                },
+                new IdentityUserRole<Guid>
+                {
+                    UserId = Guid.Parse("5BA77E7D-788A-403E-982C-29403D4D6DD2"),
+                    RoleId = Guid.Parse("35DE8211-62D9-43C2-A3D0-D3BB50B44BF6")
+                }
+            };
         }
 
-        internal static void StoreSeed(this ModelBuilder modelBuilder)
+        internal static void SeedData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<GenreEntity>().HasData(Genres);
             modelBuilder.Entity<PlatformTypeEntity>().HasData(PlatformTypes);
@@ -164,6 +262,10 @@ namespace OnlineGameStore.DAL.Data
             modelBuilder.Entity<GameEntity>().HasData(Games);
             modelBuilder.Entity<GameGenreEntity>().HasData(GameGenres);
             modelBuilder.Entity<GamePlatformTypeEntity>().HasData(GamePlatformTypes);
+            
+            modelBuilder.SeedRoles();
+            modelBuilder.SeedUsers();
+            modelBuilder.SeedUserRoles();
             //GenerateFakeData(modelBuilder);
         }
 
@@ -219,6 +321,24 @@ namespace OnlineGameStore.DAL.Data
             
             modelBuilder.Entity<GamePlatformTypeEntity>()
                 .HasData(gamePlatformTypes);
+        }
+
+        private static void SeedRoles(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<IdentityRole<Guid>>().HasData(Roles);
+        }
+        
+        private static void SeedUsers(this ModelBuilder modelBuilder)
+        {
+            const string password = "pa$$w0rd";
+            var passwordHasher = new PasswordHasher<UserEntity>();
+            Users.ForEach(u => passwordHasher.HashPassword(u, password));
+            modelBuilder.Entity<UserEntity>().HasData(Users);
+        }
+        
+        private static void SeedUserRoles(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(UserRoles);
         }
     }
 }

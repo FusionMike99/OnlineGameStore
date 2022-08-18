@@ -3,10 +3,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.DomainModels.Models.General;
@@ -17,6 +19,7 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("games")]
+    [AuthorizeByRoles(Permissions.ManagerPermission)]
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
@@ -110,6 +113,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{gameKey}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGameByKey([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))
@@ -130,6 +134,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGames(SortFilterGameViewModel sortFilterGameViewModel,
             int pageNumber = 1, PageSize pageSize = PageSize.Ten)
         {
@@ -170,6 +175,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{gameKey}/download")]
+        [AllowAnonymous]
         public async Task<IActionResult> Download([FromRoute] string gameKey)
         {
             if (string.IsNullOrWhiteSpace(gameKey))

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Entities;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -13,6 +15,7 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("genres")]
+    [AuthorizeByRoles(Permissions.ManagerPermission)]
     public class GenreController : Controller
     {
         private readonly IGenreService _genreService;
@@ -98,6 +101,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet("{genreId:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGenreById([FromRoute] Guid genreId)
         {
             var genre = await _genreService.GetGenreByIdAsync(genreId);
@@ -113,6 +117,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetGenres()
         {
             var genres = await _genreService.GetAllParentGenresAsync();
