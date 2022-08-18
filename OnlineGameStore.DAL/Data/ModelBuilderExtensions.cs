@@ -332,7 +332,7 @@ namespace OnlineGameStore.DAL.Data
         {
             const string password = "pa$$w0rd";
             var passwordHasher = new PasswordHasher<UserEntity>();
-            Users.ForEach(u => passwordHasher.HashPassword(u, password));
+            Users.ForEach(u => u.PasswordHash = passwordHasher.HashPassword(u, password));
             modelBuilder.Entity<UserEntity>().HasData(Users);
         }
         

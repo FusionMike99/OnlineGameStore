@@ -50,35 +50,35 @@ namespace OnlineGameStore.DAL.Migrations
                         new
                         {
                             Id = new Guid("274fcde0-2619-41c9-9772-6e964fa0ef7d"),
-                            ConcurrencyStamp = "943a7823-9675-4672-9459-72f2ea5760b0",
+                            ConcurrencyStamp = "376e6bbc-a368-426c-8bd5-722ce48aea80",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = new Guid("3ae74d1f-43a3-43ef-bce2-0316994a2d0c"),
-                            ConcurrencyStamp = "5db2276b-065f-42e4-8c18-58a5245477a4",
+                            ConcurrencyStamp = "337fbd08-8074-49d4-b5ac-0cf0fa90e120",
                             Name = "Publisher",
                             NormalizedName = "PUBLISHER"
                         },
                         new
                         {
                             Id = new Guid("26bf4c5d-7779-4e3a-ad66-a59054e69d60"),
-                            ConcurrencyStamp = "085098cf-43b4-4548-b180-2bbdffb396f0",
+                            ConcurrencyStamp = "c6bb6787-764a-46e8-be38-bc91db02373e",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
                             Id = new Guid("3b175e2e-ba5f-4c9a-9a80-816c85065ecb"),
-                            ConcurrencyStamp = "3abe68a7-cbf4-4e1c-bc7d-3d722f2b6e7c",
+                            ConcurrencyStamp = "d2312c86-97dc-4f43-90bd-32fd1c043222",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
                             Id = new Guid("35de8211-62d9-43c2-a3d0-d3bb50b44bf6"),
-                            ConcurrencyStamp = "95e3bd43-c84e-4258-b635-45d96f43c416",
+                            ConcurrencyStamp = "13dc8abe-1335-426c-bf79-e90eca6f5032",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -919,12 +919,13 @@ namespace OnlineGameStore.DAL.Migrations
                         {
                             Id = new Guid("16997a3c-43a1-409e-95e2-06d4e9aebfe2"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "049d49b1-5e4d-4c8e-8f48-0bd0958fd65c",
+                            ConcurrencyStamp = "a0b3b2e4-1193-4d92-8f21-089e8833fba6",
                             Email = "user@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@GMAIL.COM",
                             NormalizedUserName = "USER",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGry2F9UPk4qLPShDGdOIqm0aYlAprYDCeIUG990qM30LmEjyHG2wOkGG2kazwQDnw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "User"
@@ -933,12 +934,13 @@ namespace OnlineGameStore.DAL.Migrations
                         {
                             Id = new Guid("e2523839-7358-41e6-85ed-a0c48ef27e47"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1b8bb880-1c7b-411d-b1ad-07fd04e892f4",
+                            ConcurrencyStamp = "b52c9c8b-cfbe-4613-afac-1f8014b8cb46",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
                             NormalizedUserName = "MODERATOR",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFAIF/SPD3fiqYItnod/oJFwaYc1xaJ84vc0Uj4AlKdWBU1QXgTnFVlRcTiaHzTy9Q==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Moderator"
@@ -947,12 +949,13 @@ namespace OnlineGameStore.DAL.Migrations
                         {
                             Id = new Guid("cc0bb8a8-48f0-49fd-a1d5-08578f0a4cdb"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ae308e6b-b814-40f6-bb01-ab3616ef0fca",
+                            ConcurrencyStamp = "ffcdf3cd-8b6d-4154-9caa-2c69abc7efb2",
                             Email = "user@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@GMAIL.COM",
                             NormalizedUserName = "USER",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFiDmJWv5aXJ99pRf5IVQ+eEYkwYzZQJqM00hvEOZEqtc3WOM2QQ1YN6xY/lOwS0iw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Manager"
@@ -961,12 +964,13 @@ namespace OnlineGameStore.DAL.Migrations
                         {
                             Id = new Guid("5ba77e7d-788a-403e-982c-29403d4d6dd2"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0c081c98-fabb-4d0e-a2c3-bc67109e7aac",
+                            ConcurrencyStamp = "d09268cd-547e-4d4e-96e6-095cb9cec60d",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEefXY9nHSFLvWbrvYoN5MV7Y7qBbBvqWOA+StiRKdsIwyrmwfBjtRAjhGFpdR28bw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "Admin"
