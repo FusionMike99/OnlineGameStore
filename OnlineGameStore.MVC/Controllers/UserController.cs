@@ -4,7 +4,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Models.General;
+using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DomainModels.Constants;
+using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Identity.Services.Interfaces;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -17,12 +19,15 @@ namespace OnlineGameStore.MVC.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly IPublisherService _publisherService;
         private readonly IMapper _mapper;
 
-        public UserController(IUserService userService, IRoleService roleService, IMapper mapper)
+        public UserController(IUserService userService, IRoleService roleService,
+            IPublisherService publisherService, IMapper mapper)
         {
             _userService = userService;
             _roleService = roleService;
+            _publisherService = publisherService;
             _mapper = mapper;
         }
         
@@ -43,7 +48,7 @@ namespace OnlineGameStore.MVC.Controllers
 
         [HttpPost("update/{userName}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(string userName, [FromForm] EditUserViewModel user)
+        public async Task<IActionResult> Update([FromRoute] string userName, [FromForm] EditUserViewModel user)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +56,7 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedUser = _mapper.Map<UserModel>(user);
-            await _userService.EditUserAsync(mappedUser);
+            await _userService.EditUserAsync(userName, mappedUser);
 
             return RedirectToAction(nameof(GetUsers));
         }
@@ -116,8 +121,11 @@ namespace OnlineGameStore.MVC.Controllers
         private async Task ConfigureEditUserViewModel(EditUserViewModel model)
         {
             var roles = await _roleService.GetAllRolesAsync();
-            
             model.Roles = new SelectList(roles, nameof(RoleModel.Name), nameof(RoleModel.Name));
+
+            var publishers = await _publisherService.GetAllPublishersAsync();
+            model.Publishers =
+                new SelectList(publishers, nameof(PublisherModel.Id), nameof(PublisherModel.CompanyName));
         }
     }
 }

@@ -16,7 +16,8 @@ namespace OnlineGameStore.MVC.Infrastructure.Configurations
                 typeof(PlatformTypeModelMappingProfile),
                 typeof(PublisherModelMappingProfile),
                 typeof(OrderModelMappingProfile),
-                typeof(ShipperModelMappingProfile)
+                typeof(ShipperModelMappingProfile),
+                typeof(UserModelMappingProfile)
             };
             
             expression.AddMaps(profiles);

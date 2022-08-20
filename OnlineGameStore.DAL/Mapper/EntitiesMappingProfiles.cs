@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.DAL.Entities;
 using OnlineGameStore.DAL.Entities.Northwind;
 using OnlineGameStore.DomainModels;
@@ -184,6 +187,17 @@ namespace OnlineGameStore.DAL.Mapper
                     opts.Ignore())
                 .ForMember(dest => dest.ShipperId, opts =>
                     opts.MapFrom(source => source.Id.ToInt()));
+
+            #endregion
+
+            #region User
+
+            CreateMap<UserEntity, UserModel>()
+                .ForMember(dest => dest.Role, opts => opts.Ignore())
+                .ReverseMap();
+
+            CreateMap<IdentityRole<Guid>, RoleModel>()
+                .ReverseMap();
 
             #endregion
         }

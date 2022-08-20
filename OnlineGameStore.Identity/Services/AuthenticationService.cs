@@ -10,15 +10,23 @@ namespace OnlineGameStore.Identity.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly SignInManager<UserEntity> _signInManager;
+        private readonly UserManager<UserEntity> _userManager;
 
-        public AuthenticationService(SignInManager<UserEntity> signInManager)
+        public AuthenticationService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         public async Task<bool> LogInAsync(LoginModel loginModel)
         {
-            var result = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password,
+            var user = await _userManager.FindByEmailAsync(loginModel.Email);
+            if (user == null)
+            {
+                return false;
+            }
+            
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, loginModel.Password,
                 loginModel.RememberMe, lockoutOnFailure: false);
 
             if (result.IsLockedOut)

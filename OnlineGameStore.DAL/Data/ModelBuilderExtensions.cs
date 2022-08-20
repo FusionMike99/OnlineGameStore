@@ -201,7 +201,8 @@ namespace OnlineGameStore.DAL.Data
                     UserName = "User",
                     NormalizedUserName = "USER",
                     Email = "user@gmail.com",
-                    NormalizedEmail = "USER@GMAIL.COM"
+                    NormalizedEmail = "USER@GMAIL.COM",
+                    SecurityStamp = "93BF6096-EA7C-4BB6-B450-45524E43312E"
                 },
                 new UserEntity
                 {
@@ -209,15 +210,17 @@ namespace OnlineGameStore.DAL.Data
                     UserName = "Moderator",
                     NormalizedUserName = "MODERATOR",
                     Email = "moderator@gmail.com",
-                    NormalizedEmail = "MODERATOR@GMAIL.COM"
+                    NormalizedEmail = "MODERATOR@GMAIL.COM",
+                    SecurityStamp = "37037D92-39E2-41E0-B80A-38E2026B2280"
                 },
                 new UserEntity
                 {
                     Id = Guid.Parse("CC0BB8A8-48F0-49FD-A1D5-08578F0A4CDB"),
                     UserName = "Manager",
-                    NormalizedUserName = "USER",
-                    Email = "user@gmail.com",
-                    NormalizedEmail = "USER@GMAIL.COM"
+                    NormalizedUserName = "MANAGER",
+                    Email = "manager@gmail.com",
+                    NormalizedEmail = "MANAGER@GMAIL.COM",
+                    SecurityStamp = "3E5BC2B0-39EA-4F66-8BDF-C12EAA89F5DD"
                 },
                 new UserEntity
                 {
@@ -225,7 +228,8 @@ namespace OnlineGameStore.DAL.Data
                     UserName = "Admin",
                     NormalizedUserName = "ADMIN",
                     Email = "admin@gmail.com",
-                    NormalizedEmail = "ADMIN@GMAIL.COM"
+                    NormalizedEmail = "ADMIN@GMAIL.COM",
+                    SecurityStamp = "67B7C86D-0D3F-492E-B499-078485DDEFC5"
                 }
             };
 

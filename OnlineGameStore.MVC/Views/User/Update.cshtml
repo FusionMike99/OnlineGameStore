@@ -11,6 +11,8 @@
         <div class="container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         
+            <input asp-for="Id"/>
+            
             <div class="my-3">
                 <div class="input-group">
                     <label asp-for="Email" class="input-group-text"></label>
@@ -33,6 +35,14 @@
                     <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-select"></select>
                 </div>
                 <span asp-validation-for="SelectedRole" class="text-danger"></span>
+            </div>
+            
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="SelectedPublisher" class="input-group-text"></label>
+                    <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select"></select>
+                </div>
+                <span asp-validation-for="SelectedPublisher" class="text-danger"></span>
             </div>
         </div>
         

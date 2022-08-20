@@ -40,10 +40,12 @@ namespace OnlineGameStore.Identity.Services
             }
         }
 
-        public async Task<UserModel> EditUserAsync(UserModel user)
+        public async Task<UserModel> EditUserAsync(string userName, UserModel user)
         {
-            var mappedUser = _mapper.Map<UserEntity>(user);
-            await _userManager.UpdateAsync(mappedUser);
+            var currentUser = await _userManager.FindByNameAsync(userName);
+            currentUser.Email = user.Email;
+            currentUser.UserName = user.UserName;
+            await _userManager.UpdateAsync(currentUser);
 
             return user;
         }
@@ -65,7 +67,7 @@ namespace OnlineGameStore.Identity.Services
         {
             var user = await _userManager.FindByNameAsync(userName);
             var mappedUser = _mapper.Map<UserModel>(user);
-            mappedUser.RoleName = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            mappedUser.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
             return mappedUser;
         }

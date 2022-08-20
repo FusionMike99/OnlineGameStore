@@ -1,12 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace OnlineGameStore.MVC.Models
 {
     public class EditUserViewModel
     {
+        [UIHint("Hidden")]
+        public Guid Id { get; set; }
+        
         [Required]
-        [Display(Name = "Select Role")]
+        [Display(Name = "Email")]
         public string Email { get; set; }
         
         [Required]
@@ -18,5 +22,11 @@ namespace OnlineGameStore.MVC.Models
         public string SelectedRole { get; set; }
         
         public SelectList Roles { get; set; }
+        
+        [Required]
+        [Display(Name = "Select Publisher")]
+        public Guid SelectedPublisher { get; set; }
+        
+        public SelectList Publishers { get; set; }
     }
 }
