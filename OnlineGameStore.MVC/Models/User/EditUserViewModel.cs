@@ -6,7 +6,7 @@ namespace OnlineGameStore.MVC.Models
 {
     public class EditUserViewModel
     {
-        [UIHint("Hidden")]
+        [UIHint("HiddenInput")]
         public Guid Id { get; set; }
         
         [Required]

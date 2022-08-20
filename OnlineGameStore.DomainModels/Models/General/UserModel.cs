@@ -12,6 +12,6 @@ namespace OnlineGameStore.BLL.Models.General
         
         public string Role { get; set; }
         
-        public Guid PublisherId { get; set; }
+        public Guid? PublisherId { get; set; }
     }
 }

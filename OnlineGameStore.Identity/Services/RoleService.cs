@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -26,13 +27,17 @@ namespace OnlineGameStore.Identity.Services
         public async Task AttachRoleToUserAsync(string userName, string roleName)
         {
             var user = await _userManager.FindByNameAsync(userName);
-
             if (user == null)
             {
                 return;
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
+            if (userRoles.FirstOrDefault() == roleName)
+            {
+                return;
+            }
+            
             await _userManager.RemoveFromRolesAsync(user, userRoles);
             await _userManager.AddToRoleAsync(user, roleName);
         }

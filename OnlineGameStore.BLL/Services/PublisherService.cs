@@ -67,6 +67,13 @@ namespace OnlineGameStore.BLL.Services
             return publisher;
         }
 
+        public async Task<PublisherModel> GetPublisherByIdAsync(Guid publisherId)
+        {
+            var publisher = await _publisherRepository.GetByIdAsync(publisherId);
+
+            return publisher;
+        }
+
         public async Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames)
         {
             return await _publisherRepository.GetSuppliersIdsByNamesAsync(companiesNames);

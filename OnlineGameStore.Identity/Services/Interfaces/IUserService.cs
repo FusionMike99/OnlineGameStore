@@ -10,7 +10,7 @@ namespace OnlineGameStore.Identity.Services.Interfaces
     {
         Task CreateUserAsync(RegisterModel registerModel);
 
-        Task<UserModel> EditUserAsync(string userName, UserModel user);
+        Task<UserModel> EditUserAsync(string userName, UserModel userModel);
 
         Task DeleteUserAsync(string userName);
 
