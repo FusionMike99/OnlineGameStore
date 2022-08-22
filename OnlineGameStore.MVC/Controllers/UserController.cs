@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Models.General;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DomainModels.Constants;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.Identity.Services.Interfaces;
 using OnlineGameStore.MVC.Infrastructure;
@@ -14,7 +15,6 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("users")]
-    [AuthorizeByRoles(Permissions.AdminPermission)]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -32,8 +32,14 @@ namespace OnlineGameStore.MVC.Controllers
         }
         
         [HttpGet("update/{userName}")]
+        [AuthorizeByRoles(Permissions.UserPermission)]
         public async Task<IActionResult> Update([FromRoute] string userName)
         {
+            if (!User.IsInRole(Roles.Admin) && User.Identity.Name != userName)
+            {
+                return Forbid();
+            }
+            
             var user = await _userService.GetUserByNameAsync(userName);
             if (user == null)
             {
@@ -47,6 +53,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpPost("update/{userName}")]
+        [AuthorizeByRoles(Permissions.UserPermission)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update([FromRoute] string userName, [FromForm] EditUserViewModel user)
         {
@@ -62,6 +69,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
         
         [HttpGet]
+        [AuthorizeByRoles(Permissions.AdminPermission)]
         public async Task<IActionResult> GetUsers()
         {
             var user = await _userService.GetAllUsersAsync();
@@ -71,6 +79,7 @@ namespace OnlineGameStore.MVC.Controllers
         }
         
         [HttpPost("remove")]
+        [AuthorizeByRoles(Permissions.AdminPermission)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove([FromForm] string userName)
         {

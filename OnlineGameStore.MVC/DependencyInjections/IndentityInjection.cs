@@ -40,9 +40,9 @@ namespace OnlineGameStore.MVC.DependencyInjections
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
-                options.LoginPath = "/Authentication/LogIn";
-                options.LogoutPath = "/Authentication/LogOut";
-                options.AccessDeniedPath = "/Authentication/AccessDenied";
+                options.LoginPath = "/auth/login";
+                options.LogoutPath = "/auth/logout";
+                options.AccessDeniedPath = "/auth/access-denied";
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
