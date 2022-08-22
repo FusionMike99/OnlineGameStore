@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @if (User.IsInRoles(Permissions.ManagerPermission))
+                @if (User.IsHaveGameChangePermission(item.Publisher))
                 {
                     <div class="btn-group">
                         <a asp-action="Update" asp-route-gameKey="@item.Key" class="btn btn-warning">Update</a>

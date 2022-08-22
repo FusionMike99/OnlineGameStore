@@ -22,8 +22,23 @@ namespace OnlineGameStore.MVC.Infrastructure
         public static string GetPublisherName(this ClaimsPrincipal principal)
         {
             var publisherClaim = principal.FindFirst(Claims.Publisher);
-            
             return publisherClaim == null ? string.Empty : publisherClaim.Value;
+        }
+
+        public static bool IsHaveGameChangePermission(this ClaimsPrincipal principal, string checkingPublisherName)
+        {
+            if (principal.IsInRoles(Permissions.ManagerPermission))
+            {
+                return true;
+            }
+
+            if (!principal.IsInRole(Roles.Publisher))
+            {
+                return false;
+            }
+
+            var publisherName = principal.GetPublisherName();
+            return publisherName == checkingPublisherName;
         }
     }
 }

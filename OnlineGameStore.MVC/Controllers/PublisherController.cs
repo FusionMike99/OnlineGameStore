@@ -65,7 +65,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var publisher = await _publisherService.GetPublisherByCompanyNameAsync(companyName);
-
             if (publisher == null)
             {
                 return NotFound();

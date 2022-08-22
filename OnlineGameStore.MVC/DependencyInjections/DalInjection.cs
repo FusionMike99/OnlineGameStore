@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.DAL.Builders.PipelineBuilders;
 using OnlineGameStore.DAL.Builders.PipelineBuilders.Interfaces;
@@ -58,8 +59,9 @@ namespace OnlineGameStore.MVC.DependencyInjections
         private static void AddMongoDbRepositories(this IServiceCollection services, string connectionString)
         {
             var connection = new MongoUrlBuilder(connectionString);
-                        
-            var mongoClient = new MongoClient(connectionString);
+            var clientSettings = MongoClientSettings.FromConnectionString(connectionString);
+            clientSettings.LinqProvider = LinqProvider.V3;
+            var mongoClient = new MongoClient(clientSettings);
             var mongoDatabase = mongoClient.GetDatabase(connection.DatabaseName);
             
             services.AddScoped<ICategoryMongoDbRepository>(provider => 

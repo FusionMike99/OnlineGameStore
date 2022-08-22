@@ -25,7 +25,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             var order = await Entities.IncludeForOrders().FirstOrDefaultAsync(o => o.CustomerId == customerId
                                                                 && o.OrderState <= OrderState.InProgress
                                                                 && o.CancelledDate == null);
-
             if (order != null)
             {
                 return order;
@@ -45,10 +44,17 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
+            var orders = Entities.IncludeForOrders();
+            
             var predicate = OrderPredicate.GetPredicate<OrderEntity>(filterOrderModel);
-            var orders = await Entities.IncludeForOrders().Where(predicate).ToListAsync();
+            if (predicate != null)
+            {
+                orders = orders.Where(predicate);
+            }
+            
+            var ordersList = await orders.ToListAsync();
 
-            return orders;
+            return ordersList;
         }
 
         public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState)

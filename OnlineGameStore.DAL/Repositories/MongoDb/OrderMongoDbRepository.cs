@@ -26,11 +26,18 @@ namespace OnlineGameStore.DAL.Repositories.MongoDb
 
         public async Task<IEnumerable<OrderMongoDbEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
+            var orders = Query;
+            
             var predicate = OrderPredicate.GetPredicate<OrderMongoDbEntity>(filterOrderModel);
-            var orders = await Query.Where(predicate).ToListAsync();
-            orders.ForEach(SetOrderDetailAndShipper);
+            if (predicate != null)
+            {
+                orders = orders.Where(predicate);
+            }
+            
+            var ordersList = await orders.ToListAsync();
+            ordersList.ForEach(SetOrderDetailAndShipper);
 
-            return orders;
+            return ordersList;
         }
 
         private async void SetOrderDetailAndShipper(OrderMongoDbEntity o)

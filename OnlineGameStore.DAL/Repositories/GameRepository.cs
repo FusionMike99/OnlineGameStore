@@ -98,7 +98,7 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task<GameModel> GetByKeyAsync(string gameKey, bool increaseViews = false)
         {
             GameModel gameModel = null;
-            var gameTask = _gameRepository.GetByKeyAsync(gameKey);
+            var gameTask = _gameRepository.GetByKeyIncludeDeletedAsync(gameKey);
             var productTask = _productMongoDbRepository.GetByKeyAsync(gameKey);
             await Task.WhenAll(gameTask, productTask);
 

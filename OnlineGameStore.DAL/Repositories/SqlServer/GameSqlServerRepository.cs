@@ -33,7 +33,8 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<GameEntity> GetByKeyIncludeDeletedAsync(string gameKey)
         {
-            var game = await Entities.IncludeDeleted().FirstOrDefaultAsync(g => g.Key == gameKey);
+            var game = await Entities.IncludeDeleted().IncludeForGames()
+                .FirstOrDefaultAsync(g => g.Key == gameKey);
             
             return game;
         }

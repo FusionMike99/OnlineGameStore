@@ -46,14 +46,12 @@ namespace OnlineGameStore.MVC.Controllers
             const int quantity = 1;
             
             var game = await _gameService.GetGameByKeyAsync(gameKey);
-
             if (game == null)
             {
                 return NotFound();
             }
 
             var customerId = _customerIdAccessor.GetCustomerId();
-
             await _orderService.AddToOpenOrderAsync(customerId, game, quantity);
 
             return RedirectToAction(nameof(GetBasket));
@@ -89,14 +87,13 @@ namespace OnlineGameStore.MVC.Controllers
         
         [HttpGet("orders/history")]
         [AuthorizeByRoles(Permissions.ManagerPermission)]
-        public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = null)
+        public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = default)
         {
-            var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            filterOrderViewModel!.MaxDate ??= DateTime.UtcNow.AddDays(-30);
             
+            var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
             var orders = await _orderService.GetOrdersAsync(filterOrderModel);
-
             var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
-
             var orderListViewModel = new OrderListViewModel
             {
                 Orders = ordersViewModel,
@@ -158,9 +155,7 @@ namespace OnlineGameStore.MVC.Controllers
         public async Task<IActionResult> Pay(Guid orderId, PaymentMethod paymentMethod)
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
-
             var order = await _orderService.GetOrderByIdAsync(orderId);
-
             var result = paymentMethodStrategy.PaymentProcess(order);
 
             return result;
