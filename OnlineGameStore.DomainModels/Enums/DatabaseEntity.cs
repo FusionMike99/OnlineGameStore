@@ -3,6 +3,7 @@
     public enum DatabaseEntity
     {
         GameStore,
-        Northwind
+        Northwind,
+        All
     }
 }

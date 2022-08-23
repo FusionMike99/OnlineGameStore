@@ -27,9 +27,7 @@
         </li>
         @if (User.IsInRoles(Permissions.ManagerPermission))
         {
-          <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Order" asp-action="GetOrders">Orders History</a>
-          </li>
+          <partial name="./Navigation/_OrdersNav"/>
         }
         @if (User.IsInRoles(Permissions.AdminPermission))
         {

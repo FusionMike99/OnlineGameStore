@@ -32,7 +32,6 @@ namespace OnlineGameStore.MVC.Controllers
         public async Task<IActionResult> Create()
         {
             var editGenreViewModel = new EditGenreViewModel();
-
             await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
@@ -52,7 +51,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedGenre = _mapper.Map<GenreModel>(genre);
-
             await _genreService.CreateGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
@@ -69,7 +67,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var editGenreViewModel = _mapper.Map<EditGenreViewModel>(genre);
-
             await ConfigureEditGenreViewModel(editGenreViewModel);
 
             return View(editGenreViewModel);
@@ -89,12 +86,10 @@ namespace OnlineGameStore.MVC.Controllers
             if (!ModelState.IsValid)
             {
                 await ConfigureEditGenreViewModel(genre);
-
                 return View(genre);
             }
 
             var mappedGenre = _mapper.Map<GenreModel>(genre);
-
             await _genreService.EditGenreAsync(mappedGenre);
 
             return RedirectToAction(nameof(GetGenres));
@@ -121,7 +116,6 @@ namespace OnlineGameStore.MVC.Controllers
         public async Task<IActionResult> GetGenres()
         {
             var genres = await _genreService.GetAllParentGenresAsync();
-
             var genresViewModel = _mapper.Map<IEnumerable<GenreViewModel>>(genres);
 
             return View("Index", genresViewModel);
@@ -139,7 +133,6 @@ namespace OnlineGameStore.MVC.Controllers
         private async Task ConfigureEditGenreViewModel(EditGenreViewModel model)
         {
             var genres = await _genreService.GetAllWithoutGenreAsync(model.Id);
-            
             model.Genres = new SelectList(genres, nameof(GenreEntity.Id), nameof(GenreEntity.Name));
         }
 

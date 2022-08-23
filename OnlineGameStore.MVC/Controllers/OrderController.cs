@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Entities.Northwind;
 using OnlineGameStore.DomainModels.Constants;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
@@ -84,14 +85,15 @@ namespace OnlineGameStore.MVC.Controllers
 
             return RedirectToAction(nameof(GetBasket));
         }
-        
-        [HttpGet("orders/history")]
+
+        [HttpGet("orders")]
         [AuthorizeByRoles(Permissions.ManagerPermission)]
         public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = default)
         {
-            filterOrderViewModel!.MaxDate ??= DateTime.UtcNow.AddDays(-30);
-            
+            filterOrderViewModel!.MinDate ??= DateTime.UtcNow.AddDays(-30);
             var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            filterOrderModel.DatabaseEntity = DatabaseEntity.GameStore;
+            
             var orders = await _orderService.GetOrdersAsync(filterOrderModel);
             var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
             var orderListViewModel = new OrderListViewModel
@@ -100,9 +102,28 @@ namespace OnlineGameStore.MVC.Controllers
                 FilterOrderViewModel = filterOrderViewModel
             };
 
-            return View("Index", orderListViewModel);
+            return View("Orders", orderListViewModel);
         }
-        
+
+        [HttpGet("orders/history")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> GetOrdersHistory(FilterOrderViewModel filterOrderViewModel = default)
+        {
+            filterOrderViewModel!.MaxDate ??= DateTime.UtcNow.AddDays(-30);
+            var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            filterOrderModel.DatabaseEntity = DatabaseEntity.All;
+            
+            var orders = await _orderService.GetOrdersAsync(filterOrderModel);
+            var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
+            var orderListViewModel = new OrderListViewModel
+            {
+                Orders = ordersViewModel,
+                FilterOrderViewModel = filterOrderViewModel
+            };
+
+            return View("OrdersHistory", orderListViewModel);
+        }
+
         [HttpGet("orders/ship/{orderId:guid}")]
         public async Task<IActionResult> Ship(Guid orderId)
         {

@@ -29,7 +29,7 @@ namespace OnlineGameStore.Tests.Controllers
                 .ReturnsAsync(orders);
 
             // Act
-            var result = await sut.GetOrders(filterOrderViewModel);
+            var result = await sut.GetOrdersHistory(filterOrderViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()

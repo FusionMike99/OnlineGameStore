@@ -40,21 +40,6 @@ namespace OnlineGameStore.DAL.Repositories
             return orderModel;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
-        {
-            var sqlTask = _orderSqlServerRepository.GetOrdersAsync(filterOrderModel);
-            var mongoTask = _orderMongoDbRepository.GetOrdersAsync(filterOrderModel);
-            await Task.WhenAll(sqlTask, mongoTask);
-
-            var orders = await sqlTask;
-            var northwindOrder = await mongoTask;
-            var mappedOrders = _mapper.Map<IEnumerable<OrderModel>>(orders);
-            var mappedNorthwindOrders = _mapper.Map<IEnumerable<OrderModel>>(northwindOrder);
-            var concatOrders = mappedOrders.Concat(mappedNorthwindOrders);
-
-            return concatOrders;
-        }
-
         public async Task UpdateAsync(OrderModel orderModel)
         {
             var order = _mapper.Map<OrderEntity>(orderModel);
@@ -119,6 +104,52 @@ namespace OnlineGameStore.DAL.Repositories
             await _orderSqlServerRepository.SetCancelledDateAsync(orderId, cancelledDate);
         }
 
+        public Task<IEnumerable<OrderModel>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
+        {
+            if (filterOrderModel == null || filterOrderModel.DatabaseEntity == DatabaseEntity.All)
+            {
+                return GetAllOrdersAsync();
+            }
+
+            if (filterOrderModel.DatabaseEntity == DatabaseEntity.GameStore)
+            {
+                return GetSqlServerOrdersAsync();
+            }
+
+            return GetMongoDbOrdersAsync();
+        }
+
+        private async Task<IEnumerable<OrderModel>> GetAllOrdersAsync(FilterOrderModel filterOrderModel = null)
+        {
+            var sqlTask = _orderSqlServerRepository.GetOrdersAsync(filterOrderModel);
+            var mongoTask = _orderMongoDbRepository.GetOrdersAsync(filterOrderModel);
+            await Task.WhenAll(sqlTask, mongoTask);
+
+            var orders = await sqlTask;
+            var northwindOrder = await mongoTask;
+            var mappedOrders = _mapper.Map<IEnumerable<OrderModel>>(orders);
+            var mappedNorthwindOrders = _mapper.Map<IEnumerable<OrderModel>>(northwindOrder);
+            var concatOrders = mappedOrders.Concat(mappedNorthwindOrders);
+
+            return concatOrders;
+        }
+
+        private async Task<IEnumerable<OrderModel>> GetSqlServerOrdersAsync(FilterOrderModel filterOrderModel = null)
+        {
+            var orders = await _orderSqlServerRepository.GetOrdersAsync(filterOrderModel);
+            var mappedOrders = _mapper.Map<IEnumerable<OrderModel>>(orders);
+
+            return mappedOrders;
+        }
+
+        private async Task<IEnumerable<OrderModel>> GetMongoDbOrdersAsync(FilterOrderModel filterOrderModel = null)
+        {
+            var orders = await _orderMongoDbRepository.GetOrdersAsync(filterOrderModel);
+            var mappedOrders = _mapper.Map<IEnumerable<OrderModel>>(orders);
+
+            return mappedOrders;
+        }
+
         private async Task IncreaseGamesQuantities(IEnumerable<OrderDetailModel> orderDetails)
         {
             foreach (var orderDetail in orderDetails)
@@ -137,7 +168,7 @@ namespace OnlineGameStore.DAL.Repositories
 
         private async Task<IEnumerable<OrderModel>> GetOrdersWithStatus(OrderState orderState)
         {
-            var orders = await _orderSqlServerRepository.GetOrdersWithStatusAsync(OrderState.InProgress);
+            var orders = await _orderSqlServerRepository.GetOrdersWithStatusAsync(orderState);
             var orderModels = _mapper.Map<IEnumerable<OrderModel>>(orders);
 
             return orderModels;
