@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.MVC.DependencyInjections;
 using OnlineGameStore.MVC.Infrastructure;
@@ -22,19 +21,19 @@ namespace OnlineGameStore.MVC
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-
-        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionStrings = new Dictionary<string, string>
             {
-                ["GameStore"] = Configuration.GetConnectionString("DockerSqlServerConnection"),
-                ["Northwind"] = Configuration.GetConnectionString("NorthwindConnection")
+                ["GameStore"] = _configuration.GetConnectionString("DockerSqlServerConnection"),
+                ["Northwind"] = _configuration.GetConnectionString("NorthwindConnection")
             };
             
             services.AddRepositories(connectionStrings);
@@ -62,7 +61,7 @@ namespace OnlineGameStore.MVC
             {
                 var supportedCultures = new[]
                 {
-                    new CultureInfo("en"),
+                    //new CultureInfo("en"),
                     new CultureInfo("uk"),
                     new CultureInfo("ru-UA")
                 };
@@ -90,6 +89,8 @@ namespace OnlineGameStore.MVC
             }
 
             app.UseStatusCodePagesWithReExecute("/error/{0}");
+
+            app.UseRequestLocalization();
             
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -109,9 +110,6 @@ namespace OnlineGameStore.MVC
 
             app.UseStaticFiles();
             app.UseRouting();
-
-            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>()?.Value;
-            app.UseRequestLocalization(localizationOptions);
             
             app.UseAuthentication();
             app.UseAuthorization();

@@ -28,7 +28,6 @@ namespace OnlineGameStore.Identity.Services
             
             var result = await _signInManager.PasswordSignInAsync(user.UserName, loginModel.Password,
                 loginModel.RememberMe, lockoutOnFailure: false);
-
             if (result.IsLockedOut)
             {
                 throw new UserException("This account is locked out");

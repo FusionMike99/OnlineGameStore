@@ -21,6 +21,8 @@ namespace OnlineGameStore.DAL.Abstractions.Interfaces
         Task<OrderModel> ChangeStatusToInProcessAsync(Guid customerId);
 
         Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId);
+        
+        Task<OrderModel> ChangeStatusToShippedAsync(Guid orderId);
 
         Task<OrderModel> GetOrderByIdAsync(Guid orderId);
 

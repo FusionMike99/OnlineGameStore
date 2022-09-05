@@ -136,7 +136,7 @@ namespace OnlineGameStore.DAL.Repositories
 
             if (gameModel != null && increaseViews)
             {
-                IncreaseViewsNumber(gameModel);
+                await IncreaseViewsNumberAsync(gameModel);
             }
 
             return gameModel;
@@ -186,19 +186,19 @@ namespace OnlineGameStore.DAL.Repositories
             }
         }
 
-        private void IncreaseViewsNumber(GameModel gameModel)
+        private async Task IncreaseViewsNumberAsync(GameModel gameModel)
         {
             gameModel.ViewsNumber++;
             
             if (gameModel.DatabaseEntity is DatabaseEntity.GameStore)
             {
                 var game = _mapper.Map<GameEntity>(gameModel);
-                _gameRepository.UpdateAsync(game);
+                await _gameRepository.UpdateAsync(game);
             }
             else
             {
                 var product = _mapper.Map<ProductEntity>(gameModel);
-                _productMongoDbRepository.UpdateAsync(product);
+                await _productMongoDbRepository.UpdateAsync(product);
             }
         }
         

@@ -32,7 +32,7 @@ $(function () {
         let form = document.forms['addCommentForm'];
         let replyToIdInput = form['ReplyToId'];
         let isQuotedInput = form['IsQuoted'];
-        let id = card.id.replace(/^\D+/g, '');
+        let id = card.id.replace(/comment/g, '');
         if (replyToIdInput.value === '') {
             card.classList.add('bg-warning');
             button.textContent = 'Not ' + commentKindValue;

@@ -74,6 +74,14 @@ namespace OnlineGameStore.DAL.Repositories
             return orderModel;
         }
 
+        public async Task<OrderModel> ChangeStatusToShippedAsync(Guid orderId)
+        {
+            var order = await _orderSqlServerRepository.ChangeStatusToShippedAsync(orderId);
+            var orderModel = _mapper.Map<OrderModel>(order);
+
+            return orderModel;
+        }
+
         public async Task<OrderModel> GetOrderByIdAsync(Guid orderId)
         {
             var order = await _orderSqlServerRepository.GetOrderByIdAsync(orderId);

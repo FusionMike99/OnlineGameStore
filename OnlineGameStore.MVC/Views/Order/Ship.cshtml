@@ -13,11 +13,6 @@
         <div class="container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         
-            <input asp-for="CustomerId"/>
-            <input asp-for="OrderDate"/>
-            <input asp-for="CancelledDate"/>
-            <input asp-for="OrderState"/>
-        
             <div class="row g-3 my-3">
                 <div class="col">
                     <div class="input-group">
@@ -68,14 +63,6 @@
                     <span asp-validation-for="ShipPostalCode" class="text-danger"></span>
                 </div>
             </div>
-        
-            <div class="my-3">
-                <div class="input-group">
-                    <label asp-for="ShipCountry" class="input-group-text"></label>
-                    <input asp-for="ShipCountry" class="form-control" />
-                </div>
-                <span asp-validation-for="ShipCountry" class="text-danger"></span>
-            </div>
             
             <div class="row g-3 my-3">
                 <div class="col">
@@ -88,10 +75,10 @@
                 </div>
                 <div class="col">
                     <div class="input-group">
-                        <input asp-for="ShippedDate" class="form-control text-end" readonly="readonly"/>
-                        <label asp-for="ShippedDate" class="input-group-text"></label>
+                        <input asp-for="ShipCountry" class="form-control" />
+                        <label asp-for="ShipCountry" class="input-group-text"></label>
                     </div>
-                    <span asp-validation-for="ShippedDate" class="text-danger"></span>
+                    <span asp-validation-for="ShipCountry" class="text-danger"></span>
                 </div>
             </div>
         </div>

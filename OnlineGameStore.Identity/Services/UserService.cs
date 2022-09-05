@@ -22,40 +22,40 @@ namespace OnlineGameStore.Identity.Services
     {
         private readonly ILogger<UserService> _logger;
         private readonly UserManager<UserEntity> _userManager;
+        private readonly SignInManager<UserEntity> _signInManager;
         private readonly IPublisherService _publisherService;
         private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
         public UserService(ILogger<UserService> logger, UserManager<UserEntity> userManager,
-            IMapper mapper, IPublisherService publisherService, IRoleService roleService)
+            SignInManager<UserEntity> signInManager, IPublisherService publisherService,
+            IRoleService roleService, IMapper mapper)
         {
             _logger = logger;
             _userManager = userManager;
-            _mapper = mapper;
+            _signInManager = signInManager;
             _publisherService = publisherService;
             _roleService = roleService;
+            _mapper = mapper;
         }
 
         public async Task CreateUserAsync(RegisterModel registerModel)
         {
             var mappedUser = _mapper.Map<UserEntity>(registerModel);
             var result = await _userManager.CreateAsync(mappedUser, registerModel.Password);
-
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description).ToArray();
-
-                throw new UserException(errors);
-            }
+            ValidateUser(result);
+            await _roleService.AttachRoleToUserAsync(mappedUser.UserName, Roles.User.ToString());
         }
 
-        public async Task<UserModel> EditUserAsync(string userName, UserModel userModel)
+        public async Task<UserModel> EditUserAsync(string userName, UserModel userModel, bool isOwnProfile = false)
         {
             var currentUser = await _userManager.FindByNameAsync(userName);
             currentUser.Email = userModel.Email;
             currentUser.UserName = userModel.UserName;
             currentUser.PublisherId = userModel.PublisherId;
-            await _userManager.UpdateAsync(currentUser);
+            
+            var result = await _userManager.UpdateAsync(currentUser);
+            ValidateUser(result);
             await _roleService.AttachRoleToUserAsync(currentUser.UserName, userModel.Role);
             
             if(userModel.Role == Roles.Publisher.ToString())
@@ -67,13 +67,17 @@ namespace OnlineGameStore.Identity.Services
                 await RemovePublisherClaim(currentUser);
             }
 
+            if (isOwnProfile)
+            {
+                await _signInManager.RefreshSignInAsync(currentUser);
+            }
+
             return userModel;
         }
 
         public async Task DeleteUserAsync(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
-
             if (user == null)
             {
                 return;
@@ -109,6 +113,17 @@ namespace OnlineGameStore.Identity.Services
                 nameof(UserService), nameof(BanUser), userName, banPeriod);
 
             return message;
+        }
+
+        private static void ValidateUser(IdentityResult result)
+        {
+            if (result.Succeeded)
+            {
+                return;
+            }
+            
+            var errors = result.Errors.Select(e => e.Description).ToArray();
+            throw new UserException(errors);
         }
 
         private async Task SetPublisherClaim(UserEntity user, Guid? publisherId)

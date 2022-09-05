@@ -6,6 +6,7 @@
         Open,
         InProgress,
         Cancelled,
-        Closed
+        Closed,
+        Shipped
     }
 }

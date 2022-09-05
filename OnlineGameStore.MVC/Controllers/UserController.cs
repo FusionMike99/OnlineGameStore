@@ -63,7 +63,8 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedUser = _mapper.Map<UserModel>(user);
-            await _userService.EditUserAsync(userName, mappedUser);
+            var isEditOwnProfile = userName == User.Identity.Name;
+            await _userService.EditUserAsync(userName, mappedUser, isEditOwnProfile);
 
             return RedirectToAction(nameof(GetUsers));
         }

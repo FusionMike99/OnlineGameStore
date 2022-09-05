@@ -125,6 +125,17 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             return order;
         }
 
+        public async Task<OrderEntity> ChangeStatusToShippedAsync(Guid orderId)
+        {
+            var order = await GetOrderByIdAsync(orderId);
+            CheckOrderExisting(order);
+            order.OrderState = OrderState.Shipped;
+            order.ShippedDate = DateTime.UtcNow;
+            await UpdateAsync(order);
+
+            return order;
+        }
+
         public async Task<OrderEntity> GetOrderByIdAsync(Guid orderId)
         {
             var order = await Entities.IncludeForOrders().FirstOrDefaultAsync(o => o.Id == orderId);

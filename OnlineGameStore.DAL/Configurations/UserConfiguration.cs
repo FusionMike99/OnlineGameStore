@@ -9,8 +9,8 @@ namespace OnlineGameStore.DAL.Configurations
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
             builder.HasOne(u => u.Publisher)
-                .WithOne(p => p.User)
-                .HasForeignKey<UserEntity>(u => u.PublisherId);
+                .WithMany(p => p.Users)
+                .HasForeignKey(u => u.PublisherId);
         }
     }
 }

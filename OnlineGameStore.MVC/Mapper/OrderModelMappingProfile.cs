@@ -27,7 +27,10 @@ namespace OnlineGameStore.MVC.Mapper
             CreateMap<FilterOrderModel, FilterOrderViewModel>()
                 .ReverseMap();
 
-            CreateMap<OrderModel, ShipOrderViewModel>()
+            CreateMap<OrderModel, ShipOrderModel>()
+                .ReverseMap();
+            
+            CreateMap<ShipOrderModel, ShipOrderViewModel>()
                 .ForMember(so => so.Shippers,
                     opts => opts.Ignore())
                 .ReverseMap();

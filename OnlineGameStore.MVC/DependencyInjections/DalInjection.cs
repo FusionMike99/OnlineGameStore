@@ -40,7 +40,11 @@ namespace OnlineGameStore.MVC.DependencyInjections
 
         private static void AddSqlServerRepositories(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+                options.EnableSensitiveDataLogging();
+            });
             
             services.AddScoped<ICommentSqlServerRepository, CommentSqlServerRepository>();
             services.AddScoped<IGameSqlServerRepository, GameSqlServerRepository>();
