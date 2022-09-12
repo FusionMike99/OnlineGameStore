@@ -23,9 +23,8 @@ namespace OnlineGameStore.MVC.Models
         
         public SelectList Roles { get; set; }
         
-        [Required]
         [Display(Name = "Select Publisher")]
-        public Guid SelectedPublisher { get; set; }
+        public Guid? SelectedPublisher { get; set; }
         
         public SelectList Publishers { get; set; }
     }

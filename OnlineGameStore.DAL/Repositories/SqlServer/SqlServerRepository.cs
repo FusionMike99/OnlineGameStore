@@ -65,7 +65,9 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             var exist = await Entities.IncludeDeleted().FirstOrDefaultAsync(m => m.Id == entity.Id);
             var oldEntity = exist.DeepClone();
 
-            foreach (var navEntity in Context.Entry(entity).Navigations)
+            Context.Entry(exist).CurrentValues.SetValues(entity);
+            
+            foreach (var navEntity in Context.Entry(entity).Collections)
             {
                 var currentValue = navEntity.CurrentValue;
                 if (currentValue == null || currentValue is ICollection { Count: 0 })
@@ -74,12 +76,11 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
                 }
 
                 var navEntityName = navEntity.Metadata.Name;
-                var navExist = Context.Entry(exist).Navigation(navEntityName);
+                var navExist = Context.Entry(exist).Collection(navEntityName);
                 await navExist.LoadAsync();
-                navExist.CurrentValue = navEntity.CurrentValue;
+                navExist.CurrentValue = currentValue;
             }
-
-            Context.Entry(exist).CurrentValues.SetValues(entity);
+            
             await Context.SaveChangesAsync();
             
             _logger.LogInformation("Action: {Action}\nEntity Type: {EntityType}\nOld Object: {@OldObject}\nNew Object: {@NewObject}",

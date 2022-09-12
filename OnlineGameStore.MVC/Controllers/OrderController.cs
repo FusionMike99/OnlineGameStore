@@ -159,6 +159,45 @@ namespace OnlineGameStore.MVC.Controllers
 
             return RedirectToAction(nameof(Make));
         }
+        
+        [HttpGet("orders/update/{orderId:guid}")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> Update([FromRoute] Guid orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var editOrderViewModel = _mapper.Map<EditOrderViewModel>(order);
+            await ConfigureEditOrderViewModel(editOrderViewModel);
+
+            return View(editOrderViewModel);
+        }
+        
+        [HttpPost("orders/update/{orderId:guid}")]
+        [AuthorizeByRoles(Permissions.PublisherPermission)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(Guid orderId, [FromForm] EditOrderViewModel order)
+        {
+            if (!ModelState.IsValid)
+            {
+                await ConfigureEditOrderViewModel(order);
+
+                return View(order);
+            }
+
+            if (orderId != order.OrderId)
+            {
+                return BadRequest();
+            }
+
+            var mappedOrder = _mapper.Map<OrderModel>(order);
+            await _orderService.EditOrderAsync(mappedOrder);
+
+            return RedirectToAction("GetOrders");
+        }
 
         [HttpGet("orders/make")]
         public async Task<IActionResult> Make()
@@ -203,6 +242,14 @@ namespace OnlineGameStore.MVC.Controllers
             var shippers = await _shipperService.GetAllShippersAsync();
 
             shipOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
+                nameof(ShipperEntity.CompanyName));
+        }
+
+        private async Task ConfigureEditOrderViewModel(EditOrderViewModel editOrderViewModel)
+        {
+            var shippers = await _shipperService.GetAllShippersAsync();
+
+            editOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
                 nameof(ShipperEntity.CompanyName));
         }
     }

@@ -105,6 +105,9 @@
                 </td>
                 <td>
                     <div class="btn-group">
+                        <a asp-action="Update" asp-route-orderId="@item.Id" class="btn btn-warning">
+                            Update
+                        </a>
                         @if (item.OrderState is OrderState.Closed)
                         {
                             <a asp-action="ChangeStatusToShipped" asp-route-orderId="@item.Id" class="btn btn-warning">

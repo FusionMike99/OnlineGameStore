@@ -7,7 +7,7 @@
 <h2>Edit @Model.UserName</h2>
 <hr/>
 <div class="col-4 mx-auto">
-    <form asp-action="Update">
+    <form asp-action="Update" asp-route-returnUrl="@ViewContext.HttpContext.Request.Query["returnUrl"]">
         <div class="container">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         
@@ -40,7 +40,9 @@
             <div class="my-3">
                 <div class="input-group">
                     <label asp-for="SelectedPublisher" class="input-group-text"></label>
-                    <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select"></select>
+                    <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select">
+                        <option value="">None</option>
+                    </select>
                 </div>
                 <span asp-validation-for="SelectedPublisher" class="text-danger"></span>
             </div>

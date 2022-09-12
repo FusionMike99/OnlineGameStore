@@ -33,7 +33,7 @@ namespace OnlineGameStore.MVC.Controllers
         
         [HttpGet("update/{userName}")]
         [AuthorizeByRoles(Permissions.UserPermission)]
-        public async Task<IActionResult> Update([FromRoute] string userName)
+        public async Task<IActionResult> Update([FromRoute] string userName, [FromQuery] string returnUrl = default)
         {
             if (!User.IsInRole(Roles.Admin) && User.Identity.Name != userName)
             {
@@ -55,7 +55,8 @@ namespace OnlineGameStore.MVC.Controllers
         [HttpPost("update/{userName}")]
         [AuthorizeByRoles(Permissions.UserPermission)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update([FromRoute] string userName, [FromForm] EditUserViewModel user)
+        public async Task<IActionResult> Update([FromRoute] string userName, [FromForm] EditUserViewModel user,
+            [FromQuery] string returnUrl = default)
         {
             if (!ModelState.IsValid)
             {
@@ -66,7 +67,12 @@ namespace OnlineGameStore.MVC.Controllers
             var isEditOwnProfile = userName == User.Identity.Name;
             await _userService.EditUserAsync(userName, mappedUser, isEditOwnProfile);
 
-            return RedirectToAction(nameof(GetUsers));
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("GetGames", "Game");
         }
         
         [HttpGet]
