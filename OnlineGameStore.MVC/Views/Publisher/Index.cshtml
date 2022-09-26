@@ -8,9 +8,14 @@
 
 <h1>Publishers</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Add New Publisher</a>
-</p>
+
+@if (User.IsInRoles(Permissions.ManagerPermission))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Add New Publisher</a>
+    </p>
+}
+
 <table class="table">
     <thead>
     <tr>

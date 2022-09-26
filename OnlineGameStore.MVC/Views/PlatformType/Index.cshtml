@@ -6,9 +6,14 @@
 
 <h1>Platform types</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Add New Platform type</a>
-</p>
+
+@if (User.IsInRoles(Permissions.ManagerPermission))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Add New Platform type</a>
+    </p>
+}
+
 <table class="table">
     <thead>
     <tr>
