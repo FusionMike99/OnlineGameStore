@@ -150,7 +150,8 @@
                     {
                         <tr>
                             <td>
-                                <a asp-controller="Game" asp-action="GetGameByKey" 
+                                <input asp-for="@Model.OrderDetails[i].GameKey"/>
+                                <a asp-controller="Game" asp-action="GetGameByKey"
                                    asp-route-gameKey="@Model.OrderDetails[i].GameKey">
                                     @Model.OrderDetails[i].ProductName
                                 </a>

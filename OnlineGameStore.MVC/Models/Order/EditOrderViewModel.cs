@@ -15,12 +15,15 @@ namespace OnlineGameStore.MVC.Models
         public Guid CustomerId { get; set; }
         
         [Display(Name = "Order Date")]
+        [DataType(DataType.Date)]
         public DateTime OrderDate { get; set; }
         
         [Display(Name = "Cancelled Date")]
+        [DataType(DataType.Date)]
         public DateTime? CancelledDate { get; set; }
         
         [Display(Name = "Shipped Date")]
+        [DataType(DataType.Date)]
         public DateTime? ShippedDate { get; set; }
         
         [Required]

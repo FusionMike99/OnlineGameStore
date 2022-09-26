@@ -69,7 +69,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
             var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == product.Key);
-
             if (existOrderDetail != null)
             {
                 var newQuantity = (short)(existOrderDetail.Quantity + quantity);
@@ -95,7 +94,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
             var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == gameKey);
-
             if (existOrderDetail == null)
             {
                 return;

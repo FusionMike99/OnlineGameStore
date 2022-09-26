@@ -43,6 +43,8 @@ namespace OnlineGameStore.DAL.Repositories
         public async Task UpdateAsync(OrderModel orderModel)
         {
             var order = _mapper.Map<OrderEntity>(orderModel);
+            await RefreshGamesQuantities(orderModel);
+            RemoveZeroQuantityOrderDetails(order);
             await _orderSqlServerRepository.UpdateAsync(order);
         }
 
@@ -86,6 +88,7 @@ namespace OnlineGameStore.DAL.Repositories
         {
             var order = await _orderSqlServerRepository.GetOrderByIdAsync(orderId);
             var orderModel = _mapper.Map<OrderModel>(order);
+            await SetOrderDetailsGames(orderModel.OrderDetails);
 
             return orderModel;
         }
@@ -125,6 +128,59 @@ namespace OnlineGameStore.DAL.Repositories
             }
 
             return GetMongoDbOrdersAsync();
+        }
+
+        private static void RemoveZeroQuantityOrderDetails(OrderEntity order)
+        {
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                if (orderDetail.Quantity > 0)
+                {
+                    continue;
+                }
+
+                order.OrderDetails.Remove(orderDetail);
+            }
+        }
+
+        private async Task RefreshGamesQuantities(OrderModel orderModel)
+        {
+            var oldOrderDetails = (await GetOrderByIdAsync(orderModel.Id)).OrderDetails;
+            if (orderModel.OrderState >= OrderState.InProgress)
+            {
+                var decreaseOrderDetails = new List<OrderDetailModel>();
+                var increaseOrderDetails = new List<OrderDetailModel>();
+
+                foreach (var orderDetail in orderModel.OrderDetails)
+                {
+                    var oldOrderDetail = oldOrderDetails.FirstOrDefault(od => od.Id == orderDetail.Id);
+                    if (oldOrderDetail == null)
+                    {
+                        continue;
+                    }
+
+                    var quantityDiff = (short)(orderDetail.Quantity - oldOrderDetail.Quantity);
+                    if (quantityDiff > 0)
+                    {
+                        decreaseOrderDetails.Add(new OrderDetailModel
+                        {
+                            GameKey = orderDetail.GameKey,
+                            Quantity = quantityDiff
+                        });
+                    }
+                    else if (quantityDiff < 0)
+                    {
+                        increaseOrderDetails.Add(new OrderDetailModel
+                        {
+                            GameKey = orderDetail.GameKey,
+                            Quantity = (short)(quantityDiff * -1)
+                        });
+                    }
+                }
+
+                await DecreaseGamesQuantities(decreaseOrderDetails);
+                await IncreaseGamesQuantities(increaseOrderDetails);
+            }
         }
 
         private async Task<IEnumerable<OrderModel>> GetAllOrdersAsync(FilterOrderModel filterOrderModel = null)

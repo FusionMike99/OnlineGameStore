@@ -5,6 +5,7 @@ namespace OnlineGameStore.MVC.Models
 {
     public class EditOrderDetailViewModel
     {
+        [UIHint("HiddenInput")]
         public string GameKey { get; set; }
 
         [Display(Name = "Product")]

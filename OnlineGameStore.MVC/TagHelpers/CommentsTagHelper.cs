@@ -134,16 +134,19 @@ namespace OnlineGameStore.MVC.TagHelpers
                             cardBodyTagBuilder.InnerHtml.AppendHtml(removeLinkTagBuilder);
                         }
                     }
-                    
-                    var banLinkHref = urlHelper.Action("Ban", "User",
-                        new { userName = comment.Name, returnUrl = UrlValues["return"] });
-                    
-                    var banLinkTagBuilder = new TagBuilder("a");
-                    banLinkTagBuilder.AddCssClass("btn btn-outline-danger");
-                    banLinkTagBuilder.Attributes.Add("href", banLinkHref);
-                    banLinkTagBuilder.InnerHtml.Append("Ban");
 
-                    cardBodyTagBuilder.InnerHtml.AppendHtml(banLinkTagBuilder);
+                    if (ViewContext.HttpContext.User.IsInRoles(Permissions.ModeratorPermission))
+                    {
+                        var banLinkHref = urlHelper.Action("Ban", "User",
+                            new { userName = comment.Name, returnUrl = UrlValues["return"] });
+
+                        var banLinkTagBuilder = new TagBuilder("a");
+                        banLinkTagBuilder.AddCssClass("btn btn-outline-danger");
+                        banLinkTagBuilder.Attributes.Add("href", banLinkHref);
+                        banLinkTagBuilder.InnerHtml.Append("Ban");
+
+                        cardBodyTagBuilder.InnerHtml.AppendHtml(banLinkTagBuilder);
+                    }
 
                     cardTagBuilder.InnerHtml.AppendHtml(cardBodyTagBuilder);
 
