@@ -56,6 +56,12 @@ namespace OnlineGameStore.Identity.Services
             
             var result = await _userManager.UpdateAsync(currentUser);
             ValidateUser(result);
+
+            if (string.IsNullOrWhiteSpace(userModel.Role))
+            {
+                return userModel;
+            }
+            
             await _roleService.AttachRoleToUserAsync(currentUser.UserName, userModel.Role);
             
             if(userModel.Role == Roles.Publisher.ToString())

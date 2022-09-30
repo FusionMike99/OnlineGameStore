@@ -29,23 +29,27 @@
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             
-            <div class="my-3">
-                <div class="input-group">
-                    <label asp-for="SelectedRole" class="input-group-text"></label>
-                    <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-select"></select>
+            @if (User.IsInRoles(Permissions.AdminPermission))
+            {
+                <div class="my-3">
+                    <div class="input-group">
+                        <label asp-for="SelectedRole" class="input-group-text"></label>
+                        <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-select"></select>
+                    </div>
+                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="SelectedRole" class="text-danger"></span>
-            </div>
+
+                <div class="my-3">
+                    <div class="input-group">
+                        <label asp-for="SelectedPublisher" class="input-group-text"></label>
+                        <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="SelectedPublisher" class="text-danger"></span>
+                </div>
+            }
             
-            <div class="my-3">
-                <div class="input-group">
-                    <label asp-for="SelectedPublisher" class="input-group-text"></label>
-                    <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select">
-                        <option value="">None</option>
-                    </select>
-                </div>
-                <span asp-validation-for="SelectedPublisher" class="text-danger"></span>
-            </div>
         </div>
         
         <div class="col-1 mx-auto">
