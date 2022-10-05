@@ -27,6 +27,8 @@ namespace OnlineGameStore.DAL.Entities
         public string Phone { get; set; }
         
         public string Fax { get; set; }
+        
+        public ICollection<UserEntity> Users { get; set; }
 
         public ICollection<GameEntity> Games { get; set; }
     }

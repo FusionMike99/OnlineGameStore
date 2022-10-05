@@ -22,6 +22,8 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer.Interfaces
         Task<OrderEntity> ChangeStatusToInProcessAsync(Guid customerId);
 
         Task<OrderEntity> ChangeStatusToClosedAsync(Guid orderId);
+        
+        Task<OrderEntity> ChangeStatusToShippedAsync(Guid orderId);
 
         Task<OrderEntity> GetOrderByIdAsync(Guid orderId);
 

@@ -10,6 +10,7 @@ using OnlineGameStore.DAL.Builders.PipelineBuilders.Interfaces;
 using OnlineGameStore.DAL.Entities.Northwind;
 using OnlineGameStore.DAL.Repositories.MongoDb.Interfaces;
 using OnlineGameStore.DomainModels;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.ExtensionsUtility.Extensions;
 
@@ -49,10 +50,16 @@ namespace OnlineGameStore.DAL.Repositories.MongoDb
 
         public async Task<IEnumerable<ProductEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
+            var products = Query;
+            
             var predicate = await GetNorthwindPredicate(sortFilterModel);
-            var products = await Query.Where(predicate).ToListAsync();
+            if (predicate != null)
+            {
+                products = products.Where(predicate);
+            }
+            var productsList = await products.ToListAsync();
 
-            return products;
+            return productsList;
         }
 
         private async Task SetGameKeyAndDateAddedPerUnitAsync(ProductEntity product)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Abstractions.Interfaces;
 using OnlineGameStore.DomainModels.Models;
@@ -11,10 +13,12 @@ namespace OnlineGameStore.BLL.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
+            _mapper = mapper;
         }
 
         public async Task<OrderModel> GetOpenOrInProcessOrderAsync(Guid customerId)
@@ -38,6 +42,15 @@ namespace OnlineGameStore.BLL.Services
             return order;
         }
 
+        public async Task<OrderModel> ShipOrderAsync(ShipOrderModel shipOrderModel)
+        {
+            var orderModel = await GetOrderByIdAsync(shipOrderModel.Id);
+            var newOrder = _mapper.Map(shipOrderModel, orderModel);
+            await _orderRepository.UpdateAsync(newOrder);
+
+            return newOrder;
+        }
+
         public async Task AddToOpenOrderAsync(Guid customerId, GameModel product, short quantity)
         {
             await _orderRepository.AddProductToOrderAsync(customerId, product, quantity);
@@ -58,6 +71,13 @@ namespace OnlineGameStore.BLL.Services
         public async Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId)
         {
             var order = await _orderRepository.ChangeStatusToClosedAsync(orderId);
+
+            return order;
+        }
+
+        public async Task<OrderModel> ChangeStatusToShippedAsync(Guid orderId)
+        {
+            var order = await _orderRepository.ChangeStatusToShippedAsync(orderId);
 
             return order;
         }

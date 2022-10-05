@@ -89,7 +89,7 @@
 
 <div class="btn-toolbar" role="toolbar" aria-label="Details genre toolbar">
     <div class="btn-group me-2" role="group" aria-label="Operation group">
-        @if (Model.DatabaseEntity != DatabaseEntity.Northwind)
+        @if (User.IsInRoles(Permissions.ManagerPermission) && Model.DatabaseEntity != DatabaseEntity.Northwind)
         {
             <a asp-action="Update" asp-route-companyName="@Model.CompanyName" class="btn btn-warning">Update</a>
             <form asp-action="Remove" method="post">

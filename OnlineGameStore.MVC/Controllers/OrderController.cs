@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineGameStore.BLL.Services.Interfaces;
 using OnlineGameStore.DAL.Entities.Northwind;
+using OnlineGameStore.DomainModels.Constants;
+using OnlineGameStore.DomainModels.Enums;
 using OnlineGameStore.DomainModels.Models;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
@@ -45,14 +47,12 @@ namespace OnlineGameStore.MVC.Controllers
             const int quantity = 1;
             
             var game = await _gameService.GetGameByKeyAsync(gameKey);
-
             if (game == null)
             {
                 return NotFound();
             }
 
             var customerId = _customerIdAccessor.GetCustomerId();
-
             await _orderService.AddToOpenOrderAsync(customerId, game, quantity);
 
             return RedirectToAction(nameof(GetBasket));
@@ -85,68 +85,125 @@ namespace OnlineGameStore.MVC.Controllers
 
             return RedirectToAction(nameof(GetBasket));
         }
-        
-        [HttpGet("orders/history")]
-        public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = null)
+
+        [HttpGet("orders")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> GetOrders(FilterOrderViewModel filterOrderViewModel = default)
         {
+            filterOrderViewModel!.MinDate ??= DateTime.UtcNow.AddDays(-30);
             var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            filterOrderModel.DatabaseEntity = DatabaseEntity.GameStore;
             
             var orders = await _orderService.GetOrdersAsync(filterOrderModel);
-
             var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
-
             var orderListViewModel = new OrderListViewModel
             {
                 Orders = ordersViewModel,
                 FilterOrderViewModel = filterOrderViewModel
             };
 
-            return View("Index", orderListViewModel);
+            return View("Orders", orderListViewModel);
         }
-        
+
+        [HttpGet("orders/{orderId:guid}/change-status/shipped")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> ChangeStatusToShipped(Guid orderId)
+        {
+            await _orderService.ChangeStatusToShippedAsync(orderId);
+
+            return RedirectToAction("GetOrders");
+        }
+
+        [HttpGet("orders/history")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> GetOrdersHistory(FilterOrderViewModel filterOrderViewModel = default)
+        {
+            filterOrderViewModel!.MaxDate ??= DateTime.UtcNow.AddDays(-30);
+            var filterOrderModel = _mapper.Map<FilterOrderModel>(filterOrderViewModel);
+            filterOrderModel.DatabaseEntity = DatabaseEntity.All;
+            
+            var orders = await _orderService.GetOrdersAsync(filterOrderModel);
+            var ordersViewModel = _mapper.Map<IEnumerable<OrderViewModel>>(orders);
+            var orderListViewModel = new OrderListViewModel
+            {
+                Orders = ordersViewModel,
+                FilterOrderViewModel = filterOrderViewModel
+            };
+
+            return View("OrdersHistory", orderListViewModel);
+        }
+
         [HttpGet("orders/ship/{orderId:guid}")]
         public async Task<IActionResult> Ship(Guid orderId)
         {
-            var order = await _orderService.GetOrderByIdAsync(orderId);
+            var shipOrderViewModel = new ShipOrderViewModel();
+            await ConfigureShipOrderViewModel(shipOrderViewModel);
 
+            return View(shipOrderViewModel);
+        }
+
+        [HttpPost("orders/ship/{orderId:guid}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Ship(Guid orderId, [FromForm] ShipOrderViewModel shipOrderViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                await ConfigureShipOrderViewModel(shipOrderViewModel);
+
+                return View(shipOrderViewModel);
+            }
+
+            var shipOrderModel = _mapper.Map<ShipOrderModel>(shipOrderViewModel);
+            shipOrderModel.Id = orderId;
+            await _orderService.ShipOrderAsync(shipOrderModel);
+
+            return RedirectToAction(nameof(Make));
+        }
+        
+        [HttpGet("orders/update/{orderId:guid}")]
+        [AuthorizeByRoles(Permissions.ManagerPermission)]
+        public async Task<IActionResult> Update([FromRoute] Guid orderId)
+        {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
             if (order == null)
             {
                 return NotFound();
             }
 
-            var editOrderViewModel = _mapper.Map<ShipOrderViewModel>(order);
-
-            await ConfigureShipOrderViewModel(editOrderViewModel);
+            var editOrderViewModel = _mapper.Map<EditOrderViewModel>(order);
+            await ConfigureEditOrderViewModel(editOrderViewModel);
 
             return View(editOrderViewModel);
         }
-
-        [HttpPost("orders/ship/{orderId:guid}")]
+        
+        [HttpPost("orders/update/{orderId:guid}")]
+        [AuthorizeByRoles(Permissions.PublisherPermission)]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Ship(Guid orderId, [FromForm] ShipOrderViewModel order)
+        public async Task<IActionResult> Update(Guid orderId, [FromForm] EditOrderViewModel order)
         {
             if (!ModelState.IsValid)
             {
-                await ConfigureShipOrderViewModel(order);
+                await ConfigureEditOrderViewModel(order);
 
                 return View(order);
             }
 
-            order.Id = orderId;
-            var mappedOrder = _mapper.Map<OrderModel>(order);
+            if (orderId != order.OrderId)
+            {
+                return BadRequest();
+            }
 
+            var mappedOrder = _mapper.Map<OrderModel>(order);
             await _orderService.EditOrderAsync(mappedOrder);
 
-            return RedirectToAction(nameof(Make));
+            return RedirectToAction("GetOrders");
         }
 
         [HttpGet("orders/make")]
         public async Task<IActionResult> Make()
         {
             var customerId = _customerIdAccessor.GetCustomerId();
-
             var order = await _orderService.ChangeStatusToInProcessAsync(customerId);
-
             var orderViewModel = PrepareOrderViewModel(order);
 
             return View(orderViewModel);
@@ -156,9 +213,7 @@ namespace OnlineGameStore.MVC.Controllers
         public async Task<IActionResult> Pay(Guid orderId, PaymentMethod paymentMethod)
         {
             var paymentMethodStrategy = _paymentMethodStrategies.Single(s => s.PaymentMethod == paymentMethod);
-
             var order = await _orderService.GetOrderByIdAsync(orderId);
-
             var result = paymentMethodStrategy.PaymentProcess(order);
 
             return result;
@@ -187,6 +242,14 @@ namespace OnlineGameStore.MVC.Controllers
             var shippers = await _shipperService.GetAllShippersAsync();
 
             shipOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
+                nameof(ShipperEntity.CompanyName));
+        }
+
+        private async Task ConfigureEditOrderViewModel(EditOrderViewModel editOrderViewModel)
+        {
+            var shippers = await _shipperService.GetAllShippersAsync();
+
+            editOrderViewModel.Shippers = new SelectList(shippers, nameof(ShipperEntity.CompanyName),
                 nameof(ShipperEntity.CompanyName));
         }
     }

@@ -26,7 +26,7 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
+                <a asp-controller="Game" asp-action="GetGameByKey" asp-route-gameKey="@item.GameKey"></a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

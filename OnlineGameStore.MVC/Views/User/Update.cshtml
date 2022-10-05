@@ -1,0 +1,59 @@
+﻿@model EditUserViewModel
+
+@{
+    ViewData["Title"] = $"Edit {@Model.UserName}";
+}
+
+<h2>Edit @Model.UserName</h2>
+<hr/>
+<div class="col-4 mx-auto">
+    <form asp-action="Update" asp-route-returnUrl="@ViewContext.HttpContext.Request.Query["returnUrl"]">
+        <div class="container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+            <input asp-for="Id"/>
+            
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="Email" class="input-group-text"></label>
+                    <input asp-for="Email" class="form-control"/>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        
+            <div class="my-3">
+                <div class="input-group">
+                    <label asp-for="UserName" class="input-group-text"></label>
+                    <input asp-for="UserName" class="form-control"/>
+                </div>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            
+            @if (User.IsInRoles(Permissions.AdminPermission))
+            {
+                <div class="my-3">
+                    <div class="input-group">
+                        <label asp-for="SelectedRole" class="input-group-text"></label>
+                        <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-select"></select>
+                    </div>
+                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                </div>
+
+                <div class="my-3">
+                    <div class="input-group">
+                        <label asp-for="SelectedPublisher" class="input-group-text"></label>
+                        <select asp-for="SelectedPublisher" asp-items="Model.Publishers" class="form-select">
+                            <option value="">None</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="SelectedPublisher" class="text-danger"></span>
+                </div>
+            }
+            
+        </div>
+        
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Edit" class="btn btn-info text-light"/>
+        </div>
+    </form>
+</div>

@@ -10,34 +10,10 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-controller="Game" asp-action="GetGames">Online Game Store</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link text-dark" asp-controller="Game" asp-action="GetGames">Games</a>
-                    <a class="nav-link text-dark" asp-controller="Genre" asp-action="GetGenres">Genres</a>
-                    <a class="nav-link text-dark" asp-controller="PlatformType" asp-action="GetPlatformTypes">Platform types</a>
-                    <a class="nav-link text-dark" asp-controller="Publisher" asp-action="GetPublishers">Publishers</a>
-                    <a class="nav-link text-dark" asp-controller="Shipper" asp-action="GetShippers">Shippers</a>
-                    <a class="nav-link text-dark" asp-controller="Order" asp-action="GetBasket">Basket</a>
-                    <a class="nav-link text-dark" asp-controller="Order" asp-action="GetOrders">Orders History</a>
-                </div>
-            </div>
-            <span class="col-2 navbar-text text-end">
-                <cache expires-after="@TimeSpan.FromMinutes(1)">
-                    <vc:total-games/>
-                </cache>
-            </span>
-        </div>
-    </nav>
+    <partial name="Navigation/_NavMenu"/>
 </header>
-<div class="container">
-    <main role="main" class="pb-3">
+<div class="container-fluid">
+    <main role="main" class="pb-3 mx-3">
         @RenderBody()
     </main>
 </div>

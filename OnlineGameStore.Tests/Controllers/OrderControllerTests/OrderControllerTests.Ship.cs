@@ -31,8 +31,7 @@ namespace OnlineGameStore.Tests.Controllers
 
             // Assert
             result.Should().BeOfType<ViewResult>()
-                .Which.Model.Should().BeAssignableTo<ShipOrderViewModel>()
-                .Which.Id.Should().Be(order.Id);
+                .Which.Model.Should().BeAssignableTo<ShipOrderViewModel>();
             
             mockOrderService.Verify(x => x.GetOrderByIdAsync(It.IsAny<Guid>()), Times.Once);
         }
@@ -71,13 +70,11 @@ namespace OnlineGameStore.Tests.Controllers
 
             var shipOrderViewModel = new ShipOrderViewModel
             {
-                Id = order.Id,
-                CustomerId = order.CustomerId,
                 ShipVia = order.ShipVia
             };
 
             // Act
-            var result = await sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
+            var result = await sut.Ship(order.Id, shipOrderViewModel);
 
             // Assert
             result.Should().BeOfType<RedirectToActionResult>()
@@ -89,6 +86,7 @@ namespace OnlineGameStore.Tests.Controllers
         [Theory]
         [AutoMoqData]
         public async Task Ship_Post_ReturnsViewResult_WhenOrderIsInvalid(
+            Guid orderId,
             ShipOrderViewModel shipOrderViewModel,
             OrderController sut)
         {
@@ -96,12 +94,12 @@ namespace OnlineGameStore.Tests.Controllers
             sut.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var result = await sut.Ship(shipOrderViewModel.Id, shipOrderViewModel);
+            var result = await sut.Ship(orderId, shipOrderViewModel);
 
             // Assert
             result.Should().BeOfType<ViewResult>()
                 .Which.Model.Should().BeAssignableTo<ShipOrderViewModel>()
-                .Which.Id.Should().Be(shipOrderViewModel.Id);
+                .Which.ShipVia.Should().Be(shipOrderViewModel.ShipVia);
         }
     }
 }

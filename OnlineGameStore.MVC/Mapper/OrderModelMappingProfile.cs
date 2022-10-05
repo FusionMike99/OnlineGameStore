@@ -12,7 +12,7 @@ namespace OnlineGameStore.MVC.Mapper
         {
             CreateMap<OrderModel, OrderViewModel>()
                 .ForMember(dest => dest.Total, source =>
-                    source.MapFrom(order => order.OrderDetails.Sum(od => od.Price * od.Quantity * (decimal)(1 - od.Discount))))
+                    source.MapFrom(order => order.OrderDetails.Sum(od => od.Price * od.Quantity * (decimal)(1 - od.Discount / 100))))
                 .ForMember(dest => dest.OrderDetails, source => source.MapFrom(order => order.OrderDetails))
                 .ForMember(dest => dest.OrderState,
                     opts => opts.MapFrom(order => order.OrderState))
@@ -27,7 +27,18 @@ namespace OnlineGameStore.MVC.Mapper
             CreateMap<FilterOrderModel, FilterOrderViewModel>()
                 .ReverseMap();
 
-            CreateMap<OrderModel, ShipOrderViewModel>()
+            CreateMap<OrderModel, ShipOrderModel>()
+                .ReverseMap();
+            
+            CreateMap<OrderModel, EditOrderViewModel>()
+                .ForMember(dest => dest.OrderId, source => source.MapFrom(od => od.Id))
+                .ForMember(dest => dest.Shippers, source => source.Ignore())
+                .ReverseMap();
+            
+            CreateMap<OrderDetailModel, EditOrderDetailViewModel>()
+                .ReverseMap();
+            
+            CreateMap<ShipOrderModel, ShipOrderViewModel>()
                 .ForMember(so => so.Shippers,
                     opts => opts.Ignore())
                 .ReverseMap();

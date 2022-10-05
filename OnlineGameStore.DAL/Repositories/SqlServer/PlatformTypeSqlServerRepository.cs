@@ -18,7 +18,7 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<IEnumerable<string>> GetIdsByTypesAsync(IEnumerable<string> types)
         {
-            var platformTypesIds = await Entities.Where(s => types.Contains(s.Type))
+            var platformTypesIds = await Query.Where(s => types.Contains(s.Type))
                 .Select(g => g.Id.ToString()).ToListAsync();
 
             return platformTypesIds;
@@ -26,14 +26,14 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<PlatformTypeEntity> GetByTypeAsync(string type)
         {
-            var platformType = await Entities.FirstOrDefaultAsync(pt => pt.Type == type);
+            var platformType = await Query.FirstOrDefaultAsync(pt => pt.Type == type);
 
             return platformType;
         }
 
         public async Task<PlatformTypeEntity> GetByTypeIncludeDeletedAsync(string type)
         {
-            var platformType = await Entities.IncludeDeleted().FirstOrDefaultAsync(pt => pt.Type == type);
+            var platformType = await Query.IncludeDeleted().FirstOrDefaultAsync(pt => pt.Type == type);
 
             return platformType;
         }

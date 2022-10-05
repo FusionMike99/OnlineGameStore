@@ -7,7 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OnlineGameStore.BLL\OnlineGameStore.BLL.csproj" />
     <ProjectReference Include="..\OnlineGameStore.DAL\OnlineGameStore.DAL.csproj" />
-    <ProjectReference Include="..\OnlineGameStore.Infrastructure\OnlineGameStore.Infrastructure.csproj" />
+    <ProjectReference Include="..\OnlineGameStore.Identity\OnlineGameStore.Identity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -94,6 +94,7 @@
     <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\ru\units.json" />
     <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\uk\measurementSystemNames.json" />
     <_ContentIncludedByDefault Remove="wwwroot\lib\cldr-data\cldr-units-modern\main\uk\units.json" />
+    <_ContentIncludedByDefault Remove="Views\Role\Index.cshtml" />
   </ItemGroup>
 
 </Project>

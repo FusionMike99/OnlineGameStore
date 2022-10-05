@@ -1,8 +1,8 @@
 ﻿@model int
 
-<div class="container">
-    <small class="navbar-text">
+<cache expires-after="@TimeSpan.FromMinutes(1)">
+    <span class="navbar-text">
         <b>Total numbers of games: </b>
         @Model
-    </small>
-</div>
+    </span>
+</cache>

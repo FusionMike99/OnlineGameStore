@@ -15,7 +15,11 @@
 }
 
 <div class="d-flex justify-content-between">
-    <a asp-action="Create" class="btn btn-success">Add New Game</a>
+
+    @if (User.IsInRoles(Permissions.ManagerPermission))
+    {
+        <a asp-action="Create" class="btn btn-success">Add New Game</a>
+    }
     
     <div class="row">
         <div class="col">

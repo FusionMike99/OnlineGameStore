@@ -28,9 +28,7 @@ namespace OnlineGameStore.BLL.Services
         public async Task<CommentModel> LeaveCommentToGameAsync(string gameKey, CommentModel comment)
         {
             var game = await _gameService.GetGameByKeyAsync(gameKey);
-
             comment.GameId = game.Id;
-
             await _commentRepository.CreateAsync(comment);
 
             return comment;

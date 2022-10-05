@@ -15,6 +15,8 @@ namespace OnlineGameStore.BLL.Services.Interfaces
         Task<IEnumerable<OrderModel>> GetOrdersAsync(FilterOrderModel filterOrderModel = null);
 
         Task<OrderModel> EditOrderAsync(OrderModel order);
+        
+        Task<OrderModel> ShipOrderAsync(ShipOrderModel shipOrderModel);
 
         Task AddToOpenOrderAsync(Guid customerId, GameModel product, short quantity);
 
@@ -23,6 +25,8 @@ namespace OnlineGameStore.BLL.Services.Interfaces
         Task<OrderModel> ChangeStatusToInProcessAsync(Guid customerId);
 
         Task<OrderModel> ChangeStatusToClosedAsync(Guid orderId);
+        
+        Task<OrderModel> ChangeStatusToShippedAsync(Guid orderId);
 
         Task CancelOrdersWithTimeoutAsync();
 

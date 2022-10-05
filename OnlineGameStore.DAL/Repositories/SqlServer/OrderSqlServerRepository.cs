@@ -25,7 +25,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             var order = await Entities.IncludeForOrders().FirstOrDefaultAsync(o => o.CustomerId == customerId
                                                                 && o.OrderState <= OrderState.InProgress
                                                                 && o.CancelledDate == null);
-
             if (order != null)
             {
                 return order;
@@ -45,10 +44,17 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<IEnumerable<OrderEntity>> GetOrdersAsync(FilterOrderModel filterOrderModel = null)
         {
+            var orders = Entities.IncludeForOrders();
+            
             var predicate = OrderPredicate.GetPredicate<OrderEntity>(filterOrderModel);
-            var orders = await Entities.IncludeForOrders().Where(predicate).ToListAsync();
+            if (predicate != null)
+            {
+                orders = orders.Where(predicate);
+            }
+            
+            var ordersList = await orders.ToListAsync();
 
-            return orders;
+            return ordersList;
         }
 
         public async Task<IEnumerable<OrderEntity>> GetOrdersWithStatusAsync(OrderState orderState)
@@ -63,7 +69,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
             var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == product.Key);
-
             if (existOrderDetail != null)
             {
                 var newQuantity = (short)(existOrderDetail.Quantity + quantity);
@@ -89,7 +94,6 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
         {
             var order = await GetOpenOrInProcessOrderAsync(customerId);
             var existOrderDetail = order.OrderDetails.FirstOrDefault(od => od.GameKey == gameKey);
-
             if (existOrderDetail == null)
             {
                 return;
@@ -114,6 +118,17 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
             var order = await GetOrderByIdAsync(orderId);
             CheckOrderExisting(order);
             order.OrderState = OrderState.Closed;
+            await UpdateAsync(order);
+
+            return order;
+        }
+
+        public async Task<OrderEntity> ChangeStatusToShippedAsync(Guid orderId)
+        {
+            var order = await GetOrderByIdAsync(orderId);
+            CheckOrderExisting(order);
+            order.OrderState = OrderState.Shipped;
+            order.ShippedDate = DateTime.UtcNow;
             await UpdateAsync(order);
 
             return order;

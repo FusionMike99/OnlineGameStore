@@ -28,21 +28,17 @@ namespace OnlineGameStore.MVC.Strategies.PaymentMethods
             const int minutes = 3;
             
             var orderViewModel = _mapper.Map<OrderViewModel>(order);
-
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true
             };
-
             var serializedGame = Encoding.Default.GetBytes(JsonSerializer.Serialize(orderViewModel, options));
-
             var fileContentResult = new FileContentResult(serializedGame, "application/txt")
             {
                 FileDownloadName = $"invoice№{order.Id}.txt"
             };
             
             var cancelledDate = DateTime.UtcNow.Add(TimeSpan.FromMinutes(minutes));
-            
             _orderService.SetCancelledDateAsync(order.Id, cancelledDate);
             
             return fileContentResult;

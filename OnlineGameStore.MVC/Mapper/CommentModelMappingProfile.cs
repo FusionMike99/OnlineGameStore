@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineGameStore.DomainModels;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Models;
 

@@ -1,0 +1,187 @@
+﻿@model EditOrderViewModel
+
+@{
+    ViewData["Title"] = "Edit order";
+}
+
+<h1>Edit</h1>
+
+<h4>Order</h4>
+<hr/>
+<div class="col-8 mx-auto">
+    <form asp-action="Update" method="post">
+        <div class="container">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="OrderId" class="input-group-text"></label>
+                        <input asp-for="OrderId" class="form-control" readonly="readonly"/>
+                    </div>
+                    <span asp-validation-for="OrderId" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="CustomerId" class="form-control text-end" readonly="readonly"/>
+                        <label asp-for="CustomerId" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="my-3">
+                <div class="input-group">
+                    <input asp-for="OrderDate" class="form-control text-end" readonly="readonly"/>
+                    <label asp-for="OrderDate" class="input-group-text"></label>
+                </div>
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+            
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="CancelledDate" class="input-group-text"></label>
+                        <input asp-for="CancelledDate" class="form-control" />
+                    </div>
+                    <span asp-validation-for="CancelledDate" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShippedDate" class="form-control"/>
+                        <label asp-for="ShippedDate" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShippedDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipName" class="input-group-text"></label>
+                        <input asp-for="ShipName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipName" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="Freight" class="form-control" n/>
+                        <label asp-for="Freight" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="Freight" class="text-danger"></span>
+                </div>
+            </div>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipAddress" class="input-group-text"></label>
+                        <input asp-for="ShipAddress" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipAddress" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShipCity" class="form-control"/>
+                        <label asp-for="ShipCity" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShipCity" class="text-danger"></span>
+                </div>
+            </div>
+        
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipRegion" class="input-group-text"></label>
+                        <input asp-for="ShipRegion" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ShipRegion" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShipPostalCode" class="form-control"/>
+                        <label asp-for="ShipPostalCode" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShipPostalCode" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <div class="row g-3 my-3">
+                <div class="col">
+                    <div class="input-group">
+                        <label asp-for="ShipVia" class="input-group-text"></label>
+                        <select asp-for="ShipVia" asp-items="Model.Shippers" class="form-select text-end">
+                        </select>
+                    </div>
+                    <span asp-validation-for="ShipVia" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <input asp-for="ShipCountry" class="form-control" />
+                        <label asp-for="ShipCountry" class="input-group-text"></label>
+                    </div>
+                    <span asp-validation-for="ShipCountry" class="text-danger"></span>
+                </div>
+            </div>
+            
+            <input asp-for="OrderState"/>
+            
+            <div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().ProductName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Price)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Quantity)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OrderDetails.FirstOrDefault().Discount)
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.OrderDetails.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input asp-for="@Model.OrderDetails[i].GameKey"/>
+                                <a asp-controller="Game" asp-action="GetGameByKey"
+                                   asp-route-gameKey="@Model.OrderDetails[i].GameKey">
+                                    @Model.OrderDetails[i].ProductName
+                                </a>
+                            </td>
+                            <td>
+                                <input asp-for="@Model.OrderDetails[i].Price" class="form-control" readonly="readonly"/>
+                            </td>
+                            <td>
+                                <input min="0" asp-for="@Model.OrderDetails[i].Quantity" class="form-control"/>
+                            </td>
+                            <td>
+                                <input type="number" min=0 max=100 asp-for="@Model.OrderDetails[i].Discount"
+                                       class="form-control" placeholder="0..100"/>
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-1 mx-auto">
+            <input type="submit" value="Save" class="btn btn-info text-light"/>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

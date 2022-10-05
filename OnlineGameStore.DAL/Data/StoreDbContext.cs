@@ -1,11 +1,14 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnlineGameStore.DAL.Entities;
 
 namespace OnlineGameStore.DAL.Data
 {
-    public class StoreDbContext : DbContext
+    public class StoreDbContext : IdentityDbContext<UserEntity, IdentityRole<Guid>, Guid>
     {
         public StoreDbContext([NotNull] DbContextOptions<StoreDbContext> options) : base(options)
         {
@@ -32,7 +35,7 @@ namespace OnlineGameStore.DAL.Data
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
                     entityType.AddSoftDeleteQueryFilter();
 
-            modelBuilder.StoreSeed();
+            modelBuilder.SeedData();
         }
     }
 }

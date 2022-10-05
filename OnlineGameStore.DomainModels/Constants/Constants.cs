@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OnlineGameStore.DomainModels
+namespace OnlineGameStore.DomainModels.Constants
 {
     public static class Constants
     {
@@ -8,5 +8,7 @@ namespace OnlineGameStore.DomainModels
         public const string CustomerIdCookieKey = "customerId";
         public static readonly DateTime AddedAtDefault = new DateTime(2022, 06, 02);
         public const string DefaultCustomerId = "4C95259C-8534-4A68-9935-4E52EBDBCEEE";
+        public const string DefaultPublisherAtGame = "Unknown";
+        public const string DefaultGenresAtGame = "Other";
     }
 }

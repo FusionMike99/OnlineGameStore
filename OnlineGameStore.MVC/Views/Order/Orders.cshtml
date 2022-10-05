@@ -1,0 +1,11 @@
+﻿@model OrderListViewModel
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<partial name="_FilterDate" model="Model.FilterOrderViewModel"/>
+
+<partial name="_OrdersList" for="Orders"/>

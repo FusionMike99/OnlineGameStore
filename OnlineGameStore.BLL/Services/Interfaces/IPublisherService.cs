@@ -15,6 +15,8 @@ namespace OnlineGameStore.BLL.Services.Interfaces
 
         Task<PublisherModel> GetPublisherByCompanyNameAsync(string companyName);
         
+        Task<PublisherModel> GetPublisherByIdAsync(Guid publisherId);
+        
         Task<IEnumerable<string>> GetSuppliersIdsByNamesAsync(IEnumerable<string> companiesNames);
 
         Task<IEnumerable<PublisherModel>> GetAllPublishersAsync();

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineGameStore.BLL.Services.Interfaces;
+using OnlineGameStore.DomainModels.Constants;
 using OnlineGameStore.DomainModels.Models.General;
 using OnlineGameStore.MVC.Infrastructure;
 using OnlineGameStore.MVC.Models;
@@ -11,6 +13,7 @@ using OnlineGameStore.MVC.Models;
 namespace OnlineGameStore.MVC.Controllers
 {
     [Route("platform-types")]
+    [AuthorizeByRoles(Permissions.ManagerPermission)]
     public class PlatformTypeController : Controller
     {
         private readonly IMapper _mapper;
@@ -43,7 +46,6 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
-
             await _platformTypeService.CreatePlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
@@ -81,13 +83,13 @@ namespace OnlineGameStore.MVC.Controllers
             }
 
             var mappedPlatformType = _mapper.Map<PlatformTypeModel>(platformType);
-
             await _platformTypeService.EditPlatformTypeAsync(mappedPlatformType);
 
             return RedirectToAction(nameof(GetPlatformTypes));
         }
 
         [HttpGet("{platformTypeId:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPlatformTypeById([FromRoute] Guid platformTypeId)
         {
             var platformType = await _platformTypeService.GetPlatformTypeByIdAsync(platformTypeId);
@@ -103,10 +105,10 @@ namespace OnlineGameStore.MVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetPlatformTypes()
         {
             var platformTypes = await _platformTypeService.GetAllPlatformTypesAsync();
-
             var platformTypesViewModel = _mapper.Map<IEnumerable<PlatformTypeViewModel>>(platformTypes);
 
             return View("Index", platformTypesViewModel);

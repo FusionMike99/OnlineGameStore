@@ -26,24 +26,32 @@ namespace OnlineGameStore.DAL.Repositories.SqlServer
 
         public async Task<GameEntity> GetByKeyAsync(string gameKey)
         {
-            var game = await Entities.IncludeForGames().FirstOrDefaultAsync(g => g.Key == gameKey);
+            var game = await Query.IncludeForGames().FirstOrDefaultAsync(g => g.Key == gameKey);
             
             return game;
         }
 
         public async Task<GameEntity> GetByKeyIncludeDeletedAsync(string gameKey)
         {
-            var game = await Entities.IncludeDeleted().FirstOrDefaultAsync(g => g.Key == gameKey);
+            var game = await Query.IncludeDeleted().IncludeForGames()
+                .FirstOrDefaultAsync(g => g.Key == gameKey);
             
             return game;
         }
 
         public async Task<IEnumerable<GameEntity>> GetAllByFilterAsync(SortFilterGameModel sortFilterModel)
         {
-            var predicate = GetGameStorePredicate(sortFilterModel);
-            var games = await Entities.IncludeDeleted().Where(predicate).ToListAsync();
+            var games = Query.IncludeDeleted();
             
-            return games;
+            var predicate = GetGameStorePredicate(sortFilterModel);
+            if (predicate != null)
+            {
+                games = games.Where(predicate);
+            }
+            
+            var gamesList = await games.ToListAsync();
+            
+            return gamesList;
         }
         
         private Expression<Func<GameEntity, bool>> GetGameStorePredicate(SortFilterGameModel model)

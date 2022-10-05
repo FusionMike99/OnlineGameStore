@@ -16,6 +16,7 @@ namespace OnlineGameStore.Tests.Mappers
         [InlineData(typeof(PlatformTypeModelMappingProfile))]
         [InlineData(typeof(PublisherModelMappingProfile))]
         [InlineData(typeof(ShipperModelMappingProfile))]
+        [InlineData(typeof(UserModelMappingProfile))]
         [InlineData(typeof(EntitiesMappingProfiles))]
         public void MappingProfile_IsValid(Type type)
         {
